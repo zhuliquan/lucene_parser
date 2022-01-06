@@ -17,7 +17,20 @@ This package can parse lucene query used by ES (ElasticSearch), this package is 
 
 ## Usage
 ```golang
+package main
 
+import (
+    "fmt"
+    "github.com/zhuliquan/lucene_parser"
+)
+
+func main() {
+    if lucene, err := lucene_parser.ParseLucene("x:foo AND y:bar"); err != nil {
+        panic(err)
+    } else {
+        fmt.Println(lucene)
+    }
+}
 ```
 
 ## EBNF of Lucene
