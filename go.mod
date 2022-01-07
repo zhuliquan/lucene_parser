@@ -4,5 +4,5 @@ go 1.14
 
 require (
 	github.com/alecthomas/participle v0.7.1
-	github.com/zhuliquan/datemath_parser v0.0.4
+	github.com/stretchr/testify v1.7.0 // indirect
 )

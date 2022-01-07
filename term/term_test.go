@@ -25,37 +25,37 @@ func TestTerm(t *testing.T) {
 		{
 			name:  "TestTerm01",
 			input: `"dsada 78"`,
-			want:  &Term{FuzzyTerm: &FuzzyTerm{PhraseTerm: &PhraseTerm{Value: []string{`dsada`, ` `, `78`}}}},
+			want:  &Term{FuzzyTerm: &FuzzyTerm{PhraseTerm: &PhraseTerm{Chars: []string{`dsada`, ` `, `78`}}}},
 		},
 		{
 			name:  "TestTerm02",
 			input: `"dsada 78"^08`,
-			want:  &Term{FuzzyTerm: &FuzzyTerm{PhraseTerm: &PhraseTerm{Value: []string{`dsada`, ` `, `78`}}, BoostSymbol: "^08"}},
+			want:  &Term{FuzzyTerm: &FuzzyTerm{PhraseTerm: &PhraseTerm{Chars: []string{`dsada`, ` `, `78`}}, BoostSymbol: "^08"}},
 		},
 		{
 			name:  "TestTerm03",
 			input: `"dsada 78"~8`,
-			want:  &Term{FuzzyTerm: &FuzzyTerm{PhraseTerm: &PhraseTerm{Value: []string{`dsada`, ` `, `78`}}, FuzzySymbol: "~8"}},
+			want:  &Term{FuzzyTerm: &FuzzyTerm{PhraseTerm: &PhraseTerm{Chars: []string{`dsada`, ` `, `78`}}, FuzzySymbol: "~8"}},
 		},
 		{
 			name:  "TestTerm05",
 			input: `/dsada 78/`,
-			want:  &Term{RegexpTerm: &RegexpTerm{Value: []string{`dsada`, ` `, `78`}}},
+			want:  &Term{RegexpTerm: &RegexpTerm{Chars: []string{`dsada`, ` `, `78`}}},
 		},
 		{
 			name:  "TestTerm06",
 			input: `\/dsada\/\ dasda80980?*`,
-			want:  &Term{FuzzyTerm: &FuzzyTerm{SingleTerm: &SingleTerm{Value: []string{`\/dsada\/\ dasda`, `80980`, `?`, `*`}}}},
+			want:  &Term{FuzzyTerm: &FuzzyTerm{SingleTerm: &SingleTerm{Begin: `\/dsada\/\ dasda`, Chars: []string{`80980`, `?`, `*`}}}},
 		},
 		{
 			name:  "TestTerm07",
 			input: `\/dsada\/\ dasda80980?*\^\^^08`,
-			want:  &Term{FuzzyTerm: &FuzzyTerm{SingleTerm: &SingleTerm{Value: []string{`\/dsada\/\ dasda`, `80980`, `?`, `*`, `\^\^`}}, BoostSymbol: `^08`}},
+			want:  &Term{FuzzyTerm: &FuzzyTerm{SingleTerm: &SingleTerm{Begin: `\/dsada\/\ dasda`, Chars: []string{`80980`, `?`, `*`, `\^\^`}}, BoostSymbol: `^08`}},
 		},
 		{
 			name:  "TestTerm08",
 			input: `\/dsada\/\ dasda80980?*\^\^~8`,
-			want:  &Term{FuzzyTerm: &FuzzyTerm{SingleTerm: &SingleTerm{Value: []string{`\/dsada\/\ dasda`, `80980`, `?`, `*`, `\^\^`}}, FuzzySymbol: `~8`}},
+			want:  &Term{FuzzyTerm: &FuzzyTerm{SingleTerm: &SingleTerm{Begin: `\/dsada\/\ dasda`, Chars: []string{`80980`, `?`, `*`, `\^\^`}}, FuzzySymbol: `~8`}},
 		},
 		{
 			name:  "TestTerm10",
@@ -225,7 +225,7 @@ func TestTerm(t *testing.T) {
 		{
 			name:  "TestTerm25",
 			input: `/\d+\d+\.\d+.+/`,
-			want:  &Term{RegexpTerm: &RegexpTerm{Value: []string{`\`, `d`, `+`, `\`, `d`, `+`, `\`, `.`, `\`, `d`, `+`, `.`, `+`}}},
+			want:  &Term{RegexpTerm: &RegexpTerm{Chars: []string{`\`, `d`, `+`, `\`, `d`, `+`, `\`, `.`, `\`, `d`, `+`, `.`, `+`}}},
 		},
 		{
 			name:  "TestTerm26",
@@ -234,7 +234,7 @@ func TestTerm(t *testing.T) {
 				LogicTermGroup: &LogicTermGroup{
 					OrTermGroup: &OrTermGroup{
 						AndTermGroup: &AndTermGroup{
-							TermGroupElem: &TermGroupElem{SingleTerm: &SingleTerm{Value: []string{"foo"}}},
+							TermGroupElem: &TermGroupElem{SingleTerm: &SingleTerm{Begin: "foo"}},
 						},
 					},
 					OSTermGroup: []*OSTermGroup{
@@ -242,7 +242,7 @@ func TestTerm(t *testing.T) {
 							OrSymbol: &operator.OrSymbol{Symbol: "OR"},
 							OrTermGroup: &OrTermGroup{
 								AndTermGroup: &AndTermGroup{
-									TermGroupElem: &TermGroupElem{SingleTerm: &SingleTerm{Value: []string{"bar"}}},
+									TermGroupElem: &TermGroupElem{SingleTerm: &SingleTerm{Begin: "bar"}},
 								},
 							},
 						},
@@ -257,7 +257,7 @@ func TestTerm(t *testing.T) {
 				LogicTermGroup: &LogicTermGroup{
 					OrTermGroup: &OrTermGroup{
 						AndTermGroup: &AndTermGroup{
-							TermGroupElem: &TermGroupElem{SingleTerm: &SingleTerm{Value: []string{"foo"}}},
+							TermGroupElem: &TermGroupElem{SingleTerm: &SingleTerm{Begin: "foo"}},
 						},
 					},
 					OSTermGroup: []*OSTermGroup{
@@ -265,7 +265,7 @@ func TestTerm(t *testing.T) {
 							OrSymbol: &operator.OrSymbol{Symbol: "OR"},
 							OrTermGroup: &OrTermGroup{
 								AndTermGroup: &AndTermGroup{
-									TermGroupElem: &TermGroupElem{SingleTerm: &SingleTerm{Value: []string{"bar"}}},
+									TermGroupElem: &TermGroupElem{SingleTerm: &SingleTerm{Begin: "bar"}},
 								},
 							},
 						},

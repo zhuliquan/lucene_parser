@@ -39,6 +39,22 @@ func (t *Term) GetTermType() TermType {
 	}
 }
 
+func (t *Term) Value(f func(string) (interface{}, error)) (interface{}, error) {
+	if t == nil {
+		return nil, ErrEmptyTerm
+	} else if t.FuzzyTerm != nil {
+		return t.FuzzyTerm.Value(f)
+	} else if t.RegexpTerm != nil {
+		return t.RegexpTerm.Value(f)
+	} else if t.RangeTerm != nil {
+		return t.RangeTerm.GetBound(), nil
+	} else if t.TermGroup != nil {
+		return t.TermGroup.Value(f)
+	} else {
+		return f("")
+	}
+}
+
 func (t *Term) GetBound() *Bound {
 	if t == nil || t.RangeTerm == nil {
 		return nil

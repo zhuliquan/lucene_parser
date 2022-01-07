@@ -1,11 +1,7 @@
 package term
 
 import (
-	"strconv"
 	"strings"
-	"time"
-
-	"github.com/zhuliquan/datemath_parser"
 )
 
 // range bound like this [1, 2] [1, 2) (1, 2] (1, 2)
@@ -50,29 +46,17 @@ func (v *RangeValue) String() string {
 	}
 }
 
-func (v *RangeValue) Int() (int, error) {
+func (v *RangeValue) Value(f func(string) (interface{}, error)) (interface{}, error) {
 	if v == nil {
-		return 0, ErrEmptyValue
+		return nil, ErrEmptyValue
+	} else if len(v.InfinityVal) != 0 {
+		return f(v.InfinityVal)
+	} else if len(v.PhraseValue) != 0 {
+		return f(strings.Join(v.PhraseValue, ""))
+	} else if len(v.SingleValue) != 0 {
+		return f(strings.Join(v.SingleValue, ""))
 	} else {
-		return strconv.Atoi(v.String())
-	}
-}
-
-func (v *RangeValue) Float() (float64, error) {
-	if v == nil {
-		return 0.0, ErrEmptyValue
-	} else {
-		return strconv.ParseFloat(v.String(), 64)
-	}
-}
-
-func (v *RangeValue) Time(parser *datemath_parser.DateMathParser) (time.Time, error) {
-	if v == nil {
-		return time.Unix(0, 0), ErrEmptyValue
-	} else if s := v.String(); s == "" {
-		return time.Unix(0, 0), ErrEmptyValue
-	} else {
-		return parser.Parse(v.String())
+		return f("")
 	}
 }
 

@@ -148,3 +148,11 @@ func (t *TermGroup) GetTermType() TermType {
 		return res
 	}
 }
+
+func (t *TermGroup) Value(f func(string) (interface{}, error)) (interface{}, error) {
+	if t == nil {
+		return nil, ErrEmptyGroupTerm
+	} else {
+		return f(t.LogicTermGroup.String())
+	}
+}

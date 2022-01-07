@@ -25,21 +25,21 @@ func TestSingleTerm(t *testing.T) {
 		{
 			name:     "TestSimpleTerm01",
 			input:    `\/dsada\/\ dasda80980?`,
-			want:     &SingleTerm{Value: []string{`\/dsada\/\ dasda`, `80980`, `?`}},
+			want:     &SingleTerm{Begin: `\/dsada\/\ dasda`, Chars: []string{`80980`, `?`}},
 			values:   `\/dsada\/\ dasda80980?`,
 			wildward: true,
 		},
 		{
 			name:     "TestSimpleTerm02",
 			input:    `\/dsada\/\ dasda80980*`,
-			want:     &SingleTerm{Value: []string{`\/dsada\/\ dasda`, `80980`, `*`}},
+			want:     &SingleTerm{Begin: `\/dsada\/\ dasda`, Chars: []string{`80980`, `*`}},
 			values:   `\/dsada\/\ dasda80980*`,
 			wildward: true,
 		},
 		{
 			name:     "TestSimpleTerm03",
 			input:    `\/dsada\/\ dasda8\?0980\*`,
-			want:     &SingleTerm{Value: []string{`\/dsada\/\ dasda`, `8`, `\?`, `0980`, `\*`}},
+			want:     &SingleTerm{Begin: `\/dsada\/\ dasda`, Chars: []string{`8`, `\?`, `0980`, `\*`}},
 			values:   `\/dsada\/\ dasda8\?0980\*`,
 			wildward: false,
 		},
@@ -52,8 +52,8 @@ func TestSingleTerm(t *testing.T) {
 				t.Errorf("failed to parse input: %s, err: %+v", tt.input, err)
 			} else if !reflect.DeepEqual(tt.want, out) {
 				t.Errorf("termParser.ParseString( %s ) = %+v, want: %+v", tt.input, out, tt.want)
-			} else if tt.values != out.ValueS() {
-				t.Errorf("expect get values: %s, but get values: %+v", tt.values, out.ValueS())
+			} else if tt.values != out.String() {
+				t.Errorf("expect get values: %s, but get values: %+v", tt.values, out.String())
 			} else if tt.wildward != out.haveWildcard() {
 				t.Errorf("expect get wildcard: %+v, but get wildcard: %+v", tt.wildward, out.haveWildcard())
 			}
@@ -78,64 +78,64 @@ func TestPhraseTerm(t *testing.T) {
 		{
 			name:     "TestPhraseTerm01",
 			input:    `"dsada 78"`,
-			want:     &PhraseTerm{Value: []string{`dsada`, ` `, `78`}},
-			values:   `dsada 78`,
+			want:     &PhraseTerm{Chars: []string{`dsada`, ` `, `78`}},
+			values:   `"dsada 78"`,
 			wildward: false,
 		},
 		{
 			name:     "TestPhraseTerm02",
 			input:    `"*dsada 78"`,
-			want:     &PhraseTerm{Value: []string{`*`, `dsada`, ` `, `78`}},
-			values:   `*dsada 78`,
+			want:     &PhraseTerm{Chars: []string{`*`, `dsada`, ` `, `78`}},
+			values:   `"*dsada 78"`,
 			wildward: true,
 		},
 		{
 			name:     "TestPhraseTerm03",
 			input:    `"?dsada 78"`,
-			want:     &PhraseTerm{Value: []string{`?`, `dsada`, ` `, `78`}},
-			values:   `?dsada 78`,
+			want:     &PhraseTerm{Chars: []string{`?`, `dsada`, ` `, `78`}},
+			values:   `"?dsada 78"`,
 			wildward: true,
 		},
 		{
 			name:     "TestPhraseTerm04",
 			input:    `"dsada* 78"`,
-			want:     &PhraseTerm{Value: []string{`dsada`, `*`, ` `, `78`}},
-			values:   `dsada* 78`,
+			want:     &PhraseTerm{Chars: []string{`dsada`, `*`, ` `, `78`}},
+			values:   `"dsada* 78"`,
 			wildward: true,
 		},
 		{
 			name:     "TestPhraseTerm05",
 			input:    `"dsada? 78"`,
-			want:     &PhraseTerm{Value: []string{`dsada`, `?`, ` `, `78`}},
-			values:   `dsada? 78`,
+			want:     &PhraseTerm{Chars: []string{`dsada`, `?`, ` `, `78`}},
+			values:   `"dsada? 78"`,
 			wildward: true,
 		},
 		{
 			name:     "TestPhraseTerm06",
 			input:    `"dsada\* 78"`,
-			want:     &PhraseTerm{Value: []string{`dsada\*`, ` `, `78`}},
-			values:   `dsada\* 78`,
+			want:     &PhraseTerm{Chars: []string{`dsada\*`, ` `, `78`}},
+			values:   `"dsada\* 78"`,
 			wildward: false,
 		},
 		{
 			name:     "TestPhraseTerm07",
 			input:    `"dsada\? 78"`,
-			want:     &PhraseTerm{Value: []string{`dsada\?`, ` `, `78`}},
-			values:   `dsada\? 78`,
+			want:     &PhraseTerm{Chars: []string{`dsada\?`, ` `, `78`}},
+			values:   `"dsada\? 78"`,
 			wildward: false,
 		},
 		{
 			name:     "TestPhraseTerm09",
 			input:    `"\*dsada 78"`,
-			want:     &PhraseTerm{Value: []string{`\*dsada`, ` `, `78`}},
-			values:   `\*dsada 78`,
+			want:     &PhraseTerm{Chars: []string{`\*dsada`, ` `, `78`}},
+			values:   `"\*dsada 78"`,
 			wildward: false,
 		},
 		{
 			name:     "TestPhraseTerm10",
 			input:    `"\?dsada 78"`,
-			want:     &PhraseTerm{Value: []string{`\?dsada`, ` `, `78`}},
-			values:   `\?dsada 78`,
+			want:     &PhraseTerm{Chars: []string{`\?dsada`, ` `, `78`}},
+			values:   `"\?dsada 78"`,
 			wildward: false,
 		},
 	}
@@ -147,8 +147,8 @@ func TestPhraseTerm(t *testing.T) {
 				t.Errorf("failed to parse input: %s, err: %+v", tt.input, err)
 			} else if !reflect.DeepEqual(tt.want, out) {
 				t.Errorf("phraseTermParser.ParseString( %s ) = %+v, want: %+v", tt.input, out, tt.want)
-			} else if tt.values != out.ValueS() {
-				t.Errorf("expect get values: %s, but get values: %+v", tt.values, out.ValueS())
+			} else if tt.values != out.String() {
+				t.Errorf("expect get values: %s, but get values: %+v", tt.values, out.String())
 			} else if tt.wildward != out.haveWildcard() {
 				t.Errorf("expect get wildcard: %+v, but get wildcard: %+v", tt.wildward, out.haveWildcard())
 			}
@@ -171,12 +171,12 @@ func TestRegexpTerm(t *testing.T) {
 		{
 			name:  "RegexpTerm01",
 			input: `/dsada 78/`,
-			want:  &RegexpTerm{Value: []string{`dsada`, ` `, `78`}},
+			want:  &RegexpTerm{Chars: []string{`dsada`, ` `, `78`}},
 		},
 		{
 			name:  "RegexpTerm02",
 			input: `/\d+\/\d+\.\d+.+/`,
-			want:  &RegexpTerm{Value: []string{`\`, `d`, `+`, `\/`, `\`, `d`, `+`, `\`, `.`, `\`, `d`, `+`, `.`, `+`}},
+			want:  &RegexpTerm{Chars: []string{`\`, `d`, `+`, `\/`, `\`, `d`, `+`, `\`, `.`, `\`, `d`, `+`, `.`, `+`}},
 		},
 	}
 

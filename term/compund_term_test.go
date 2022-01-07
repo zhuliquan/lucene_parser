@@ -206,8 +206,8 @@ func TestFuzzyTerm(t *testing.T) {
 		{
 			name:     "TestFuzzyTerm01",
 			input:    `"dsada\* 78"`,
-			want:     &FuzzyTerm{PhraseTerm: &PhraseTerm{Value: []string{`dsada\*`, ` `, `78`}}},
-			valueS:   `dsada\* 78`,
+			want:     &FuzzyTerm{PhraseTerm: &PhraseTerm{Chars: []string{`dsada\*`, ` `, `78`}}},
+			valueS:   `"dsada\* 78"`,
 			wildcard: false,
 			fuzzy:    0,
 			boost:    1.0,
@@ -215,8 +215,8 @@ func TestFuzzyTerm(t *testing.T) {
 		{
 			name:     "TestFuzzyTerm02",
 			input:    `"dsada* 78"`,
-			want:     &FuzzyTerm{PhraseTerm: &PhraseTerm{Value: []string{`dsada`, `*`, ` `, `78`}}},
-			valueS:   `dsada* 78`,
+			want:     &FuzzyTerm{PhraseTerm: &PhraseTerm{Chars: []string{`dsada`, `*`, ` `, `78`}}},
+			valueS:   `"dsada* 78"`,
 			wildcard: true,
 			fuzzy:    0,
 			boost:    1.0,
@@ -224,8 +224,8 @@ func TestFuzzyTerm(t *testing.T) {
 		{
 			name:     "TestFuzzyTerm03",
 			input:    `"dsada\* 78"^08`,
-			want:     &FuzzyTerm{PhraseTerm: &PhraseTerm{Value: []string{`dsada\*`, ` `, `78`}}, BoostSymbol: "^08"},
-			valueS:   `dsada\* 78`,
+			want:     &FuzzyTerm{PhraseTerm: &PhraseTerm{Chars: []string{`dsada\*`, ` `, `78`}}, BoostSymbol: "^08"},
+			valueS:   `"dsada\* 78"^08`,
 			wildcard: false,
 			fuzzy:    0,
 			boost:    8.0,
@@ -233,8 +233,8 @@ func TestFuzzyTerm(t *testing.T) {
 		{
 			name:     "TestFuzzyTerm04",
 			input:    `"dsada* 78"^08`,
-			want:     &FuzzyTerm{PhraseTerm: &PhraseTerm{Value: []string{`dsada`, `*`, ` `, `78`}}, BoostSymbol: "^08"},
-			valueS:   `dsada* 78`,
+			want:     &FuzzyTerm{PhraseTerm: &PhraseTerm{Chars: []string{`dsada`, `*`, ` `, `78`}}, BoostSymbol: "^08"},
+			valueS:   `"dsada* 78"^08`,
 			wildcard: true,
 			fuzzy:    0,
 			boost:    8.0,
@@ -242,8 +242,8 @@ func TestFuzzyTerm(t *testing.T) {
 		{
 			name:     "TestFuzzyTerm05",
 			input:    `"dsada\* 78"~8`,
-			want:     &FuzzyTerm{PhraseTerm: &PhraseTerm{Value: []string{`dsada\*`, ` `, `78`}}, FuzzySymbol: "~8"},
-			valueS:   `dsada\* 78`,
+			want:     &FuzzyTerm{PhraseTerm: &PhraseTerm{Chars: []string{`dsada\*`, ` `, `78`}}, FuzzySymbol: "~8"},
+			valueS:   `"dsada\* 78"~8`,
 			wildcard: false,
 			fuzzy:    8,
 			boost:    1.0,
@@ -251,8 +251,8 @@ func TestFuzzyTerm(t *testing.T) {
 		{
 			name:     "TestFuzzyTerm06",
 			input:    `"dsada* 78"~8`,
-			want:     &FuzzyTerm{PhraseTerm: &PhraseTerm{Value: []string{`dsada`, `*`, ` `, `78`}}, FuzzySymbol: "~8"},
-			valueS:   `dsada* 78`,
+			want:     &FuzzyTerm{PhraseTerm: &PhraseTerm{Chars: []string{`dsada`, `*`, ` `, `78`}}, FuzzySymbol: "~8"},
+			valueS:   `"dsada* 78"~8`,
 			wildcard: true,
 			fuzzy:    8,
 			boost:    1.0,
@@ -260,8 +260,8 @@ func TestFuzzyTerm(t *testing.T) {
 		{
 			name:     "TestFuzzyTerm07",
 			input:    `"dsada 78"~`,
-			want:     &FuzzyTerm{PhraseTerm: &PhraseTerm{Value: []string{`dsada`, ` `, `78`}}, FuzzySymbol: "~"},
-			valueS:   `dsada 78`,
+			want:     &FuzzyTerm{PhraseTerm: &PhraseTerm{Chars: []string{`dsada`, ` `, `78`}}, FuzzySymbol: "~"},
+			valueS:   `"dsada 78"~`,
 			wildcard: false,
 			fuzzy:    1,
 			boost:    1.0,
@@ -269,8 +269,8 @@ func TestFuzzyTerm(t *testing.T) {
 		{
 			name:     "TestFuzzyTerm08",
 			input:    `"dsada* 78"~`,
-			want:     &FuzzyTerm{PhraseTerm: &PhraseTerm{Value: []string{`dsada`, `*`, ` `, `78`}}, FuzzySymbol: "~"},
-			valueS:   `dsada* 78`,
+			want:     &FuzzyTerm{PhraseTerm: &PhraseTerm{Chars: []string{`dsada`, `*`, ` `, `78`}}, FuzzySymbol: "~"},
+			valueS:   `"dsada* 78"~`,
 			wildcard: true,
 			fuzzy:    1,
 			boost:    1.0,
@@ -278,7 +278,7 @@ func TestFuzzyTerm(t *testing.T) {
 		{
 			name:     "TestFuzzyTerm09",
 			input:    `\/dsada\/\ dasda80980?*`,
-			want:     &FuzzyTerm{SingleTerm: &SingleTerm{Value: []string{`\/dsada\/\ dasda`, `80980`, `?`, `*`}}},
+			want:     &FuzzyTerm{SingleTerm: &SingleTerm{Begin: `\/dsada\/\ dasda`, Chars: []string{`80980`, `?`, `*`}}},
 			valueS:   `\/dsada\/\ dasda80980?*`,
 			wildcard: true,
 			fuzzy:    0,
@@ -287,8 +287,8 @@ func TestFuzzyTerm(t *testing.T) {
 		{
 			name:     "TestFuzzyTerm10",
 			input:    `\/dsada\/\ dasda80980?*\^\^^08`,
-			want:     &FuzzyTerm{SingleTerm: &SingleTerm{Value: []string{`\/dsada\/\ dasda`, `80980`, `?`, `*`, `\^\^`}}, BoostSymbol: `^08`},
-			valueS:   `\/dsada\/\ dasda80980?*\^\^`,
+			want:     &FuzzyTerm{SingleTerm: &SingleTerm{Begin: `\/dsada\/\ dasda`, Chars: []string{`80980`, `?`, `*`, `\^\^`}}, BoostSymbol: `^08`},
+			valueS:   `\/dsada\/\ dasda80980?*\^\^^08`,
 			wildcard: true,
 			fuzzy:    0,
 			boost:    8.0,
@@ -296,8 +296,8 @@ func TestFuzzyTerm(t *testing.T) {
 		{
 			name:     "TestFuzzyTerm11",
 			input:    `\/dsada\/\ dasda80980?*\^\^~8`,
-			want:     &FuzzyTerm{SingleTerm: &SingleTerm{Value: []string{`\/dsada\/\ dasda`, `80980`, `?`, `*`, `\^\^`}}, FuzzySymbol: `~8`},
-			valueS:   `\/dsada\/\ dasda80980?*\^\^`,
+			want:     &FuzzyTerm{SingleTerm: &SingleTerm{Begin: `\/dsada\/\ dasda`, Chars: []string{`80980`, `?`, `*`, `\^\^`}}, FuzzySymbol: `~8`},
+			valueS:   `\/dsada\/\ dasda80980?*\^\^~8`,
 			wildcard: true,
 			fuzzy:    8,
 			boost:    1.0,
@@ -305,8 +305,8 @@ func TestFuzzyTerm(t *testing.T) {
 		{
 			name:     "TestFuzzyTerm12",
 			input:    `\/dsada\/\ dasda80980?*\^\^~`,
-			want:     &FuzzyTerm{SingleTerm: &SingleTerm{Value: []string{`\/dsada\/\ dasda`, `80980`, `?`, `*`, `\^\^`}}, FuzzySymbol: `~`},
-			valueS:   `\/dsada\/\ dasda80980?*\^\^`,
+			want:     &FuzzyTerm{SingleTerm: &SingleTerm{Begin: `\/dsada\/\ dasda`, Chars: []string{`80980`, `?`, `*`, `\^\^`}}, FuzzySymbol: `~`},
+			valueS:   `\/dsada\/\ dasda80980?*\^\^~`,
 			wildcard: true,
 			fuzzy:    1,
 			boost:    1.0,
@@ -314,7 +314,7 @@ func TestFuzzyTerm(t *testing.T) {
 		{
 			name:     "TestFuzzyTerm13",
 			input:    `\/dsada\/\ dasda80980\?\*`,
-			want:     &FuzzyTerm{SingleTerm: &SingleTerm{Value: []string{`\/dsada\/\ dasda`, `80980`, `\?\*`}}},
+			want:     &FuzzyTerm{SingleTerm: &SingleTerm{Begin: `\/dsada\/\ dasda`, Chars: []string{`80980`, `\?\*`}}},
 			valueS:   `\/dsada\/\ dasda80980\?\*`,
 			wildcard: false,
 			fuzzy:    0,
@@ -323,8 +323,8 @@ func TestFuzzyTerm(t *testing.T) {
 		{
 			name:     "TestFuzzyTerm14",
 			input:    `\/dsada\/\ dasda80980\?\*\^\^^08`,
-			want:     &FuzzyTerm{SingleTerm: &SingleTerm{Value: []string{`\/dsada\/\ dasda`, `80980`, `\?\*\^\^`}}, BoostSymbol: `^08`},
-			valueS:   `\/dsada\/\ dasda80980\?\*\^\^`,
+			want:     &FuzzyTerm{SingleTerm: &SingleTerm{Begin: `\/dsada\/\ dasda`, Chars: []string{`80980`, `\?\*\^\^`}}, BoostSymbol: `^08`},
+			valueS:   `\/dsada\/\ dasda80980\?\*\^\^^08`,
 			wildcard: false,
 			fuzzy:    0,
 			boost:    8.0,
@@ -332,8 +332,8 @@ func TestFuzzyTerm(t *testing.T) {
 		{
 			name:     "TestFuzzyTerm15",
 			input:    `\/dsada\/\ dasda80980\?\*\^\^~8`,
-			want:     &FuzzyTerm{SingleTerm: &SingleTerm{Value: []string{`\/dsada\/\ dasda`, `80980`, `\?\*\^\^`}}, FuzzySymbol: `~8`},
-			valueS:   `\/dsada\/\ dasda80980\?\*\^\^`,
+			want:     &FuzzyTerm{SingleTerm: &SingleTerm{Begin: `\/dsada\/\ dasda`, Chars: []string{`80980`, `\?\*\^\^`}}, FuzzySymbol: `~8`},
+			valueS:   `\/dsada\/\ dasda80980\?\*\^\^~8`,
 			wildcard: false,
 			fuzzy:    8,
 			boost:    1.0,
@@ -341,8 +341,8 @@ func TestFuzzyTerm(t *testing.T) {
 		{
 			name:     "TestFuzzyTerm16",
 			input:    `\/dsada\/\ dasda80980\?\*\^\^~`,
-			want:     &FuzzyTerm{SingleTerm: &SingleTerm{Value: []string{`\/dsada\/\ dasda`, `80980`, `\?\*\^\^`}}, FuzzySymbol: `~`},
-			valueS:   `\/dsada\/\ dasda80980\?\*\^\^`,
+			want:     &FuzzyTerm{SingleTerm: &SingleTerm{Begin: `\/dsada\/\ dasda`, Chars: []string{`80980`, `\?\*\^\^`}}, FuzzySymbol: `~`},
+			valueS:   `\/dsada\/\ dasda80980\?\*\^\^~`,
 			wildcard: false,
 			fuzzy:    1,
 			boost:    1.0,
@@ -355,8 +355,8 @@ func TestFuzzyTerm(t *testing.T) {
 				t.Errorf("failed to parse input: %s, err: %+v", tt.input, err)
 			} else if !reflect.DeepEqual(tt.want, out) {
 				t.Errorf("fuzzyTermParser.ParseString( %s ) = %+v, want: %+v", tt.input, out, tt.want)
-			} else if out.ValueS() != tt.valueS {
-				t.Errorf("expect get values: %s but get values: %s", tt.valueS, out.ValueS())
+			} else if out.String() != tt.valueS {
+				t.Errorf("expect get values: %s but get values: %s", tt.valueS, out.String())
 			} else if out.haveWildcard() != tt.wildcard {
 				t.Errorf("expect wildcard: %+v, but wildcard: %+v", tt.wildcard, out.haveWildcard())
 			} else if out.Fuzziness() != tt.fuzzy {

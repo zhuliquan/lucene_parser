@@ -33,7 +33,7 @@ func TestLucene(t *testing.T) {
 						FieldQuery: &FieldQuery{
 							Field: &term.Field{Value: []string{"x"}},
 							Term: &term.Term{FuzzyTerm: &term.FuzzyTerm{
-								SingleTerm: &term.SingleTerm{Value: []string{"1"}},
+								SingleTerm: &term.SingleTerm{Begin: "1"},
 							}},
 						},
 					},
@@ -45,7 +45,7 @@ func TestLucene(t *testing.T) {
 								FieldQuery: &FieldQuery{
 									Field: &term.Field{Value: []string{"x"}},
 									Term: &term.Term{FuzzyTerm: &term.FuzzyTerm{
-										SingleTerm: &term.SingleTerm{Value: []string{"2"}},
+										SingleTerm: &term.SingleTerm{Begin: "2"},
 									}},
 								},
 							},
@@ -69,7 +69,7 @@ func TestLucene(t *testing.T) {
 										FieldQuery: &FieldQuery{
 											Field: &term.Field{Value: []string{"x"}},
 											Term: &term.Term{FuzzyTerm: &term.FuzzyTerm{
-												SingleTerm: &term.SingleTerm{Value: []string{"1"}},
+												SingleTerm: &term.SingleTerm{Begin: "1"},
 											}},
 										},
 									},
@@ -80,7 +80,7 @@ func TestLucene(t *testing.T) {
 												FieldQuery: &FieldQuery{
 													Field: &term.Field{Value: []string{"y"}},
 													Term: &term.Term{FuzzyTerm: &term.FuzzyTerm{
-														SingleTerm: &term.SingleTerm{Value: []string{"2"}},
+														SingleTerm: &term.SingleTerm{Begin: "2"},
 													}},
 												},
 											},
@@ -99,7 +99,7 @@ func TestLucene(t *testing.T) {
 								FieldQuery: &FieldQuery{
 									Field: &term.Field{Value: []string{"z"}},
 									Term: &term.Term{FuzzyTerm: &term.FuzzyTerm{
-										SingleTerm: &term.SingleTerm{Value: []string{"9"}},
+										SingleTerm: &term.SingleTerm{Begin: "9"},
 									}},
 								},
 							},
@@ -122,7 +122,7 @@ func TestLucene(t *testing.T) {
 										FieldQuery: &FieldQuery{
 											Field: &term.Field{Value: []string{"x"}},
 											Term: &term.Term{FuzzyTerm: &term.FuzzyTerm{
-												SingleTerm: &term.SingleTerm{Value: []string{"1"}},
+												SingleTerm: &term.SingleTerm{Begin: "1"},
 											}},
 										},
 									},
@@ -134,7 +134,7 @@ func TestLucene(t *testing.T) {
 												FieldQuery: &FieldQuery{
 													Field: &term.Field{Value: []string{"y"}},
 													Term: &term.Term{FuzzyTerm: &term.FuzzyTerm{
-														SingleTerm: &term.SingleTerm{Value: []string{"2"}},
+														SingleTerm: &term.SingleTerm{Begin: "2"},
 													}},
 												},
 											},
@@ -156,7 +156,7 @@ func TestLucene(t *testing.T) {
 												FieldQuery: &FieldQuery{
 													Field: &term.Field{Value: []string{"x"}},
 													Term: &term.Term{FuzzyTerm: &term.FuzzyTerm{
-														SingleTerm: &term.SingleTerm{Value: []string{"8"}},
+														SingleTerm: &term.SingleTerm{Begin: "8"},
 													}},
 												},
 											},
@@ -167,7 +167,7 @@ func TestLucene(t *testing.T) {
 														FieldQuery: &FieldQuery{
 															Field: &term.Field{Value: []string{"k"}},
 															Term: &term.Term{FuzzyTerm: &term.FuzzyTerm{
-																SingleTerm: &term.SingleTerm{Value: []string{"90"}},
+																SingleTerm: &term.SingleTerm{Begin: "90"},
 															}},
 														},
 													},
@@ -196,7 +196,7 @@ func TestLucene(t *testing.T) {
 									OrTermGroup: &term.OrTermGroup{
 										AndTermGroup: &term.AndTermGroup{
 											TermGroupElem: &term.TermGroupElem{
-												SingleTerm: &term.SingleTerm{Value: []string{"txt"}},
+												SingleTerm: &term.SingleTerm{Begin: "txt"},
 											},
 										},
 									},
@@ -206,7 +206,7 @@ func TestLucene(t *testing.T) {
 											OrTermGroup: &term.OrTermGroup{
 												AndTermGroup: &term.AndTermGroup{
 													TermGroupElem: &term.TermGroupElem{
-														SingleTerm: &term.SingleTerm{Value: []string{"foo"}},
+														SingleTerm: &term.SingleTerm{Begin: "foo"},
 													},
 												},
 											},
@@ -216,7 +216,7 @@ func TestLucene(t *testing.T) {
 											OrTermGroup: &term.OrTermGroup{
 												AndTermGroup: &term.AndTermGroup{
 													TermGroupElem: &term.TermGroupElem{
-														SingleTerm: &term.SingleTerm{Value: []string{"bar"}},
+														SingleTerm: &term.SingleTerm{Begin: "bar"},
 													},
 												},
 											},
@@ -234,7 +234,7 @@ func TestLucene(t *testing.T) {
 								FieldQuery: &FieldQuery{
 									Field: &term.Field{Value: []string{"x", "-", "y"}},
 									Term: &term.Term{FuzzyTerm: &term.FuzzyTerm{
-										PhraseTerm: &term.PhraseTerm{Value: []string{`xxx`}},
+										PhraseTerm: &term.PhraseTerm{Chars: []string{`xxx`}},
 									}},
 								},
 							},
@@ -250,7 +250,7 @@ func TestLucene(t *testing.T) {
 								FieldQuery: &FieldQuery{
 									Field: &term.Field{Value: []string{"zz"}},
 									Term: &term.Term{FuzzyTerm: &term.FuzzyTerm{
-										SingleTerm: &term.SingleTerm{Value: []string{`iopio\ `, `90`}},
+										SingleTerm: &term.SingleTerm{Begin: `iopio\ `, Chars: []string{`90`}},
 									}},
 								},
 							},
@@ -276,12 +276,12 @@ func TestLucene(t *testing.T) {
 											Term: &term.Term{
 												TermGroup: &term.TermGroup{
 													LogicTermGroup: &term.LogicTermGroup{
-														OrTermGroup: &term.OrTermGroup{AndTermGroup: &term.AndTermGroup{TermGroupElem: &term.TermGroupElem{SingleTerm: &term.SingleTerm{Value: []string{"foo"}}}}},
+														OrTermGroup: &term.OrTermGroup{AndTermGroup: &term.AndTermGroup{TermGroupElem: &term.TermGroupElem{SingleTerm: &term.SingleTerm{Begin: "foo"}}}},
 														OSTermGroup: []*term.OSTermGroup{
 															{
 																OrSymbol: &operator.OrSymbol{Symbol: "or"},
 																OrTermGroup: &term.OrTermGroup{
-																	AndTermGroup: &term.AndTermGroup{TermGroupElem: &term.TermGroupElem{SingleTerm: &term.SingleTerm{Value: []string{"bar"}}}},
+																	AndTermGroup: &term.AndTermGroup{TermGroupElem: &term.TermGroupElem{SingleTerm: &term.SingleTerm{Begin: "bar"}}},
 																},
 															},
 														},
@@ -301,7 +301,7 @@ func TestLucene(t *testing.T) {
 								FieldQuery: &FieldQuery{
 									Field: &term.Field{Value: []string{"z"}},
 									Term: &term.Term{FuzzyTerm: &term.FuzzyTerm{
-										SingleTerm: &term.SingleTerm{Value: []string{`you`}},
+										SingleTerm: &term.SingleTerm{Begin: `you`},
 									}},
 								},
 							},

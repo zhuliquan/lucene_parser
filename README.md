@@ -65,12 +65,12 @@ fuzzy_term = ( simple_term | phrase_term ), [ fuzzy_modifier | boost_modifier ] 
 (* simple term *)
 double_range_term = ('[' | '{' ), [whitespace], range_value, whitespace, 'TO', whitespace, range_value, [whitespace], ( ']' | '}' ) ;
 single_range_term = [ ('>' | '<'), ['='] ], range_value ;
-range_value       = phrase_term | (identifier | '+' | '-' | dot | ), { (identifier | '+' | '-' | dot | ) } | '*' ;
-simple_term      = simple_term_char, { simple_term_char } ;
+range_value       = phrase_term | (identifier | number | '.' | '+' | '-' | '|' | '/' | ':'), { (identifier | '+' | '-' | dot | ) } | '*' ;
+simple_term      = (identifier | number | '+' | '-'), { simple_term_char } ;
 phrase_term      = quote, phrase_term_char, {phrase_term_char}, quote ;
 regexp_term      = '/', regexp_term_char, { regexp_term_char }, '/' ;
 phrase_term_char = ( -quote | '\\', quote ) ;
-simple_term_char = identifier | number | dot | '?' | '*' ;
+simple_term_char = identifier | number | dot | '?' | '*' | '-' | '+' | '|' | '/' ;
 regexp_term_char = ( -'/' | '\\', '/') ;
 
 (* bool operator *)

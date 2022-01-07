@@ -7,8 +7,8 @@ import (
 
 // simple term: is a single term without escape char and whitespace
 type SingleTerm struct {
-	First    string   `parser:@(IDENT|NUMBER|MINUS|PLUS)`
-	Value    []string `parser:"@(IDENT|NUMBER|DOT|WILDCARD|MIUNS|PLUS|MINUS|SOR|SLASH)*" json:"value"`
+	Begin    string   `parser:"@(IDENT|NUMBER|MINUS|PLUS)" json:"begin"`
+	Chars    []string `parser:"@(IDENT|NUMBER|DOT|WILDCARD|MINUS|PLUS|MINUS|SOR|SLASH)*" json:"chars"`
 	wildcard int8
 }
 
@@ -23,11 +23,19 @@ func (t *SingleTerm) GetTermType() TermType {
 	return res
 }
 
+func (t *SingleTerm) Value(f func(string) (interface{}, error)) (interface{}, error) {
+	if t == nil {
+		return nil, ErrEmptySingleTerm
+	} else {
+		return f(t.String())
+	}
+}
+
 func (t *SingleTerm) String() string {
 	if t == nil {
 		return ""
 	} else {
-		return strings.Join(t.Value, "")
+		return t.Begin + strings.Join(t.Chars, "")
 	}
 }
 
@@ -39,7 +47,7 @@ func (t *SingleTerm) haveWildcard() bool {
 	} else if t.wildcard == 1 {
 		return true
 	} else {
-		for _, tk := range t.Value {
+		for _, tk := range t.Chars {
 			if tk == "*" || tk == "?" {
 				t.wildcard = 1
 				return true
@@ -53,7 +61,7 @@ func (t *SingleTerm) haveWildcard() bool {
 
 // phrase term: a series of terms be surrounded with quotation, for instance "foo bar".
 type PhraseTerm struct {
-	Value    []string `parser:"QUOTE @( REVERSE QUOTE | !QUOTE )* QUOTE" json:"value"`
+	Chars    []string `parser:"QUOTE @( REVERSE QUOTE | !QUOTE )* QUOTE" json:"chars"`
 	wildcard int8
 }
 
@@ -68,11 +76,11 @@ func (t *PhraseTerm) GetTermType() TermType {
 	return res
 }
 
-func (t *PhraseTerm) ValueS() string {
-	if t == nil || len(t.Value) == 0 {
-		return ""
+func (t *PhraseTerm) Value(f func(string) (interface{}, error)) (interface{}, error) {
+	if t == nil {
+		return nil, ErrEmptyPhraseTerm
 	} else {
-		return strings.Join(t.Value, "")
+		return f(strings.Join(t.Chars, ""))
 	}
 }
 
@@ -80,7 +88,7 @@ func (t *PhraseTerm) String() string {
 	if t == nil {
 		return ""
 	} else {
-		return "\"" + strings.Join(t.Value, "") + "\""
+		return "\"" + strings.Join(t.Chars, "") + "\""
 	}
 }
 
@@ -92,7 +100,7 @@ func (t *PhraseTerm) haveWildcard() bool {
 	} else if t.wildcard == 1 {
 		return true
 	} else {
-		for _, tk := range t.Value {
+		for _, tk := range t.Chars {
 			if tk == "*" || tk == "?" {
 				t.wildcard = 1
 				return true
@@ -106,7 +114,7 @@ func (t *PhraseTerm) haveWildcard() bool {
 
 // a regexp term is surrounded be slash, for instance /\d+\.?\d+/ in here if you want present '/' you should type '\/'
 type RegexpTerm struct {
-	Value []string `parser:"SLASH @( REVERSE SLASH | !SLASH )+ SLASH" json:"value"`
+	Chars []string `parser:"SLASH @( REVERSE SLASH | !SLASH )+ SLASH" json:"chars"`
 }
 
 func (t *RegexpTerm) GetTermType() TermType {
@@ -116,11 +124,11 @@ func (t *RegexpTerm) GetTermType() TermType {
 	return REGEXP_TERM_TYPE
 }
 
-func (t *RegexpTerm) ValuesS() string {
-	if t == nil || len(t.Value) == 0 {
-		return ""
+func (t *RegexpTerm) Value(f func(string) (interface{}, error)) (interface{}, error) {
+	if t == nil {
+		return nil, ErrEmptyRegexpTerm
 	} else {
-		return strings.Join(t.Value, "")
+		return f(strings.Join(t.Chars, ""))
 	}
 }
 
@@ -128,7 +136,7 @@ func (t *RegexpTerm) String() string {
 	if t == nil {
 		return ""
 	} else {
-		return "/" + strings.Join(t.Value, "") + "/"
+		return "/" + strings.Join(t.Chars, "") + "/"
 	}
 }
 

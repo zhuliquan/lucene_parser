@@ -111,9 +111,9 @@ func (t *FuzzyTerm) String() string {
 	if t == nil {
 		return ""
 	} else if t.SingleTerm != nil {
-		return t.SingleTerm.String() + t.FuzzySymbol
+		return t.SingleTerm.String() + t.FuzzySymbol + t.BoostSymbol
 	} else if t.PhraseTerm != nil {
-		return t.PhraseTerm.String() + t.FuzzySymbol
+		return t.PhraseTerm.String() + t.FuzzySymbol + t.BoostSymbol
 	} else {
 		return ""
 	}
@@ -131,15 +131,15 @@ func (t *FuzzyTerm) haveWildcard() bool {
 	}
 }
 
-func (t *FuzzyTerm) ValueS() string {
+func (t *FuzzyTerm) Value(f func(string) (interface{}, error)) (interface{}, error) {
 	if t == nil {
-		return ""
+		return nil, ErrEmptyFuzzyTerm
 	} else if t.SingleTerm != nil {
-		return t.SingleTerm.ValueS()
+		return t.SingleTerm.Value(f)
 	} else if t.PhraseTerm != nil {
-		return t.PhraseTerm.ValueS()
+		return t.PhraseTerm.Value(f)
 	} else {
-		return ""
+		return f("")
 	}
 }
 
@@ -180,5 +180,21 @@ func (t *TermGroupElem) GetTermType() TermType {
 		return RANGE_TERM_TYPE
 	} else {
 		return UNKNOWN_TERM_TYPE
+	}
+}
+
+func (t *TermGroupElem) Value(f func(string) (interface{}, error)) (interface{}, error) {
+	if t == nil {
+		return nil, ErrEmptyTermGroupElem
+	} else if t.SingleTerm != nil {
+		return t.SingleTerm.Value(f)
+	} else if t.PhraseTerm != nil {
+		return t.PhraseTerm.Value(f)
+	} else if t.SRangeTerm != nil {
+		return t.SRangeTerm.GetBound(), nil
+	} else if t.DRangeTerm != nil {
+		return t.DRangeTerm.GetBound(), nil
+	} else {
+		return f("")
 	}
 }
