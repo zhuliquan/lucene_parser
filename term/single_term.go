@@ -7,7 +7,7 @@ import (
 
 // simple term: is a single term without escape char and whitespace
 type SingleTerm struct {
-	Begin    string   `parser:"@(IDENT|NUMBER|MINUS|PLUS)" json:"begin"`
+	Begin    string   `parser:"@(IDENT|NUMBER|WILDCARD|MINUS|PLUS)" json:"begin"`
 	Chars    []string `parser:"@(IDENT|NUMBER|DOT|WILDCARD|MINUS|PLUS|MINUS|SOR|SLASH)*" json:"chars"`
 	wildcard int8
 }
