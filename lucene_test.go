@@ -308,7 +308,7 @@ func TestLucene(t *testing.T) {
 				},
 			},
 			wantErr: false,
-			wantStr: `( NOT x:( foo or bar ) ) AND z:you`,
+			wantStr: `( NOT x:( foo OR bar ) ) AND z:you`,
 		},
 		{
 			name:    "parse_wrong_lucene",
