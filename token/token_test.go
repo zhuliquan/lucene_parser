@@ -16,6 +16,7 @@ func TestLexer(t *testing.T) {
 		input string
 		want  []*Token
 		typeS []TokenType
+		wantS []string
 	}
 
 	var testCases = []testCase{
@@ -53,6 +54,22 @@ func TestLexer(t *testing.T) {
 				COLON_TOKEN_TYPE,
 				COMPARE_TOKEN_TYPE,
 				NUMBER_TOKEN_TYPE,
+			},
+			wantS: []string{
+				`\ \ \:`,
+				`7`,
+				":",
+				">",
+				"8908",
+				" ",
+				"8",
+				"+",
+				"9",
+				" ",
+				"x",
+				":",
+				">=",
+				"90",
 			},
 		},
 		{
@@ -117,6 +134,36 @@ func TestLexer(t *testing.T) {
 				WHITESPACE_TOKEN_TYPE,
 				PLUS_TOKEN_TYPE,
 				QUOTE_TOKEN_TYPE,
+			},
+			wantS: []string{
+				"now",
+				"-",
+				"8",
+				"d",
+				" ",
+				"x",
+				":",
+				"/",
+				"[",
+				"\\",
+				"d",
+				"\\",
+				"s",
+				"]",
+				"+",
+				"/",
+				" ",
+				"y",
+				":",
+				"\"",
+				"dasda",
+				" ",
+				"8",
+				"\\ ",
+				":",
+				" ",
+				"+",
+				"\"",
 			},
 		},
 		{
@@ -210,6 +257,50 @@ func TestLexer(t *testing.T) {
 				AND_TOKEN_TYPE,
 				AND_TOKEN_TYPE,
 			},
+			wantS: []string{
+				`\!\:`,
+				`.`,
+				`\ \\`,
+				":",
+				"<=",
+				"<",
+				"(",
+				"you",
+				" ",
+				"OR",
+				" ",
+				"!",
+				"&",
+				" ",
+				`\!\&`,
+				"*",
+				`\*`,
+				"*",
+				" ",
+				"[",
+				"{",
+				" ",
+				`you\[\]`,
+				`+`,
+				" ",
+				"you",
+				"?",
+				"}",
+				"]",
+				")",
+				`^`,
+				`090`,
+				`~`,
+				`9`,
+				`~`,
+				"ouo",
+				" ",
+				"|",
+				"!",
+				"!",
+				"&",
+				"&",
+			},
 		},
 		{
 			name:  "TestScan04",
@@ -258,6 +349,28 @@ func TestLexer(t *testing.T) {
 				WILDCARD_TOKEN_TYPE,
 				SLASH_TOKEN_TYPE,
 			},
+			wantS: []string{
+				`x`,
+				":",
+				"2021",
+				"-",
+				"09",
+				"/",
+				"d",
+				" ",
+				"y",
+				":",
+				"/",
+				"89",
+				"\\/",
+				`\`,
+				"d",
+				`+`,
+				"\\",
+				"d",
+				"*",
+				"/",
+			},
 		},
 	}
 	for _, tt := range testCases {
@@ -270,8 +383,34 @@ func TestLexer(t *testing.T) {
 						t.Errorf("expect get type: %+v, but get type: %+v", tt.typeS[i], out[i].GetTokenType())
 					}
 				}
+				for i := 0; i < len(out); i++ {
+					if out[i].String() != tt.wantS[i] {
+						t.Errorf("expect get string: %+v, but get string: %+v", tt.wantS[i], out[i].String())
+					}
+				}
 			}
 		})
+	}
 
+	var x *Token
+	if x.String() != "" {
+		t.Error("expect empty")
+	}
+	if x.GetTokenType() != UNKNOWN_TOKEN_TYPE {
+		t.Error("expect unknown type")
+	}
+	x = &Token{}
+	if x.String() != "" {
+		t.Error("expect empty")
+	}
+	if x.GetTokenType() != UNKNOWN_TOKEN_TYPE {
+		t.Error("expect unknown type")
+	}
+	x = &Token{EOL: "\n"}
+	if x.String() != "\n" {
+		t.Errorf("expect \n")
+	}
+	if x.GetTokenType() != EOL_TOKEN_TYPE {
+		t.Error("expect eol token")
 	}
 }
