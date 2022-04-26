@@ -121,19 +121,11 @@ func Scan(exp string) []*Token {
 }
 
 func init() {
-	var err error
-	Lexer, err = stateful.NewSimple(rules)
-	if err != nil {
-		panic(err.Error())
-	}
-	Scanner, err = participle.Build(
+	Lexer, _ = stateful.NewSimple(rules)
+	Scanner = participle.MustBuild(
 		&Token{},
 		participle.Lexer(Lexer),
 	)
-	if err != nil {
-		panic(err.Error())
-	}
-
 }
 
 type Token struct {
@@ -218,7 +210,7 @@ func (t *Token) String() string {
 	} else {
 		return ""
 	}
-	return res + "$"
+	return res
 }
 
 func (t *Token) GetTokenType() TokenType {
