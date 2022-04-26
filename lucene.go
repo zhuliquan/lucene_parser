@@ -13,14 +13,10 @@ import (
 var LuceneParser *participle.Parser
 
 func init() {
-	var err error
-	LuceneParser, err = participle.Build(
+	LuceneParser = participle.MustBuild(
 		&Lucene{},
 		participle.Lexer(tk.Lexer),
 	)
-	if err != nil {
-		panic(err)
-	}
 }
 
 func ParseLucene(queryString string) (*Lucene, error) {
@@ -192,6 +188,6 @@ func (q *FieldQuery) String() string {
 	} else if q.Field == nil || q.Term == nil {
 		return ""
 	} else {
-		return q.Field.String() + " : " + q.Term.String()
+		return q.Field.String() + ":" + q.Term.String()
 	}
 }

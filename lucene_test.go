@@ -4,23 +4,17 @@ import (
 	"reflect"
 	"testing"
 
-	"github.com/alecthomas/participle"
 	"github.com/zhuliquan/lucene_parser/operator"
 	"github.com/zhuliquan/lucene_parser/term"
-	"github.com/zhuliquan/lucene_parser/token"
 )
 
 func TestLucene(t *testing.T) {
-	var luceneParser = participle.MustBuild(
-		&Lucene{},
-		participle.Lexer(token.Lexer),
-	)
-
 	type testCase struct {
 		name    string
 		input   string
 		want    *Lucene
 		wantErr bool
+		wantStr string
 	}
 
 	var testCases = []testCase{
@@ -54,6 +48,7 @@ func TestLucene(t *testing.T) {
 				},
 			},
 			wantErr: false,
+			wantStr: `x:1 AND NOT x:2`,
 		},
 		{
 			name:  "TestLucene02",
@@ -108,6 +103,7 @@ func TestLucene(t *testing.T) {
 				},
 			},
 			wantErr: false,
+			wantStr: `NOT ( x:1 AND y:2 ) OR z:9`,
 		},
 		{
 			name:  "TestLucene03",
@@ -182,6 +178,7 @@ func TestLucene(t *testing.T) {
 				},
 			},
 			wantErr: false,
+			wantStr: `( x:1 AND NOT y:2 ) AND ( NOT x:8 AND k:90 )`,
 		},
 		{
 			name:  "TestLucene04",
@@ -259,6 +256,7 @@ func TestLucene(t *testing.T) {
 				},
 			},
 			wantErr: false,
+			wantStr: `x:( txt OR foo OR bar ) AND NOT x-y:"xxx" OR NOT zz:iopio\ 90`,
 		},
 		{
 			name:  "TestLucene05",
@@ -310,17 +308,151 @@ func TestLucene(t *testing.T) {
 				},
 			},
 			wantErr: false,
+			wantStr: `( NOT x:( foo or bar ) ) AND z:you`,
+		},
+		{
+			name:    "parse_wrong_lucene",
+			input:   `x:("dsa`,
+			want:    nil,
+			wantErr: true,
+			wantStr: "",
 		},
 	}
 
 	for _, tt := range testCases {
 		t.Run(tt.name, func(t *testing.T) {
-			var lucene = &Lucene{}
-			if err := luceneParser.ParseString(tt.input, lucene); (err != nil) != tt.wantErr {
+			if lucene, err := ParseLucene(tt.input); (err != nil) != tt.wantErr {
 				t.Errorf("parser lucene, err: %+v", err)
 			} else if !reflect.DeepEqual(lucene, tt.want) {
 				t.Errorf("luceneParser.ParseString( %s ) = %+v, but want %+v", tt.input, lucene, tt.want)
+			} else if lucene.String() != tt.wantStr {
+				t.Errorf("luceneParser.ParseString( %s ) = %s, but want %s", tt.input, lucene, tt.wantStr)
 			}
 		})
+	}
+}
+
+func TestType(t *testing.T) {
+	type test struct {
+		name  string
+		input Query
+		qType QueryType
+	}
+	for _, tt := range []test{
+		{
+			name:  "test_lucene_type",
+			input: &Lucene{},
+			qType: LUCENE_QUERY,
+		},
+		{
+			name:  "test_or_query_type",
+			input: &OrQuery{},
+			qType: OR_QUERY,
+		},
+		{
+			name:  "test_os_query_type",
+			input: &OSQuery{},
+			qType: OS_QUERY,
+		},
+		{
+			name:  "test_and_query_type",
+			input: &AndQuery{},
+			qType: AND_QUERY,
+		},
+		{
+			name:  "test_ans_query_type",
+			input: &AnSQuery{},
+			qType: ANS_QUERY,
+		},
+		{
+			name:  "test_paren_query_type",
+			input: &ParenQuery{},
+			qType: PAREN_QUERY,
+		},
+		{
+			name:  "test_field_query_type",
+			input: &FieldQuery{},
+			qType: FIELD_QUERY,
+		},
+	} {
+		t.Run(tt.name, func(t *testing.T) {
+			if tt.input.GetQueryType() != tt.qType {
+				t.Errorf("expect to %v, but got %v", tt.qType, tt.input.GetQueryType())
+			}
+		})
+	}
+}
+
+func TestWrongString(t *testing.T) {
+	type test struct {
+		name  string
+		input Query
+	}
+	for _, tt := range []test{
+		{
+			name:  "test_lucene_string",
+			input: &Lucene{},
+		},
+		{
+			name:  "test_or_query_string",
+			input: &OrQuery{},
+		},
+		{
+			name:  "test_os_query_string",
+			input: &OSQuery{},
+		},
+		{
+			name:  "test_and_query_string",
+			input: &AndQuery{},
+		},
+		{
+			name:  "test_ans_query_string",
+			input: &AnSQuery{},
+		},
+		{
+			name:  "test_paren_query_string",
+			input: &ParenQuery{},
+		},
+		{
+			name:  "test_field_query_string",
+			input: &FieldQuery{},
+		},
+	} {
+		t.Run(tt.name, func(t *testing.T) {
+			if tt.input.String() != "" {
+				t.Errorf("expect to empty")
+			}
+		})
+	}
+}
+
+func TestWrongLuceneString(t *testing.T) {
+	var l *Lucene
+	if l.String() != "" {
+		t.Error("expect to empty")
+	}
+	var o *OrQuery
+	if o.String() != "" {
+		t.Error("expect to empty")
+	}
+	var s *OSQuery
+	if s.String() != "" {
+		t.Error("expect to empty")
+	}
+	var a *AndQuery
+	if a.String() != "" {
+		t.Error("expect to empty")
+	}
+	var x *AnSQuery
+	if x.String() != "" {
+		t.Error("expect to empty")
+	}
+	var f *FieldQuery
+	if f.String() != "" {
+		t.Error("expect to empty")
+	}
+	var p *ParenQuery
+	if p.String() != "" {
+		t.Error("expect to empty")
 	}
 }
