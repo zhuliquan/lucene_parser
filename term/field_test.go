@@ -18,6 +18,7 @@ func TestField(t *testing.T) {
 		name  string
 		input string
 		want  *Field
+		wantS string
 	}
 
 	var testCases = []testCase{
@@ -25,21 +26,25 @@ func TestField(t *testing.T) {
 			name:  "TestField01",
 			input: `1\+1`,
 			want:  &Field{Value: []string{`1`, `\+`, `1`}},
+			wantS: `1\+1`,
 		},
 		{
 			name:  "TestField02",
 			input: `ls`,
 			want:  &Field{Value: []string{`ls`}},
+			wantS: `ls`,
 		},
 		{
 			name:  "TestField03",
 			input: `x.y`,
 			want:  &Field{Value: []string{`x`, `.`, `y`}},
+			wantS: `x.y`,
 		},
 		{
 			name:  "TestField04",
 			input: `x.y-z`,
 			want:  &Field{Value: []string{`x`, `.`, `y`, `-`, `z`}},
+			wantS: `x.y-z`,
 		},
 	}
 	for _, tt := range testCases {
@@ -49,8 +54,13 @@ func TestField(t *testing.T) {
 				t.Errorf("failed to parse input: %s, err: %+v", tt.input, err)
 			} else if !reflect.DeepEqual(tt.want, out) {
 				t.Errorf("termParser.ParseString( %s ) = %+v, want: %+v", tt.input, out, tt.want)
+			} else if tt.wantS != out.String() {
+				t.Errorf("expect %s, but %s", tt.wantS, out.String())
 			}
 		})
 	}
-
+	var s *Field
+	if s.String() != "" {
+		t.Errorf("expect got empty")
+	}
 }
