@@ -28,28 +28,28 @@ func TestRangeTerm(t *testing.T) {
 			input: `<="dsada 78"`,
 			want:  &RangeTerm{SRangeTerm: &SRangeTerm{Symbol: "<=", Value: &RangeValue{PhraseValue: []string{`dsada`, ` `, `78`}}}},
 			boost: 1.0,
-			bound: &Bound{LeftValue: &RangeValue{InfinityVal: "*"}, RightValue: &RangeValue{PhraseValue: []string{`dsada`, ` `, `78`}}, LeftInclude: false, RightInclude: true},
+			bound: &Bound{LeftValue: &RangeValue{InfinityVal: "*", flag: false}, RightValue: &RangeValue{PhraseValue: []string{`dsada`, ` `, `78`}, flag: true}, LeftInclude: false, RightInclude: true},
 		},
 		{
 			name:  "TestRangeTerm02",
 			input: `<="dsada 78"^8.9`,
 			want:  &RangeTerm{SRangeTerm: &SRangeTerm{Symbol: "<=", Value: &RangeValue{PhraseValue: []string{`dsada`, ` `, `78`}}}, BoostSymbol: "^8.9"},
 			boost: 8.9,
-			bound: &Bound{LeftValue: &RangeValue{InfinityVal: "*"}, RightValue: &RangeValue{PhraseValue: []string{`dsada`, ` `, `78`}}, LeftInclude: false, RightInclude: true},
+			bound: &Bound{LeftValue: &RangeValue{InfinityVal: "*", flag: false}, RightValue: &RangeValue{PhraseValue: []string{`dsada`, ` `, `78`}, flag: true}, LeftInclude: false, RightInclude: true},
 		},
 		{
 			name:  "TestRangeTerm03",
 			input: `<=dsada\ 78`,
 			want:  &RangeTerm{SRangeTerm: &SRangeTerm{Symbol: "<=", Value: &RangeValue{SingleValue: []string{`dsada\ `, `78`}}}},
 			boost: 1.0,
-			bound: &Bound{LeftValue: &RangeValue{InfinityVal: "*"}, RightValue: &RangeValue{SingleValue: []string{`dsada\ `, `78`}}, LeftInclude: false, RightInclude: true},
+			bound: &Bound{LeftValue: &RangeValue{InfinityVal: "*", flag: false}, RightValue: &RangeValue{SingleValue: []string{`dsada\ `, `78`}, flag: true}, LeftInclude: false, RightInclude: true},
 		},
 		{
 			name:  "TestRangeTerm04",
 			input: `<=dsada\ 78^0.5`,
 			want:  &RangeTerm{SRangeTerm: &SRangeTerm{Symbol: "<=", Value: &RangeValue{SingleValue: []string{`dsada\ `, `78`}}}, BoostSymbol: "^0.5"},
 			boost: 0.5,
-			bound: &Bound{LeftValue: &RangeValue{InfinityVal: "*"}, RightValue: &RangeValue{SingleValue: []string{`dsada\ `, `78`}}, LeftInclude: false, RightInclude: true},
+			bound: &Bound{LeftValue: &RangeValue{InfinityVal: "*", flag: false}, RightValue: &RangeValue{SingleValue: []string{`dsada\ `, `78`}, flag: true}, LeftInclude: false, RightInclude: true},
 		},
 		{
 			name:  "TestRangeTerm05",
@@ -61,7 +61,7 @@ func TestRangeTerm(t *testing.T) {
 				RBRACKET: "]",
 			}},
 			boost: 1.0,
-			bound: &Bound{LeftValue: &RangeValue{SingleValue: []string{`1`}}, RightValue: &RangeValue{SingleValue: []string{"2"}}, LeftInclude: true, RightInclude: true},
+			bound: &Bound{LeftValue: &RangeValue{SingleValue: []string{`1`}, flag: false}, RightValue: &RangeValue{SingleValue: []string{"2"}, flag: true}, LeftInclude: true, RightInclude: true},
 		},
 		{
 			name:  "TestRangeTerm06",
@@ -73,7 +73,7 @@ func TestRangeTerm(t *testing.T) {
 				RBRACKET: "]",
 			}, BoostSymbol: "^0.7"},
 			boost: 0.7,
-			bound: &Bound{LeftValue: &RangeValue{SingleValue: []string{`1`}}, RightValue: &RangeValue{SingleValue: []string{"2"}}, LeftInclude: true, RightInclude: true},
+			bound: &Bound{LeftValue: &RangeValue{SingleValue: []string{`1`}, flag: false}, RightValue: &RangeValue{SingleValue: []string{"2"}, flag: true}, LeftInclude: true, RightInclude: true},
 		},
 		{
 			name:  "TestRangeTerm07",
@@ -85,7 +85,7 @@ func TestRangeTerm(t *testing.T) {
 				RBRACKET: "}",
 			}},
 			boost: 1.0,
-			bound: &Bound{LeftValue: &RangeValue{SingleValue: []string{`1`}}, RightValue: &RangeValue{SingleValue: []string{"2"}}, LeftInclude: true, RightInclude: false},
+			bound: &Bound{LeftValue: &RangeValue{SingleValue: []string{`1`}, flag: false}, RightValue: &RangeValue{SingleValue: []string{"2"}, flag: true}, LeftInclude: true, RightInclude: false},
 		},
 		{
 			name:  "TestRangeTerm08",
@@ -97,7 +97,7 @@ func TestRangeTerm(t *testing.T) {
 				RBRACKET: "}",
 			}, BoostSymbol: "^0.9"},
 			boost: 0.9,
-			bound: &Bound{LeftValue: &RangeValue{SingleValue: []string{`1`}}, RightValue: &RangeValue{SingleValue: []string{"2"}}, LeftInclude: true, RightInclude: false},
+			bound: &Bound{LeftValue: &RangeValue{SingleValue: []string{`1`}, flag: false}, RightValue: &RangeValue{SingleValue: []string{"2"}, flag: true}, LeftInclude: true, RightInclude: false},
 		},
 		{
 			name:  `TestRangeTerm09`,
@@ -109,7 +109,7 @@ func TestRangeTerm(t *testing.T) {
 				RBRACKET: "}",
 			}, BoostSymbol: "^7"},
 			boost: 7.0,
-			bound: &Bound{LeftValue: &RangeValue{SingleValue: []string{`1`}}, RightValue: &RangeValue{SingleValue: []string{"2"}}, LeftInclude: false, RightInclude: false},
+			bound: &Bound{LeftValue: &RangeValue{SingleValue: []string{`1`}, flag: false}, RightValue: &RangeValue{SingleValue: []string{"2"}, flag: true}, LeftInclude: false, RightInclude: false},
 		},
 		{
 			name:  `TestRangeTerm10`,
@@ -121,7 +121,7 @@ func TestRangeTerm(t *testing.T) {
 				RBRACKET: "]",
 			}},
 			boost: 1.0,
-			bound: &Bound{LeftValue: &RangeValue{SingleValue: []string{`1`}}, RightValue: &RangeValue{SingleValue: []string{"2"}}, LeftInclude: false, RightInclude: true},
+			bound: &Bound{LeftValue: &RangeValue{SingleValue: []string{`1`}, flag: false}, RightValue: &RangeValue{SingleValue: []string{"2"}, flag: true}, LeftInclude: false, RightInclude: true},
 		},
 		{
 			name:  `TestRangeTerm11`,
@@ -133,7 +133,7 @@ func TestRangeTerm(t *testing.T) {
 				RBRACKET: "]",
 			}},
 			boost: 1.0,
-			bound: &Bound{LeftValue: &RangeValue{SingleValue: []string{`10`}}, RightValue: &RangeValue{InfinityVal: "*"}, LeftInclude: true, RightInclude: false},
+			bound: &Bound{LeftValue: &RangeValue{SingleValue: []string{`10`}, flag: false}, RightValue: &RangeValue{InfinityVal: "*", flag: true}, LeftInclude: true, RightInclude: false},
 		},
 		{
 			name:  `TestRangeTerm12`,
@@ -145,7 +145,7 @@ func TestRangeTerm(t *testing.T) {
 				RBRACKET: "}",
 			}},
 			boost: 1.0,
-			bound: &Bound{LeftValue: &RangeValue{InfinityVal: "*"}, RightValue: &RangeValue{SingleValue: []string{"2012", "-", "01", "-", "01"}}, LeftInclude: false, RightInclude: false},
+			bound: &Bound{LeftValue: &RangeValue{InfinityVal: "*", flag: false}, RightValue: &RangeValue{SingleValue: []string{"2012", "-", "01", "-", "01"}, flag: true}, LeftInclude: false, RightInclude: false},
 		},
 		{
 			name:  `TestRangeTerm13`,
@@ -157,7 +157,7 @@ func TestRangeTerm(t *testing.T) {
 				RBRACKET: "}",
 			}},
 			boost: 1.0,
-			bound: &Bound{LeftValue: &RangeValue{InfinityVal: "*"}, RightValue: &RangeValue{PhraseValue: []string{"2012", "-", "01", "-", "01", " ", "09", ":", "08", ":", "16"}}, LeftInclude: false, RightInclude: false},
+			bound: &Bound{LeftValue: &RangeValue{InfinityVal: "*", flag: false}, RightValue: &RangeValue{PhraseValue: []string{"2012", "-", "01", "-", "01", " ", "09", ":", "08", ":", "16"}, flag: true}, LeftInclude: false, RightInclude: false},
 		},
 		{
 			name:  `TestRangeTerm14`,
@@ -167,7 +167,7 @@ func TestRangeTerm(t *testing.T) {
 				Value:  &RangeValue{SingleValue: []string{"2012", "-", "01", "-", "01"}},
 			}, BoostSymbol: "^9.8"},
 			boost: 9.8,
-			bound: &Bound{LeftValue: &RangeValue{SingleValue: []string{"2012", "-", "01", "-", "01"}}, RightValue: &RangeValue{InfinityVal: "*"}, LeftInclude: false, RightInclude: false},
+			bound: &Bound{LeftValue: &RangeValue{SingleValue: []string{"2012", "-", "01", "-", "01"}, flag: false}, RightValue: &RangeValue{InfinityVal: "*", flag: true}, LeftInclude: false, RightInclude: false},
 		},
 	}
 

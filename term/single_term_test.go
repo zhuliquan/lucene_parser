@@ -203,6 +203,10 @@ func TestDRangeTerm(t *testing.T) {
 		input string
 		want  *DRangeTerm
 		bound *Bound
+		lninf bool
+		lpinf bool
+		rninf bool
+		rpinf bool
 	}
 	var testCases = []testCase{
 		{
@@ -215,11 +219,15 @@ func TestDRangeTerm(t *testing.T) {
 				RBRACKET: "]",
 			},
 			bound: &Bound{
-				LeftValue:    &RangeValue{SingleValue: []string{"1"}},
-				RightValue:   &RangeValue{SingleValue: []string{"2"}},
+				LeftValue:    &RangeValue{SingleValue: []string{"1"}, flag: false},
+				RightValue:   &RangeValue{SingleValue: []string{"2"}, flag: true},
 				LeftInclude:  true,
 				RightInclude: true,
 			},
+			lninf: false,
+			lpinf: false,
+			rninf: false,
+			rpinf: false,
 		},
 		{
 			name:  "DRangeTerm02",
@@ -231,11 +239,15 @@ func TestDRangeTerm(t *testing.T) {
 				RBRACKET: "}",
 			},
 			bound: &Bound{
-				LeftValue:    &RangeValue{SingleValue: []string{"1"}},
-				RightValue:   &RangeValue{SingleValue: []string{"2"}},
+				LeftValue:    &RangeValue{SingleValue: []string{"1"}, flag: false},
+				RightValue:   &RangeValue{SingleValue: []string{"2"}, flag: true},
 				LeftInclude:  true,
 				RightInclude: false,
 			},
+			lninf: false,
+			lpinf: false,
+			rninf: false,
+			rpinf: false,
 		},
 		{
 			name:  `DRangeTerm03`,
@@ -247,11 +259,15 @@ func TestDRangeTerm(t *testing.T) {
 				RBRACKET: "}",
 			},
 			bound: &Bound{
-				LeftValue:    &RangeValue{SingleValue: []string{"1"}},
-				RightValue:   &RangeValue{SingleValue: []string{"2"}},
+				LeftValue:    &RangeValue{SingleValue: []string{"1"}, flag: false},
+				RightValue:   &RangeValue{SingleValue: []string{"2"}, flag: true},
 				LeftInclude:  false,
 				RightInclude: false,
 			},
+			lninf: false,
+			lpinf: false,
+			rninf: false,
+			rpinf: false,
 		},
 		{
 			name:  `DRangeTerm04`,
@@ -263,11 +279,15 @@ func TestDRangeTerm(t *testing.T) {
 				RBRACKET: "]",
 			},
 			bound: &Bound{
-				LeftValue:    &RangeValue{SingleValue: []string{"1"}},
-				RightValue:   &RangeValue{SingleValue: []string{"2"}},
+				LeftValue:    &RangeValue{SingleValue: []string{"1"}, flag: false},
+				RightValue:   &RangeValue{SingleValue: []string{"2"}, flag: true},
 				LeftInclude:  false,
 				RightInclude: true,
 			},
+			lninf: false,
+			lpinf: false,
+			rninf: false,
+			rpinf: false,
 		},
 		{
 			name:  `DRangeTerm05`,
@@ -279,11 +299,15 @@ func TestDRangeTerm(t *testing.T) {
 				RBRACKET: "]",
 			},
 			bound: &Bound{
-				LeftValue:    &RangeValue{SingleValue: []string{"10"}},
-				RightValue:   &RangeValue{InfinityVal: "*"},
+				LeftValue:    &RangeValue{SingleValue: []string{"10"}, flag: false},
+				RightValue:   &RangeValue{InfinityVal: "*", flag: true},
 				LeftInclude:  true,
 				RightInclude: false,
 			},
+			lninf: false,
+			lpinf: false,
+			rninf: false,
+			rpinf: true,
 		},
 		{
 			name:  `DRangeTerm06`,
@@ -295,11 +319,15 @@ func TestDRangeTerm(t *testing.T) {
 				RBRACKET: "}",
 			},
 			bound: &Bound{
-				LeftValue:    &RangeValue{InfinityVal: "*"},
-				RightValue:   &RangeValue{SingleValue: []string{"2012", "-", "01", "-", "01"}},
+				LeftValue:    &RangeValue{InfinityVal: "*", flag: false},
+				RightValue:   &RangeValue{SingleValue: []string{"2012", "-", "01", "-", "01"}, flag: true},
 				LeftInclude:  false,
 				RightInclude: false,
 			},
+			lninf: true,
+			lpinf: false,
+			rninf: false,
+			rpinf: false,
 		},
 		{
 			name:  `DRangeTerm07`,
@@ -311,11 +339,15 @@ func TestDRangeTerm(t *testing.T) {
 				RBRACKET: "}",
 			},
 			bound: &Bound{
-				LeftValue:    &RangeValue{InfinityVal: "*"},
-				RightValue:   &RangeValue{PhraseValue: []string{"2012", "-", "01", "-", "01", " ", "09", ":", "08", ":", "16"}},
+				LeftValue:    &RangeValue{InfinityVal: "*", flag: false},
+				RightValue:   &RangeValue{PhraseValue: []string{"2012", "-", "01", "-", "01", " ", "09", ":", "08", ":", "16"}, flag: true},
 				LeftInclude:  false,
 				RightInclude: false,
 			},
+			lninf: true,
+			lpinf: false,
+			rninf: false,
+			rpinf: false,
 		},
 		{
 			name:  `DRangeTerm08`,
@@ -327,11 +359,15 @@ func TestDRangeTerm(t *testing.T) {
 				RBRACKET: "}",
 			},
 			bound: &Bound{
-				LeftValue:    &RangeValue{InfinityVal: "*"},
-				RightValue:   &RangeValue{SingleValue: []string{"2012", "/", "01", "/", "01", "T", "09", ":", "08", ".", "16", "|", "|", "8", "d", "/", "M"}},
+				LeftValue:    &RangeValue{InfinityVal: "*", flag: false},
+				RightValue:   &RangeValue{SingleValue: []string{"2012", "/", "01", "/", "01", "T", "09", ":", "08", ".", "16", "|", "|", "8", "d", "/", "M"}, flag: true},
 				LeftInclude:  false,
 				RightInclude: false,
 			},
+			lninf: true,
+			lpinf: false,
+			rninf: false,
+			rpinf: false,
 		},
 	}
 
@@ -344,6 +380,19 @@ func TestDRangeTerm(t *testing.T) {
 				t.Errorf("rangeTermParser.ParseString( %s ) = %+v, want: %+v", tt.input, out, tt.want)
 			} else if !reflect.DeepEqual(tt.bound, out.GetBound()) {
 				t.Errorf("expect get bound: %+v, but get bound: %+v", tt.bound, out.GetBound())
+			}
+			var b = out.GetBound()
+			if b.LeftValue.IsInf(-1) != tt.lninf {
+				t.Errorf("expect %v, but %v", tt.lninf, b.LeftValue.IsInf(-1))
+			}
+			if b.LeftValue.IsInf(1) != tt.lpinf {
+				t.Errorf("expect %v, but %v", tt.lninf, b.LeftValue.IsInf(1))
+			}
+			if b.RightValue.IsInf(-1) != tt.rninf {
+				t.Errorf("expect %v, but %v", tt.lninf, b.RightValue.IsInf(-1))
+			}
+			if b.RightValue.IsInf(1) != tt.rpinf {
+				t.Errorf("expect %v, but %v", tt.lninf, b.RightValue.IsInf(1))
 			}
 		})
 	}
@@ -360,6 +409,10 @@ func TestSRangeTerm(t *testing.T) {
 		input string
 		want  *SRangeTerm
 		bound *Bound
+		lninf bool
+		lpinf bool
+		rninf bool
+		rpinf bool
 	}
 	var testCases = []testCase{
 		{
@@ -367,44 +420,60 @@ func TestSRangeTerm(t *testing.T) {
 			input: `<="dsada\455 78"`,
 			want:  &SRangeTerm{Symbol: "<=", Value: &RangeValue{PhraseValue: []string{`dsada`, `\`, `455`, ` `, `78`}}},
 			bound: &Bound{
-				LeftValue:    &RangeValue{InfinityVal: "*"},
-				RightValue:   &RangeValue{PhraseValue: []string{`dsada`, `\`, `455`, ` `, `78`}},
+				LeftValue:    &RangeValue{InfinityVal: "*", flag: false},
+				RightValue:   &RangeValue{PhraseValue: []string{`dsada`, `\`, `455`, ` `, `78`}, flag: true},
 				LeftInclude:  false,
 				RightInclude: true,
 			},
+			lninf: true,
+			lpinf: false,
+			rninf: false,
+			rpinf: false,
 		},
 		{
 			name:  "SRangeTerm02",
 			input: `<"dsada\\ 78"`,
 			want:  &SRangeTerm{Symbol: "<", Value: &RangeValue{PhraseValue: []string{`dsada\\`, ` `, `78`}}},
 			bound: &Bound{
-				LeftValue:    &RangeValue{InfinityVal: "*"},
-				RightValue:   &RangeValue{PhraseValue: []string{`dsada\\`, ` `, `78`}},
+				LeftValue:    &RangeValue{InfinityVal: "*", flag: false},
+				RightValue:   &RangeValue{PhraseValue: []string{`dsada\\`, ` `, `78`}, flag: true},
 				LeftInclude:  false,
 				RightInclude: false,
 			},
+			lninf: true,
+			lpinf: false,
+			rninf: false,
+			rpinf: false,
 		},
 		{
 			name:  "SRangeTerm03",
 			input: `>=dsada\ 78`,
 			want:  &SRangeTerm{Symbol: ">=", Value: &RangeValue{SingleValue: []string{`dsada\ `, `78`}}},
 			bound: &Bound{
-				LeftValue:    &RangeValue{SingleValue: []string{`dsada\ `, `78`}},
-				RightValue:   &RangeValue{InfinityVal: "*"},
+				LeftValue:    &RangeValue{SingleValue: []string{`dsada\ `, `78`}, flag: false},
+				RightValue:   &RangeValue{InfinityVal: "*", flag: true},
 				LeftInclude:  true,
 				RightInclude: false,
 			},
+			lninf: false,
+			lpinf: false,
+			rninf: false,
+			rpinf: true,
 		},
 		{
 			name:  "SRangeTerm04",
 			input: `>dsada\ 78`,
 			want:  &SRangeTerm{Symbol: ">", Value: &RangeValue{SingleValue: []string{`dsada\ `, `78`}}},
 			bound: &Bound{
-				LeftValue:    &RangeValue{SingleValue: []string{`dsada\ `, `78`}},
-				RightValue:   &RangeValue{InfinityVal: "*"},
+				LeftValue:    &RangeValue{SingleValue: []string{`dsada\ `, `78`}, flag: false},
+				RightValue:   &RangeValue{InfinityVal: "*", flag: true},
 				LeftInclude:  false,
 				RightInclude: false,
 			},
+			lninf: false,
+			lpinf: false,
+			rninf: false,
+			rpinf: true,
 		},
 	}
 
@@ -417,6 +486,19 @@ func TestSRangeTerm(t *testing.T) {
 				t.Errorf("rangesTermParser.ParseString( %s ) = %+v, want: %+v", tt.input, out, tt.want)
 			} else if !reflect.DeepEqual(tt.bound, out.GetBound()) {
 				t.Errorf("expect get bound: %+v, but get bound: %+v", tt.bound, out.GetBound())
+			}
+			var b = out.GetBound()
+			if b.LeftValue.IsInf(-1) != tt.lninf {
+				t.Errorf("expect %v, but %v", tt.lninf, b.LeftValue.IsInf(-1))
+			}
+			if b.LeftValue.IsInf(1) != tt.lpinf {
+				t.Errorf("expect %v, but %v", tt.lninf, b.LeftValue.IsInf(1))
+			}
+			if b.RightValue.IsInf(-1) != tt.rninf {
+				t.Errorf("expect %v, but %v", tt.lninf, b.RightValue.IsInf(-1))
+			}
+			if b.RightValue.IsInf(1) != tt.rpinf {
+				t.Errorf("expect %v, but %v", tt.lninf, b.RightValue.IsInf(1))
 			}
 		})
 	}
