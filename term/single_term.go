@@ -170,8 +170,10 @@ func (t *DRangeTerm) GetBound() *Bound {
 	} else {
 		return nil
 	}
-	res.LeftInclude = res.LeftInclude && !t.LValue.IsInf()
-	res.RightInclude = res.RightInclude && !t.RValue.IsInf()
+	res.LeftValue.flag = false
+	res.RightValue.flag = true
+	res.LeftInclude = res.LeftInclude && !t.LValue.IsInf(0)
+	res.RightInclude = res.RightInclude && !t.RValue.IsInf(0)
 	return res
 }
 

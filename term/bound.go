@@ -27,6 +27,7 @@ func (n *Bound) GetBoundType() BoundType {
 }
 
 type RangeValue struct {
+	flag        bool     // 表示左右的
 	InfinityVal string   `parser:"  @('*')" json:"infinity_val"`
 	PhraseValue []string `parser:"| QUOTE @( REVERSE QUOTE | !QUOTE )* QUOTE" json:"phrase_value"`
 	SingleValue []string `parser:"| @(IDENT|NUMBER|DOT|PLUS|MINUS|SOR|SLASH|COLON)+" json:"simple_value"`
@@ -60,6 +61,15 @@ func (v *RangeValue) Value(f func(string) (interface{}, error)) (interface{}, er
 	}
 }
 
-func (v *RangeValue) IsInf() bool {
-	return v != nil && len(v.InfinityVal) != 0
+// sign == 0 only check v is infinite
+// sign > 0 check v is positive infinite
+// sign < 0 check v is negative infinite
+func (v *RangeValue) IsInf(sign int) bool {
+	if sign == 0 {
+		return v != nil && len(v.InfinityVal) != 0
+	} else if sign > 0 {
+		return v.IsInf(0) && v.flag
+	} else {
+		return v.IsInf(0) && !v.flag
+	}
 }
