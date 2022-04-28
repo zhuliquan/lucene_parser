@@ -134,7 +134,7 @@ func (t *TermGroup) GetTermType() TermType {
 }
 
 func (t *TermGroup) Value(f func(string) (interface{}, error)) (interface{}, error) {
-	if t == nil {
+	if t == nil || t.LogicTermGroup == nil {
 		return nil, ErrEmptyGroupTerm
 	} else {
 		return f(t.LogicTermGroup.String())
