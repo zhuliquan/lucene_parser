@@ -13,25 +13,15 @@ type LogicTermGroup struct {
 	OSTermGroup []*OSTermGroup `parser:"@@*" json:"or_symbol_term_group"`
 }
 
-func (t *LogicTermGroup) GetTermType() TermType {
-	if t == nil {
-		return UNKNOWN_TERM_TYPE
-	} else {
-		return GROUP_TERM_TYPE
-	}
-}
-
 func (t *LogicTermGroup) String() string {
-	if t == nil {
+	if t == nil || t.OrTermGroup == nil {
 		return ""
-	} else if t.OrTermGroup != nil {
+	} else {
 		var sl = []string{t.OrTermGroup.String()}
 		for _, x := range t.OSTermGroup {
 			sl = append(sl, x.String())
 		}
 		return strings.Join(sl, "")
-	} else {
-		return ""
 	}
 }
 
@@ -41,16 +31,14 @@ type OrTermGroup struct {
 }
 
 func (t *OrTermGroup) String() string {
-	if t == nil {
+	if t == nil || t.AndTermGroup == nil {
 		return ""
-	} else if t.AndTermGroup != nil {
+	} else {
 		var sl = []string{t.AndTermGroup.String()}
 		for _, x := range t.AnSTermGroup {
 			sl = append(sl, x.String())
 		}
 		return strings.Join(sl, "")
-	} else {
-		return ""
 	}
 }
 
@@ -60,12 +48,10 @@ type OSTermGroup struct {
 }
 
 func (t *OSTermGroup) String() string {
-	if t == nil {
+	if t == nil || t.OrTermGroup == nil {
 		return ""
-	} else if t.OrTermGroup != nil {
-		return t.OrSymbol.String() + t.OrTermGroup.String()
 	} else {
-		return ""
+		return t.OrSymbol.String() + t.OrTermGroup.String()
 	}
 }
 
@@ -93,12 +79,10 @@ type AnSTermGroup struct {
 }
 
 func (t *AnSTermGroup) String() string {
-	if t == nil {
+	if t == nil || t.AndTermGroup == nil {
 		return ""
-	} else if t.AndTermGroup != nil {
-		return t.AndSymbol.String() + t.AndTermGroup.String()
 	} else {
-		return ""
+		return t.AndSymbol.String() + t.AndTermGroup.String()
 	}
 }
 
@@ -107,12 +91,10 @@ type ParenTermGroup struct {
 }
 
 func (t *ParenTermGroup) String() string {
-	if t == nil {
+	if t == nil || t.SubTermGroup == nil {
 		return ""
-	} else if t.SubTermGroup != nil {
-		return "( " + t.SubTermGroup.String() + " )"
 	} else {
-		return ""
+		return "( " + t.SubTermGroup.String() + " )"
 	}
 }
 
@@ -123,11 +105,15 @@ type TermGroup struct {
 }
 
 func (t *TermGroup) String() string {
-	return "( " + t.LogicTermGroup.String() + " )" + t.BoostSymbol
+	if t == nil || t.LogicTermGroup == nil {
+		return ""
+	} else {
+		return "( " + t.LogicTermGroup.String() + " )" + t.BoostSymbol
+	}
 }
 
 func (t *TermGroup) Boost() float64 {
-	if t == nil {
+	if t == nil || t.LogicTermGroup == nil {
 		return 0.0
 	} else if len(t.BoostSymbol) == 0 {
 		return 1.0
@@ -138,14 +124,12 @@ func (t *TermGroup) Boost() float64 {
 }
 
 func (t *TermGroup) GetTermType() TermType {
-	if t == nil {
+	if t == nil || t.LogicTermGroup == nil {
 		return UNKNOWN_TERM_TYPE
+	} else if len(t.BoostSymbol) == 0 {
+		return GROUP_TERM_TYPE
 	} else {
-		var res = t.LogicTermGroup.GetTermType()
-		if len(t.BoostSymbol) != 0 {
-			res |= BOOST_TERM_TYPE
-		}
-		return res
+		return GROUP_TERM_TYPE | BOOST_TERM_TYPE
 	}
 }
 
