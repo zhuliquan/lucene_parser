@@ -77,16 +77,14 @@ func (q *OrQuery) GetQueryType() QueryType {
 }
 
 func (q *OrQuery) String() string {
-	if q == nil {
+	if q == nil || q.AndQuery == nil {
 		return ""
-	} else if q.AndQuery != nil {
+	} else {
 		var sl = []string{q.AndQuery.String()}
 		for _, x := range q.AnSQuery {
 			sl = append(sl, x.String())
 		}
 		return strings.Join(sl, "")
-	} else {
-		return ""
 	}
 }
 
@@ -101,12 +99,10 @@ func (q *OSQuery) GetQueryType() QueryType {
 }
 
 func (q *OSQuery) String() string {
-	if q == nil {
+	if q == nil || q.OrQuery == nil {
 		return ""
-	} else if q.OrQuery != nil {
-		return q.OrSymbol.String() + q.OrQuery.String()
 	} else {
-		return ""
+		return q.OrSymbol.String() + q.OrQuery.String()
 	}
 }
 
@@ -144,12 +140,10 @@ func (q *AnSQuery) GetQueryType() QueryType {
 }
 
 func (q *AnSQuery) String() string {
-	if q == nil {
+	if q == nil || q.AndQuery == nil {
 		return ""
-	} else if q.AndQuery != nil {
-		return q.AndSymbol.String() + q.AndQuery.String()
 	} else {
-		return ""
+		return q.AndSymbol.String() + q.AndQuery.String()
 	}
 }
 
@@ -163,12 +157,10 @@ func (q *ParenQuery) GetQueryType() QueryType {
 }
 
 func (q *ParenQuery) String() string {
-	if q == nil {
+	if q == nil || q.SubQuery == nil {
 		return ""
-	} else if q.SubQuery != nil {
-		return "( " + q.SubQuery.String() + " )"
 	} else {
-		return ""
+		return "( " + q.SubQuery.String() + " )"
 	}
 }
 
@@ -183,9 +175,7 @@ func (q *FieldQuery) GetQueryType() QueryType {
 }
 
 func (q *FieldQuery) String() string {
-	if q == nil {
-		return ""
-	} else if q.Field == nil || q.Term == nil {
+	if q == nil || q.Field == nil || q.Term == nil {
 		return ""
 	} else {
 		return q.Field.String() + ":" + q.Term.String()

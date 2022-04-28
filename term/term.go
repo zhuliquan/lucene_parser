@@ -82,7 +82,9 @@ func (t *Term) Boost() float64 {
 		return t.RangeTerm.Boost()
 	} else if t.TermGroup != nil {
 		return t.TermGroup.Boost()
+	} else if t.RegexpTerm != nil {
+		return t.RangeTerm.Boost()
 	} else {
-		return 1.0
+		return 0.0
 	}
 }

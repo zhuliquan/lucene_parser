@@ -6,12 +6,10 @@ type AndSymbol struct {
 }
 
 func (o *AndSymbol) String() string {
-	if o == nil {
+	if o == nil || o.Symbol == "" {
 		return ""
-	} else if o.Symbol != "" {
-		return " AND "
 	} else {
-		return ""
+		return " AND "
 	}
 }
 
@@ -29,12 +27,10 @@ type OrSymbol struct {
 }
 
 func (o *OrSymbol) String() string {
-	if o == nil {
+	if o == nil || o.Symbol == "" {
 		return ""
-	} else if o.Symbol != "" {
-		return " OR "
 	} else {
-		return ""
+		return " OR "
 	}
 }
 
@@ -52,12 +48,10 @@ type NotSymbol struct {
 }
 
 func (o *NotSymbol) String() string {
-	if o == nil {
+	if o == nil || o.Symbol == "" {
 		return ""
-	} else if o.Symbol != "" {
-		return "NOT "
 	} else {
-		return ""
+		return "NOT "
 	}
 }
 
