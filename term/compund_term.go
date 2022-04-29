@@ -47,7 +47,7 @@ func (t *RangeTerm) GetBound() *Bound {
 }
 
 func (t *RangeTerm) Boost() float64 {
-	if t == nil {
+	if t == nil || (t.DRangeTerm == nil && t.SRangeTerm == nil) {
 		return 0.0
 	} else if len(t.BoostSymbol) == 0 {
 		return 1.0
@@ -86,7 +86,7 @@ func (t *FuzzyTerm) GetTermType() TermType {
 }
 
 func (t *FuzzyTerm) Boost() float64 {
-	if t == nil {
+	if t == nil || (t.SingleTerm == nil && t.PhraseTerm == nil) {
 		return 0.0
 	} else if len(t.BoostSymbol) == 0 {
 		return 1.0
@@ -97,7 +97,7 @@ func (t *FuzzyTerm) Boost() float64 {
 }
 
 func (t *FuzzyTerm) Fuzziness() int {
-	if t == nil || len(t.FuzzySymbol) == 0 {
+	if t == nil || len(t.FuzzySymbol) == 0 || (t.SingleTerm == nil && t.PhraseTerm == nil) {
 		return 0
 	} else if t.FuzzySymbol == "~" {
 		return 1
