@@ -12,7 +12,7 @@ type RangeTerm struct {
 }
 
 func (t *RangeTerm) GetTermType() TermType {
-	if t == nil {
+	if t == nil || (t.DRangeTerm == nil && t.SRangeTerm == nil) {
 		return UNKNOWN_TERM_TYPE
 	}
 	var res = RANGE_TERM_TYPE
