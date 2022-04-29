@@ -149,7 +149,7 @@ type DRangeTerm struct {
 }
 
 func (t *DRangeTerm) GetTermType() TermType {
-	if t == nil {
+	if t == nil || (t.LValue == nil && t.RValue == nil) {
 		return UNKNOWN_TERM_TYPE
 	}
 	return RANGE_TERM_TYPE
@@ -178,7 +178,7 @@ func (t *DRangeTerm) GetBound() *Bound {
 }
 
 func (t *DRangeTerm) String() string {
-	if t == nil {
+	if t == nil || (t.LValue == nil && t.RValue == nil) {
 		return ""
 	} else {
 		return fmt.Sprintf("%s %s TO %s %s", t.LBRACKET, t.LValue.String(), t.RValue.String(), t.RBRACKET)
@@ -193,14 +193,14 @@ type SRangeTerm struct {
 }
 
 func (t *SRangeTerm) GetTermType() TermType {
-	if t == nil {
+	if t == nil || t.Value == nil {
 		return UNKNOWN_TERM_TYPE
 	}
 	return RANGE_TERM_TYPE
 }
 
 func (t *SRangeTerm) toDRangeTerm() *DRangeTerm {
-	if t == nil {
+	if t == nil || t.Value == nil {
 		return nil
 	} else if t.drange != nil {
 		return t.drange
