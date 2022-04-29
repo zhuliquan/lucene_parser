@@ -59,6 +59,19 @@ func TestSingleTerm(t *testing.T) {
 			}
 		})
 	}
+	var s *SingleTerm
+	if s.String() != "" {
+		t.Errorf("expect empty")
+	}
+	if s.haveWildcard() {
+		t.Errorf("expect no wildcard")
+	}
+	if s.GetTermType() != UNKNOWN_TERM_TYPE {
+		t.Errorf("expect unknown term type")
+	}
+	if _, err := s.Value(func(s string) (interface{}, error) { return s, nil }); err != ErrEmptySingleTerm {
+		t.Errorf("expect empty single term")
+	}
 }
 
 func TestPhraseTerm(t *testing.T) {
@@ -154,6 +167,19 @@ func TestPhraseTerm(t *testing.T) {
 			}
 		})
 	}
+	var s *PhraseTerm
+	if s.String() != "" {
+		t.Errorf("expect empty")
+	}
+	if s.haveWildcard() {
+		t.Errorf("expect no wildcard")
+	}
+	if s.GetTermType() != UNKNOWN_TERM_TYPE {
+		t.Errorf("expect unknown term type")
+	}
+	if _, err := s.Value(func(s string) (interface{}, error) { return s, nil }); err != ErrEmptyPhraseTerm {
+		t.Errorf("expect empty phrase term")
+	}
 }
 
 func TestRegexpTerm(t *testing.T) {
@@ -189,6 +215,16 @@ func TestRegexpTerm(t *testing.T) {
 				t.Errorf("regexpTermParser.ParseString( %s ) = %+v, want: %+v", tt.input, out, tt.want)
 			}
 		})
+	}
+	var s *RegexpTerm
+	if s.String() != "" {
+		t.Errorf("expect empty")
+	}
+	if s.GetTermType() != UNKNOWN_TERM_TYPE {
+		t.Errorf("expect unknown term type")
+	}
+	if _, err := s.Value(func(s string) (interface{}, error) { return s, nil }); err != ErrEmptyRegexpTerm {
+		t.Errorf("expect empty regexp term")
 	}
 }
 
@@ -380,6 +416,8 @@ func TestDRangeTerm(t *testing.T) {
 				t.Errorf("rangeTermParser.ParseString( %s ) = %+v, want: %+v", tt.input, out, tt.want)
 			} else if !reflect.DeepEqual(tt.bound, out.GetBound()) {
 				t.Errorf("expect get bound: %+v, but get bound: %+v", tt.bound, out.GetBound())
+			} else if out.GetTermType() != RANGE_TERM_TYPE {
+				t.Errorf("expect range term")
 			}
 			var b = out.GetBound()
 			if b.LeftValue.IsInf(-1) != tt.lninf {
@@ -395,6 +433,26 @@ func TestDRangeTerm(t *testing.T) {
 				t.Errorf("expect %v, but %v", tt.lninf, b.RightValue.IsInf(1))
 			}
 		})
+	}
+	var s *DRangeTerm
+	if s.String() != "" {
+		t.Errorf("expect empty")
+	}
+	if s.GetTermType() != UNKNOWN_TERM_TYPE {
+		t.Errorf("expect unknown term type")
+	}
+	if s.GetBound() != nil {
+		t.Errorf("expect empty bound")
+	}
+	s = &DRangeTerm{}
+	if s.String() != "" {
+		t.Errorf("expect empty")
+	}
+	if s.GetTermType() != UNKNOWN_TERM_TYPE {
+		t.Errorf("expect unknown term type")
+	}
+	if s.GetBound() != nil {
+		t.Errorf("expect empty bound")
 	}
 }
 
@@ -486,6 +544,8 @@ func TestSRangeTerm(t *testing.T) {
 				t.Errorf("rangesTermParser.ParseString( %s ) = %+v, want: %+v", tt.input, out, tt.want)
 			} else if !reflect.DeepEqual(tt.bound, out.GetBound()) {
 				t.Errorf("expect get bound: %+v, but get bound: %+v", tt.bound, out.GetBound())
+			} else if out.GetTermType() != RANGE_TERM_TYPE {
+				t.Errorf("expect range term")
 			}
 			var b = out.GetBound()
 			if b.LeftValue.IsInf(-1) != tt.lninf {
@@ -501,5 +561,25 @@ func TestSRangeTerm(t *testing.T) {
 				t.Errorf("expect %v, but %v", tt.lninf, b.RightValue.IsInf(1))
 			}
 		})
+	}
+	var s *SRangeTerm
+	if s.String() != "" {
+		t.Errorf("expect empty")
+	}
+	if s.GetTermType() != UNKNOWN_TERM_TYPE {
+		t.Errorf("expect unknown term type")
+	}
+	if s.GetBound() != nil {
+		t.Errorf("expect empty bound")
+	}
+	s = &SRangeTerm{}
+	if s.String() != "" {
+		t.Errorf("expect empty")
+	}
+	if s.GetTermType() != UNKNOWN_TERM_TYPE {
+		t.Errorf("expect unknown term type")
+	}
+	if s.GetBound() != nil {
+		t.Errorf("expect empty bound")
 	}
 }

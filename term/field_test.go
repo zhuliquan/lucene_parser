@@ -52,9 +52,11 @@ func TestField(t *testing.T) {
 			var out = &Field{}
 			if err := termParser.ParseString(tt.input, out); err != nil {
 				t.Errorf("failed to parse input: %s, err: %+v", tt.input, err)
-			} else if !reflect.DeepEqual(tt.want, out) {
+			}
+			if !reflect.DeepEqual(tt.want, out) {
 				t.Errorf("termParser.ParseString( %s ) = %+v, want: %+v", tt.input, out, tt.want)
-			} else if tt.wantS != out.String() {
+			}
+			if tt.wantS != out.String() {
 				t.Errorf("expect %s, but %s", tt.wantS, out.String())
 			}
 		})
