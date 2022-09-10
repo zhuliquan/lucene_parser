@@ -1,11 +1,10 @@
 package term
 
 import (
-	"math"
-	"reflect"
 	"testing"
 
 	"github.com/alecthomas/participle"
+	"github.com/stretchr/testify/assert"
 	"github.com/zhuliquan/lucene_parser/token"
 )
 
@@ -174,47 +173,25 @@ func TestRangeTerm(t *testing.T) {
 	for _, tt := range testCases {
 		t.Run(tt.name, func(t *testing.T) {
 			var out = &RangeTerm{}
-			if err := rangesTermParser.ParseString(tt.input, out); err != nil {
-				t.Errorf("failed to parse input: %s, err: %+v", tt.input, err)
-			}
-			if !reflect.DeepEqual(tt.want, out) {
-				t.Errorf("rangesTermParser.ParseString( %s ) = %+v, want: %+v", tt.input, out, tt.want)
-			}
-			if math.Abs(tt.boost-out.Boost()) > 1E-6 {
-				t.Errorf("expect get boost: %f, but get boost: %f", tt.boost, out.Boost())
-			}
-			if !reflect.DeepEqual(out.GetBound(), tt.bound) {
-				t.Errorf("expect get bound: %+v, but get bound: %+v", tt.bound, out.GetBound())
-			}
+			err := rangesTermParser.ParseString(tt.input, out)
+			assert.Nil(t, err)
+			assert.Equal(t, tt.want, out)
+			assert.Equal(t, tt.boost, out.Boost())
+			assert.Equal(t, tt.bound, out.GetBound())
 		})
 	}
 
 	var out *RangeTerm
-	if out.String() != "" {
-		t.Error("expect empty range")
-	}
-	if out.GetBound() != nil {
-		t.Errorf("expect nil bound")
-	}
-	if out.Boost() != 0.0 {
-		t.Errorf("expect zero bound")
-	}
-	if out.GetTermType() != UNKNOWN_TERM_TYPE {
-		t.Errorf("expect unknown term type")
-	}
+	assert.Empty(t, "", out.String())
+	assert.Nil(t, out.GetBound())
+	assert.Equal(t, 0.0, out.Boost())
+	assert.Equal(t, UNKNOWN_TERM_TYPE, out.GetTermType())
+
 	out = &RangeTerm{}
-	if out.String() != "" {
-		t.Error("expect empty range")
-	}
-	if out.GetBound() != nil {
-		t.Errorf("expect nil bound")
-	}
-	if out.Boost() != 0.0 {
-		t.Errorf("expect zero bound")
-	}
-	if out.GetTermType() != UNKNOWN_TERM_TYPE {
-		t.Errorf("expect unknown term type")
-	}
+	assert.Empty(t, "", out.String())
+	assert.Nil(t, out.GetBound())
+	assert.Equal(t, 0.0, out.Boost())
+	assert.Equal(t, UNKNOWN_TERM_TYPE, out.GetTermType())
 }
 
 func TestFuzzyTerm(t *testing.T) {
@@ -381,64 +358,32 @@ func TestFuzzyTerm(t *testing.T) {
 	for _, tt := range testCases {
 		t.Run(tt.name, func(t *testing.T) {
 			var out = &FuzzyTerm{}
-			if err := termParser.ParseString(tt.input, out); err != nil {
-				t.Errorf("failed to parse input: %s, err: %+v", tt.input, err)
-			}
-			if !reflect.DeepEqual(tt.want, out) {
-				t.Errorf("fuzzyTermParser.ParseString( %s ) = %+v, want: %+v", tt.input, out, tt.want)
-			}
-			if out.String() != tt.valueS {
-				t.Errorf("expect get values: %s but get values: %s", tt.valueS, out.String())
-			}
-			if out.haveWildcard() != tt.wildcard {
-				t.Errorf("expect wildcard: %+v, but wildcard: %+v", tt.wildcard, out.haveWildcard())
-			}
-			if out.Fuzziness() != tt.fuzzy {
-				t.Errorf("expect get fuzzy: %d, but get fuzzy: %d", tt.fuzzy, out.Fuzziness())
-			}
-			if math.Abs(out.Boost()-tt.boost) > 1E-6 {
-				t.Errorf("expect get boost: %f, but get boost: %f", tt.boost, out.Boost())
-			}
+			err := termParser.ParseString(tt.input, out)
+			assert.Nil(t, err)
+			assert.Equal(t, tt.want, out)
+			assert.Equal(t, tt.valueS, out.String())
+			assert.Equal(t, tt.wildcard, out.haveWildcard())
+			assert.Equal(t, tt.fuzzy, out.Fuzziness())
+			assert.Equal(t, tt.boost, out.Boost())
 		})
 	}
 	var out *FuzzyTerm
-	if out.String() != "" {
-		t.Error("expect empty range")
-	}
-	if out.Fuzziness() != 0 {
-		t.Errorf("expect zero fuzziness")
-	}
-	if out.Boost() != 0.0 {
-		t.Errorf("expect zero bound")
-	}
-	if out.haveWildcard() {
-		t.Errorf("expect no wildcard")
-	}
-	if out.GetTermType() != UNKNOWN_TERM_TYPE {
-		t.Errorf("expect unknown term type")
-	}
-	if _, err := out.Value(func(s string) (interface{}, error) { return s, nil }); err != ErrEmptyFuzzyTerm {
-		t.Errorf("expect empty fuzzy term")
-	}
+	assert.Empty(t, out.String())
+	assert.Equal(t, 0, out.Fuzziness())
+	assert.Equal(t, 0.0, out.Boost())
+	assert.Equal(t, false, out.haveWildcard())
+	assert.Equal(t, UNKNOWN_TERM_TYPE, out.GetTermType())
+	_, err := out.Value(func(s string) (interface{}, error) { return s, nil })
+	assert.Equal(t, ErrEmptyFuzzyTerm, err)
+
 	out = &FuzzyTerm{}
-	if out.String() != "" {
-		t.Error("expect empty range")
-	}
-	if out.Fuzziness() != 0 {
-		t.Errorf("expect zero fuzziness")
-	}
-	if out.Boost() != 0.0 {
-		t.Errorf("expect zero bound")
-	}
-	if out.haveWildcard() {
-		t.Errorf("expect no wildcard")
-	}
-	if out.GetTermType() != UNKNOWN_TERM_TYPE {
-		t.Errorf("expect unknown term type")
-	}
-	if v, _ := out.Value(func(s string) (interface{}, error) { return s, nil }); v != "" {
-		t.Errorf("expect empty fuzzy term")
-	}
+	assert.Empty(t, out.String())
+	assert.Equal(t, 0, out.Fuzziness())
+	assert.Equal(t, 0.0, out.Boost())
+	assert.Equal(t, false, out.haveWildcard())
+	assert.Equal(t, UNKNOWN_TERM_TYPE, out.GetTermType())
+	v, _ := out.Value(func(s string) (interface{}, error) { return s, nil })
+	assert.Equal(t, "", v)
 }
 
 func TestTermGroupElem(t *testing.T) {
@@ -521,23 +466,14 @@ func TestTermGroupElem(t *testing.T) {
 		},
 	} {
 		t.Run(tt.name, func(t *testing.T) {
-			if tt.input.GetTermType() != tt.tType {
-				t.Errorf("expect term type: %v, but got: %v", tt.tType, tt.input.GetTermType())
-			}
-			if v, e := tt.input.Value(func(s string) (interface{}, error) { return s, nil }); e != tt.wantErr {
-				t.Errorf("expect got err: %v, but got: %v", tt.wantErr, e)
-			} else if !reflect.DeepEqual(v, tt.valueS) {
-				t.Errorf("expect got valueS: %v, but got: %v", tt.valueS, v)
-			}
+			assert.Equal(t, tt.tType, tt.input.GetTermType())
+			v, e := tt.input.Value(func(s string) (interface{}, error) { return s, nil })
+			assert.Equal(t, tt.wantErr, e)
+			assert.Equal(t, tt.valueS, v)
 		})
 	}
 	var out *TermGroupElem
-	if out.String() != "" {
-		t.Errorf("expect empty")
-	}
+	assert.Empty(t, out.String())
 	out = &TermGroupElem{}
-	if out.String() != "" {
-		t.Errorf("expect empty")
-	}
-
+	assert.Empty(t, out.String())
 }

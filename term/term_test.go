@@ -1,11 +1,10 @@
 package term
 
 import (
-	"math"
-	"reflect"
 	"testing"
 
 	"github.com/alecthomas/participle"
+	"github.com/stretchr/testify/assert"
 	"github.com/zhuliquan/lucene_parser/operator"
 	"github.com/zhuliquan/lucene_parser/token"
 )
@@ -550,7 +549,7 @@ func TestTerm(t *testing.T) {
 								},
 								AnSTermGroup: []*AnSTermGroup{
 									{
-										AndSymbol: &operator.AndSymbol{"AND"},
+										AndSymbol: &operator.AndSymbol{Symbol: "AND"},
 										AndTermGroup: &AndTermGroup{
 											TermGroupElem: &TermGroupElem{
 												SRangeTerm: &SRangeTerm{
@@ -561,7 +560,7 @@ func TestTerm(t *testing.T) {
 										},
 									},
 									{
-										AndSymbol: &operator.AndSymbol{"AND"},
+										AndSymbol: &operator.AndSymbol{Symbol: "AND"},
 										AndTermGroup: &AndTermGroup{
 											TermGroupElem: &TermGroupElem{
 												SRangeTerm: &SRangeTerm{
@@ -572,7 +571,7 @@ func TestTerm(t *testing.T) {
 										},
 									},
 									{
-										AndSymbol: &operator.AndSymbol{"and"},
+										AndSymbol: &operator.AndSymbol{Symbol: "and"},
 										AndTermGroup: &AndTermGroup{
 											TermGroupElem: &TermGroupElem{
 												PhraseTerm: &PhraseTerm{
@@ -600,68 +599,35 @@ func TestTerm(t *testing.T) {
 	for _, tt := range testCases {
 		t.Run(tt.name, func(t *testing.T) {
 			var out = &Term{}
-			if err := termParser.ParseString(tt.input, out); err != nil {
-				t.Errorf("failed to parse input: %s, err: %+v", tt.input, err)
-			}
-			if !reflect.DeepEqual(tt.want, out) {
-				t.Errorf("termParser.ParseString( %s ) = %+v, want: %+v", tt.input, out, tt.want)
-			}
-			if out.String() != tt.wantStr {
-				t.Errorf("expect string: %s, but got: %s", tt.wantStr, out.String())
-			}
-			if math.Abs(out.Boost()-tt.boost) > 1E-8 {
-				t.Errorf("expect boost: %f, but got: %f", tt.boost, out.Boost())
-			}
-			if v, _ := out.Value(func(s string) (interface{}, error) { return s, nil }); !reflect.DeepEqual(v, tt.valueS) {
-				t.Errorf("expect value: %v, but got: %v", tt.valueS, v)
-			}
-			if out.Fuzziness() != tt.fuzziness {
-				t.Errorf("expect fuzziness: %d, but got: %d", tt.fuzziness, out.Fuzziness())
-			}
-			if !reflect.DeepEqual(out.GetBound(), tt.bound) {
-				t.Errorf("expect bound: %v, but got: %v", tt.bound, out.GetBound())
-			}
-			if out.GetTermType() != tt.tType {
-				t.Errorf("expect term type: %v, but got: %v", tt.tType, out.GetTermType())
-			}
+			err := termParser.ParseString(tt.input, out)
+			assert.Nil(t, err)
+			assert.Equal(t, tt.want, out)
+			assert.Equal(t, tt.wantStr, out.String())
+			assert.Equal(t, tt.boost, out.Boost())
+			v, _ := out.Value(func(s string) (interface{}, error) { return s, nil })
+			assert.Equal(t, tt.valueS, v)
+			assert.Equal(t, tt.fuzziness, out.Fuzziness())
+			assert.Equal(t, tt.bound, out.GetBound())
+			assert.Equal(t, tt.tType, out.GetTermType())
 		})
 	}
 	var out *Term
-	if out.String() != "" {
-		t.Errorf("expect empty")
-	}
-	if out.Boost() != 0.0 {
-		t.Errorf("expect zero boost")
-	}
-	if out.Fuzziness() != 0 {
-		t.Errorf("expect zero fuzziness")
-	}
-	if out.GetTermType() != UNKNOWN_TERM_TYPE {
-		t.Errorf("expect unknown term type")
-	}
-	if _, err := out.Value(func(s string) (interface{}, error) { return s, nil }); err != ErrEmptyTerm {
-		t.Errorf("expect empty term error")
-
-	}
+	assert.Equal(t, "", out.String())
+	assert.Equal(t, 0.0, out.Boost())
+	assert.Equal(t, 0, out.Fuzziness())
+	assert.Equal(t, UNKNOWN_TERM_TYPE, out.GetTermType())
+	_, err := out.Value(func(s string) (interface{}, error) { return s, nil })
+	assert.Equal(t, ErrEmptyTerm, err)
 	out = &Term{}
-	if out.String() != "" {
-		t.Errorf("expect empty")
-	}
-	if out.Boost() != 0.0 {
-		t.Errorf("expect zero boost")
-	}
-	if out.Fuzziness() != 0 {
-		t.Errorf("expect zero fuzziness")
-	}
-	if out.GetTermType() != UNKNOWN_TERM_TYPE {
-		t.Errorf("expect unknown term type")
-	}
-	if v, _ := out.Value(func(s string) (interface{}, error) { return s, nil }); v != "" {
-		t.Errorf("expect empty term")
-	}
+	assert.Equal(t, "", out.String())
+	assert.Equal(t, 0.0, out.Boost())
+	assert.Equal(t, 0, out.Fuzziness())
+	assert.Equal(t, UNKNOWN_TERM_TYPE, out.GetTermType())
+	v, _ := out.Value(func(s string) (interface{}, error) { return s, nil })
+	assert.Equal(t, "", v)
 }
 
-func TestTerm_isRegexp(t *testing.T) {
+func TestTermIsRegexp(t *testing.T) {
 	var termParser = participle.MustBuild(
 		&Term{},
 		participle.Lexer(token.Lexer),
@@ -699,17 +665,14 @@ func TestTerm_isRegexp(t *testing.T) {
 	for _, tt := range testCases {
 		t.Run(tt.name, func(t *testing.T) {
 			var out = &Term{}
-			if err := termParser.ParseString(tt.input, out); err != nil {
-				t.Errorf("failed to parse input: %s, err: %+v", tt.input, err)
-			}
-			if (out.GetTermType()&REGEXP_TERM_TYPE == REGEXP_TERM_TYPE) != tt.want {
-				t.Errorf("isRegexp() = %+v, want: %+v", (out.GetTermType()&REGEXP_TERM_TYPE == REGEXP_TERM_TYPE), tt.want)
-			}
+			err := termParser.ParseString(tt.input, out)
+			assert.Nil(t, err)
+			assert.Equal(t, tt.want, out.GetTermType()&REGEXP_TERM_TYPE == REGEXP_TERM_TYPE)
 		})
 	}
 }
 
-func TestTerm_isWildcard(t *testing.T) {
+func TestTermIsWildcard(t *testing.T) {
 
 	var termParser = participle.MustBuild(
 		&Term{},
@@ -773,21 +736,16 @@ func TestTerm_isWildcard(t *testing.T) {
 	for _, tt := range testCases {
 		t.Run(tt.name, func(t *testing.T) {
 			var out = &Term{}
-			if err := termParser.ParseString(tt.input, out); err != nil {
-				t.Errorf("failed to parse input: %s, err: %+v", tt.input, err)
-			}
-			if (out.GetTermType()&WILDCARD_TERM_TYPE == WILDCARD_TERM_TYPE) != tt.want {
-				t.Errorf("haveWildcard() = %+v, want: %+v", (out.GetTermType()&WILDCARD_TERM_TYPE == WILDCARD_TERM_TYPE), tt.want)
-			}
+			err := termParser.ParseString(tt.input, out)
+			assert.Nil(t, err)
+			assert.Equal(t, tt.want, out.GetTermType()&WILDCARD_TERM_TYPE == WILDCARD_TERM_TYPE)
 			// 利用自身缓冲再次尝试
-			if (out.GetTermType()&WILDCARD_TERM_TYPE == WILDCARD_TERM_TYPE) != tt.want {
-				t.Errorf("haveWildcard() = %+v, want: %+v", (out.GetTermType()&WILDCARD_TERM_TYPE == WILDCARD_TERM_TYPE), tt.want)
-			}
+			assert.Equal(t, tt.want, out.GetTermType()&WILDCARD_TERM_TYPE == WILDCARD_TERM_TYPE)
 		})
 	}
 }
 
-func TestTerm_isRange(t *testing.T) {
+func TestTermIsRange(t *testing.T) {
 	var termParser = participle.MustBuild(
 		&Term{},
 		participle.Lexer(token.Lexer),
@@ -825,17 +783,14 @@ func TestTerm_isRange(t *testing.T) {
 	for _, tt := range testCases {
 		t.Run(tt.name, func(t *testing.T) {
 			var out = &Term{}
-			if err := termParser.ParseString(tt.input, out); err != nil {
-				t.Errorf("failed to parse input: %s, err: %+v", tt.input, err)
-			}
-			if (out.GetTermType()&RANGE_TERM_TYPE == RANGE_TERM_TYPE) != tt.want {
-				t.Errorf("isRange() = %+v, want: %+v", (out.GetTermType()&RANGE_TERM_TYPE == RANGE_TERM_TYPE), tt.want)
-			}
+			err := termParser.ParseString(tt.input, out)
+			assert.Nil(t, err)
+			assert.Equal(t, tt.want, out.GetTermType()&RANGE_TERM_TYPE == RANGE_TERM_TYPE)
 		})
 	}
 }
 
-func TestTerm_fuzziness(t *testing.T) {
+func TestTermFuzziness(t *testing.T) {
 
 	var termParser = participle.MustBuild(
 		&Term{},
@@ -884,18 +839,15 @@ func TestTerm_fuzziness(t *testing.T) {
 	for _, tt := range testCases {
 		t.Run(tt.name, func(t *testing.T) {
 			var out = &Term{}
-			if err := termParser.ParseString(tt.input, out); err != nil {
-				t.Errorf("failed to parse input: %s, err: %+v", tt.input, err)
-			}
-			if out.Fuzziness() != tt.want {
-				t.Errorf("fuzziness() = %+v, want: %+v", out.Fuzziness(), tt.want)
-			}
+			err := termParser.ParseString(tt.input, out)
+			assert.Nil(t, err)
+			assert.Equal(t, tt.want, out.Fuzziness())
 		})
 	}
 
 }
 
-func TestTerm_boost(t *testing.T) {
+func TestTermBoost(t *testing.T) {
 
 	var termParser = participle.MustBuild(
 		&Term{},
@@ -954,12 +906,9 @@ func TestTerm_boost(t *testing.T) {
 	for _, tt := range testCases {
 		t.Run(tt.name, func(t *testing.T) {
 			var out = &Term{}
-			if err := termParser.ParseString(tt.input, out); err != nil {
-				t.Errorf("failed to parse input: %s, err: %+v", tt.input, err)
-			}
-			if math.Abs(out.Boost()-tt.want) > 1E-8 {
-				t.Errorf("boost() = %+v, want: %+v", out.Boost(), tt.want)
-			}
+			err := termParser.ParseString(tt.input, out)
+			assert.Nil(t, err)
+			assert.Equal(t, tt.want, out.Boost())
 		})
 	}
 }

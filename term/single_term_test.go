@@ -1,10 +1,10 @@
 package term
 
 import (
-	"reflect"
 	"testing"
 
 	"github.com/alecthomas/participle"
+	"github.com/stretchr/testify/assert"
 	"github.com/zhuliquan/lucene_parser/token"
 )
 
@@ -19,7 +19,7 @@ func TestSingleTerm(t *testing.T) {
 		input    string
 		want     *SingleTerm
 		values   string
-		wildward bool
+		wildcard bool
 	}
 	var testCases = []testCase{
 		{
@@ -27,51 +27,40 @@ func TestSingleTerm(t *testing.T) {
 			input:    `\/dsada\/\ dasda80980?`,
 			want:     &SingleTerm{Begin: `\/dsada\/\ dasda`, Chars: []string{`80980`, `?`}},
 			values:   `\/dsada\/\ dasda80980?`,
-			wildward: true,
+			wildcard: true,
 		},
 		{
 			name:     "TestSimpleTerm02",
 			input:    `\/dsada\/\ dasda80980*`,
 			want:     &SingleTerm{Begin: `\/dsada\/\ dasda`, Chars: []string{`80980`, `*`}},
 			values:   `\/dsada\/\ dasda80980*`,
-			wildward: true,
+			wildcard: true,
 		},
 		{
 			name:     "TestSimpleTerm03",
 			input:    `\/dsada\/\ dasda8\?0980\*`,
 			want:     &SingleTerm{Begin: `\/dsada\/\ dasda`, Chars: []string{`8`, `\?`, `0980`, `\*`}},
 			values:   `\/dsada\/\ dasda8\?0980\*`,
-			wildward: false,
+			wildcard: false,
 		},
 	}
 
 	for _, tt := range testCases {
 		t.Run(tt.name, func(t *testing.T) {
 			var out = &SingleTerm{}
-			if err := termParser.ParseString(tt.input, out); err != nil {
-				t.Errorf("failed to parse input: %s, err: %+v", tt.input, err)
-			} else if !reflect.DeepEqual(tt.want, out) {
-				t.Errorf("termParser.ParseString( %s ) = %+v, want: %+v", tt.input, out, tt.want)
-			} else if tt.values != out.String() {
-				t.Errorf("expect get values: %s, but get values: %+v", tt.values, out.String())
-			} else if tt.wildward != out.haveWildcard() {
-				t.Errorf("expect get wildcard: %+v, but get wildcard: %+v", tt.wildward, out.haveWildcard())
-			}
+			err := termParser.ParseString(tt.input, out)
+			assert.Nil(t, err)
+			assert.Equal(t, tt.want, out)
+			assert.Equal(t, tt.values, out.String())
+			assert.Equal(t, tt.wildcard, out.haveWildcard())
 		})
 	}
 	var s *SingleTerm
-	if s.String() != "" {
-		t.Errorf("expect empty")
-	}
-	if s.haveWildcard() {
-		t.Errorf("expect no wildcard")
-	}
-	if s.GetTermType() != UNKNOWN_TERM_TYPE {
-		t.Errorf("expect unknown term type")
-	}
-	if _, err := s.Value(func(s string) (interface{}, error) { return s, nil }); err != ErrEmptySingleTerm {
-		t.Errorf("expect empty single term")
-	}
+	assert.Empty(t, s.String())
+	assert.False(t, s.haveWildcard())
+	assert.Equal(t, UNKNOWN_TERM_TYPE, s.GetTermType())
+	_, err := s.Value(func(s string) (interface{}, error) { return s, nil })
+	assert.Equal(t, ErrEmptySingleTerm, err)
 }
 
 func TestPhraseTerm(t *testing.T) {
@@ -85,7 +74,7 @@ func TestPhraseTerm(t *testing.T) {
 		input    string
 		want     *PhraseTerm
 		values   string
-		wildward bool
+		wildcard bool
 	}
 	var testCases = []testCase{
 		{
@@ -93,93 +82,82 @@ func TestPhraseTerm(t *testing.T) {
 			input:    `"dsada 78"`,
 			want:     &PhraseTerm{Chars: []string{`dsada`, ` `, `78`}},
 			values:   `"dsada 78"`,
-			wildward: false,
+			wildcard: false,
 		},
 		{
 			name:     "TestPhraseTerm02",
 			input:    `"*dsada 78"`,
 			want:     &PhraseTerm{Chars: []string{`*`, `dsada`, ` `, `78`}},
 			values:   `"*dsada 78"`,
-			wildward: true,
+			wildcard: true,
 		},
 		{
 			name:     "TestPhraseTerm03",
 			input:    `"?dsada 78"`,
 			want:     &PhraseTerm{Chars: []string{`?`, `dsada`, ` `, `78`}},
 			values:   `"?dsada 78"`,
-			wildward: true,
+			wildcard: true,
 		},
 		{
 			name:     "TestPhraseTerm04",
 			input:    `"dsada* 78"`,
 			want:     &PhraseTerm{Chars: []string{`dsada`, `*`, ` `, `78`}},
 			values:   `"dsada* 78"`,
-			wildward: true,
+			wildcard: true,
 		},
 		{
 			name:     "TestPhraseTerm05",
 			input:    `"dsada? 78"`,
 			want:     &PhraseTerm{Chars: []string{`dsada`, `?`, ` `, `78`}},
 			values:   `"dsada? 78"`,
-			wildward: true,
+			wildcard: true,
 		},
 		{
 			name:     "TestPhraseTerm06",
 			input:    `"dsada\* 78"`,
 			want:     &PhraseTerm{Chars: []string{`dsada\*`, ` `, `78`}},
 			values:   `"dsada\* 78"`,
-			wildward: false,
+			wildcard: false,
 		},
 		{
 			name:     "TestPhraseTerm07",
 			input:    `"dsada\? 78"`,
 			want:     &PhraseTerm{Chars: []string{`dsada\?`, ` `, `78`}},
 			values:   `"dsada\? 78"`,
-			wildward: false,
+			wildcard: false,
 		},
 		{
 			name:     "TestPhraseTerm09",
 			input:    `"\*dsada 78"`,
 			want:     &PhraseTerm{Chars: []string{`\*dsada`, ` `, `78`}},
 			values:   `"\*dsada 78"`,
-			wildward: false,
+			wildcard: false,
 		},
 		{
 			name:     "TestPhraseTerm10",
 			input:    `"\?dsada 78"`,
 			want:     &PhraseTerm{Chars: []string{`\?dsada`, ` `, `78`}},
 			values:   `"\?dsada 78"`,
-			wildward: false,
+			wildcard: false,
 		},
 	}
 
 	for _, tt := range testCases {
 		t.Run(tt.name, func(t *testing.T) {
 			var out = &PhraseTerm{}
-			if err := termParser.ParseString(tt.input, out); err != nil {
-				t.Errorf("failed to parse input: %s, err: %+v", tt.input, err)
-			} else if !reflect.DeepEqual(tt.want, out) {
-				t.Errorf("phraseTermParser.ParseString( %s ) = %+v, want: %+v", tt.input, out, tt.want)
-			} else if tt.values != out.String() {
-				t.Errorf("expect get values: %s, but get values: %+v", tt.values, out.String())
-			} else if tt.wildward != out.haveWildcard() {
-				t.Errorf("expect get wildcard: %+v, but get wildcard: %+v", tt.wildward, out.haveWildcard())
-			}
+			err := termParser.ParseString(tt.input, out)
+			assert.Nil(t, err)
+			assert.Equal(t, tt.want, out)
+			assert.Equal(t, tt.values, out.String())
+			assert.Equal(t, tt.wildcard, out.haveWildcard())
 		})
 	}
 	var s *PhraseTerm
-	if s.String() != "" {
-		t.Errorf("expect empty")
-	}
-	if s.haveWildcard() {
-		t.Errorf("expect no wildcard")
-	}
-	if s.GetTermType() != UNKNOWN_TERM_TYPE {
-		t.Errorf("expect unknown term type")
-	}
-	if _, err := s.Value(func(s string) (interface{}, error) { return s, nil }); err != ErrEmptyPhraseTerm {
-		t.Errorf("expect empty phrase term")
-	}
+	assert.Empty(t, s.String())
+	assert.False(t, s.haveWildcard())
+	assert.Equal(t, UNKNOWN_TERM_TYPE, s.GetTermType())
+	_, err := s.Value(func(s string) (interface{}, error) { return s, nil })
+	assert.Equal(t, ErrEmptyPhraseTerm, err)
 }
 
 func TestRegexpTerm(t *testing.T) {
@@ -209,23 +187,16 @@ func TestRegexpTerm(t *testing.T) {
 	for _, tt := range testCases {
 		t.Run(tt.name, func(t *testing.T) {
 			var out = &RegexpTerm{}
-			if err := termParser.ParseString(tt.input, out); err != nil {
-				t.Errorf("failed to parse input: %s, err: %+v", tt.input, err)
-			} else if !reflect.DeepEqual(tt.want, out) {
-				t.Errorf("regexpTermParser.ParseString( %s ) = %+v, want: %+v", tt.input, out, tt.want)
-			}
+			err := termParser.ParseString(tt.input, out)
+			assert.Nil(t, err)
+			assert.Equal(t, tt.want, out)
 		})
 	}
 	var s *RegexpTerm
-	if s.String() != "" {
-		t.Errorf("expect empty")
-	}
-	if s.GetTermType() != UNKNOWN_TERM_TYPE {
-		t.Errorf("expect unknown term type")
-	}
-	if _, err := s.Value(func(s string) (interface{}, error) { return s, nil }); err != ErrEmptyRegexpTerm {
-		t.Errorf("expect empty regexp term")
-	}
+	assert.Empty(t, s.String())
+	assert.Equal(t, UNKNOWN_TERM_TYPE, s.GetTermType())
+	_, err := s.Value(func(s string) (interface{}, error) { return s, nil })
+	assert.Equal(t, ErrEmptyRegexpTerm, err)
 }
 
 func TestDRangeTerm(t *testing.T) {
@@ -410,50 +381,26 @@ func TestDRangeTerm(t *testing.T) {
 	for _, tt := range testCases {
 		t.Run(tt.name, func(t *testing.T) {
 			var out = &DRangeTerm{}
-			if err := termParser.ParseString(tt.input, out); err != nil {
-				t.Errorf("failed to parse input: %s, err: %+v", tt.input, err)
-			} else if !reflect.DeepEqual(tt.want, out) {
-				t.Errorf("rangeTermParser.ParseString( %s ) = %+v, want: %+v", tt.input, out, tt.want)
-			} else if !reflect.DeepEqual(tt.bound, out.GetBound()) {
-				t.Errorf("expect get bound: %+v, but get bound: %+v", tt.bound, out.GetBound())
-			} else if out.GetTermType() != RANGE_TERM_TYPE {
-				t.Errorf("expect range term")
-			}
+			err := termParser.ParseString(tt.input, out)
+			assert.Nil(t, err)
+			assert.Equal(t, tt.want, out)
+			assert.Equal(t, tt.bound, out.GetBound())
+			assert.Equal(t, RANGE_TERM_TYPE, out.GetTermType())
 			var b = out.GetBound()
-			if b.LeftValue.IsInf(-1) != tt.lninf {
-				t.Errorf("expect %v, but %v", tt.lninf, b.LeftValue.IsInf(-1))
-			}
-			if b.LeftValue.IsInf(1) != tt.lpinf {
-				t.Errorf("expect %v, but %v", tt.lninf, b.LeftValue.IsInf(1))
-			}
-			if b.RightValue.IsInf(-1) != tt.rninf {
-				t.Errorf("expect %v, but %v", tt.lninf, b.RightValue.IsInf(-1))
-			}
-			if b.RightValue.IsInf(1) != tt.rpinf {
-				t.Errorf("expect %v, but %v", tt.lninf, b.RightValue.IsInf(1))
-			}
+			assert.Equal(t, tt.lninf, b.LeftValue.IsInf(-1))
+			assert.Equal(t, tt.lpinf, b.LeftValue.IsInf(1))
+			assert.Equal(t, tt.rninf, b.RightValue.IsInf(-1))
+			assert.Equal(t, tt.rpinf, b.RightValue.IsInf(1))
 		})
 	}
 	var s *DRangeTerm
-	if s.String() != "" {
-		t.Errorf("expect empty")
-	}
-	if s.GetTermType() != UNKNOWN_TERM_TYPE {
-		t.Errorf("expect unknown term type")
-	}
-	if s.GetBound() != nil {
-		t.Errorf("expect empty bound")
-	}
+	assert.Empty(t, s.String())
+	assert.Equal(t, UNKNOWN_TERM_TYPE, s.GetTermType())
+	assert.Nil(t, s.GetBound())
 	s = &DRangeTerm{}
-	if s.String() != "" {
-		t.Errorf("expect empty")
-	}
-	if s.GetTermType() != UNKNOWN_TERM_TYPE {
-		t.Errorf("expect unknown term type")
-	}
-	if s.GetBound() != nil {
-		t.Errorf("expect empty bound")
-	}
+	assert.Empty(t, s.String())
+	assert.Equal(t, UNKNOWN_TERM_TYPE, s.GetTermType())
+	assert.Nil(t, s.GetBound())
 }
 
 func TestSRangeTerm(t *testing.T) {
@@ -538,48 +485,24 @@ func TestSRangeTerm(t *testing.T) {
 	for _, tt := range testCases {
 		t.Run(tt.name, func(t *testing.T) {
 			var out = &SRangeTerm{}
-			if err := termParser.ParseString(tt.input, out); err != nil {
-				t.Errorf("failed to parse input: %s, err: %+v", tt.input, err)
-			} else if !reflect.DeepEqual(tt.want, out) {
-				t.Errorf("rangesTermParser.ParseString( %s ) = %+v, want: %+v", tt.input, out, tt.want)
-			} else if !reflect.DeepEqual(tt.bound, out.GetBound()) {
-				t.Errorf("expect get bound: %+v, but get bound: %+v", tt.bound, out.GetBound())
-			} else if out.GetTermType() != RANGE_TERM_TYPE {
-				t.Errorf("expect range term")
-			}
+			err := termParser.ParseString(tt.input, out)
+			assert.Nil(t, err)
+			assert.Equal(t, tt.want, out)
+			assert.Equal(t, tt.bound, out.GetBound())
+			assert.Equal(t, RANGE_TERM_TYPE, out.GetTermType())
 			var b = out.GetBound()
-			if b.LeftValue.IsInf(-1) != tt.lninf {
-				t.Errorf("expect %v, but %v", tt.lninf, b.LeftValue.IsInf(-1))
-			}
-			if b.LeftValue.IsInf(1) != tt.lpinf {
-				t.Errorf("expect %v, but %v", tt.lninf, b.LeftValue.IsInf(1))
-			}
-			if b.RightValue.IsInf(-1) != tt.rninf {
-				t.Errorf("expect %v, but %v", tt.lninf, b.RightValue.IsInf(-1))
-			}
-			if b.RightValue.IsInf(1) != tt.rpinf {
-				t.Errorf("expect %v, but %v", tt.lninf, b.RightValue.IsInf(1))
-			}
+			assert.Equal(t, tt.lninf, b.LeftValue.IsInf(-1))
+			assert.Equal(t, tt.lpinf, b.LeftValue.IsInf(1))
+			assert.Equal(t, tt.rninf, b.RightValue.IsInf(-1))
+			assert.Equal(t, tt.rpinf, b.RightValue.IsInf(1))
 		})
 	}
 	var s *SRangeTerm
-	if s.String() != "" {
-		t.Errorf("expect empty")
-	}
-	if s.GetTermType() != UNKNOWN_TERM_TYPE {
-		t.Errorf("expect unknown term type")
-	}
-	if s.GetBound() != nil {
-		t.Errorf("expect empty bound")
-	}
+	assert.Empty(t, s.String())
+	assert.Equal(t, UNKNOWN_TERM_TYPE, s.GetTermType())
+	assert.Nil(t, s.GetBound())
 	s = &SRangeTerm{}
-	if s.String() != "" {
-		t.Errorf("expect empty")
-	}
-	if s.GetTermType() != UNKNOWN_TERM_TYPE {
-		t.Errorf("expect unknown term type")
-	}
-	if s.GetBound() != nil {
-		t.Errorf("expect empty bound")
-	}
+	assert.Empty(t, s.String())
+	assert.Equal(t, UNKNOWN_TERM_TYPE, s.GetTermType())
+	assert.Nil(t, s.GetBound())
 }

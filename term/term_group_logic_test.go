@@ -1,11 +1,10 @@
 package term
 
 import (
-	"math"
-	"reflect"
 	"testing"
 
 	"github.com/alecthomas/participle"
+	"github.com/stretchr/testify/assert"
 	op "github.com/zhuliquan/lucene_parser/operator"
 	"github.com/zhuliquan/lucene_parser/token"
 )
@@ -116,12 +115,9 @@ func TestLogicTermGroup(t *testing.T) {
 	for _, tt := range testCases {
 		t.Run(tt.name, func(t *testing.T) {
 			var out = &LogicTermGroup{}
-			if err := termParser.ParseString(tt.input, out); err != nil {
-				t.Errorf("failed to parse input: %s, err: %+v", tt.input, err)
-			}
-			if !reflect.DeepEqual(tt.want, out) {
-				t.Errorf("termParser.ParseString( %s ) = %+v, want: %+v", tt.input, out, tt.want)
-			}
+			err := termParser.ParseString(tt.input, out)
+			assert.Nil(t, err)
+			assert.Equal(t, tt.want, out)
 		})
 	}
 }
@@ -336,104 +332,56 @@ func TestTermGroup(t *testing.T) {
 	for _, tt := range testCases {
 		t.Run(tt.name, func(t *testing.T) {
 			var out = &TermGroup{}
-			if err := termParser.ParseString(tt.input, out); err != nil {
-				t.Errorf("failed to parse input: %s, err: %+v", tt.input, err)
-			}
-			if !reflect.DeepEqual(tt.want, out) {
-				t.Errorf("termParser.ParseString( %s ) = %+v, want: %+v", tt.input, out, tt.want)
-			}
-			if math.Abs(tt.boost-out.Boost()) > 1E-6 {
-				t.Errorf("expect get boost: %+v, but get boost: %+v", tt.boost, out.Boost())
-			}
-			if out.GetTermType() != tt.termType {
-				t.Errorf("expect term type: %v but got type: %v", tt.termType, out.GetTermType())
-			}
-			if out.String() != tt.wantStr {
-				t.Errorf("expect %s, but %s", tt.wantStr, out.String())
-			}
+			err := termParser.ParseString(tt.input, out)
+			assert.Nil(t, err)
+			assert.Equal(t, tt.want, out)
+			assert.Equal(t, tt.boost, out.Boost())
+			assert.Equal(t, tt.termType, out.GetTermType())
+			assert.Equal(t, tt.wantStr, out.String())
 		})
 	}
 	// test empty term group
 	var out *TermGroup
-	if out.String() != "" {
-		t.Errorf("expect empty")
-	}
-	if out.Boost() != 0.0 {
-		t.Errorf("expect no boost")
-	}
-	if out.GetTermType() != UNKNOWN_TERM_TYPE {
-		t.Errorf("expect to unknown term type")
-	}
+	assert.Equal(t, "", out.String())
+	assert.Equal(t, 0.0, out.Boost())
+	assert.Equal(t, UNKNOWN_TERM_TYPE, out.GetTermType())
 
 	out = &TermGroup{}
-	if out.String() != "" {
-		t.Errorf("expect empty")
-	}
-	if out.Boost() != 0.0 {
-		t.Errorf("expect no boost")
-	}
-	if out.GetTermType() != UNKNOWN_TERM_TYPE {
-		t.Errorf("expect to unknown term type")
-	}
-	if _, err := out.Value(func(s string) (interface{}, error) { return s, nil }); err != ErrEmptyGroupTerm {
-		t.Errorf("expect got empty term error, err: %v", err)
-	}
+	assert.Equal(t, "", out.String())
+	assert.Equal(t, 0.0, out.Boost())
+	assert.Equal(t, UNKNOWN_TERM_TYPE, out.GetTermType())
+	_, err := out.Value(func(s string) (interface{}, error) { return s, nil })
+	assert.Equal(t, ErrEmptyGroupTerm, err)
 
 	var l *LogicTermGroup
-	if l.String() != "" {
-		t.Error("expect empty")
-	}
+	assert.Equal(t, "", l.String())
 	l = &LogicTermGroup{}
-	if l.String() != "" {
-		t.Error("expect empty")
-	}
-	if _, err := out.Value(func(s string) (interface{}, error) { return s, nil }); err != ErrEmptyGroupTerm {
-		t.Errorf("expect got empty term error, err: %v", err)
-	}
+	assert.Equal(t, "", l.String())
+	_, err = out.Value(func(s string) (interface{}, error) { return s, nil })
+	assert.Equal(t, ErrEmptyGroupTerm, err)
 
 	var a *AndTermGroup
-	if a.String() != "" {
-		t.Error("expect empty")
-	}
+	assert.Equal(t, "", a.String())
 	a = &AndTermGroup{}
-	if a.String() != "" {
-		t.Error("expect empty")
-	}
+	assert.Equal(t, "", a.String())
 
 	var as *AnSTermGroup
-	if as.String() != "" {
-		t.Error("expect empty")
-	}
+	assert.Equal(t, "", as.String())
 	as = &AnSTermGroup{}
-	if as.String() != "" {
-		t.Error("expect empty")
-	}
+	assert.Equal(t, "", as.String())
 
 	var o *OrTermGroup
-	if o.String() != "" {
-		t.Error("expect empty")
-	}
+	assert.Equal(t, "", o.String())
 	o = &OrTermGroup{}
-	if o.String() != "" {
-		t.Error("expect empty")
-	}
+	assert.Equal(t, "", o.String())
 
 	var os *OSTermGroup
-	if os.String() != "" {
-		t.Error("expect empty")
-	}
+	assert.Equal(t, "", os.String())
 	os = &OSTermGroup{}
-	if os.String() != "" {
-		t.Error("expect empty")
-	}
+	assert.Equal(t, "", os.String())
 
 	var p *ParenTermGroup
-	if p.String() != "" {
-		t.Error("expect empty")
-	}
+	assert.Equal(t, "", p.String())
 	p = &ParenTermGroup{}
-	if p.String() != "" {
-		t.Errorf("expect empty")
-	}
-
+	assert.Equal(t, "", p.String())
 }

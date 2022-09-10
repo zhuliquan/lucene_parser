@@ -1,9 +1,9 @@
 package lucene_parser
 
 import (
-	"reflect"
 	"testing"
 
+	"github.com/stretchr/testify/assert"
 	"github.com/zhuliquan/lucene_parser/operator"
 	"github.com/zhuliquan/lucene_parser/term"
 )
@@ -321,13 +321,10 @@ func TestLucene(t *testing.T) {
 
 	for _, tt := range testCases {
 		t.Run(tt.name, func(t *testing.T) {
-			if lucene, err := ParseLucene(tt.input); (err != nil) != tt.wantErr {
-				t.Errorf("parser lucene, err: %+v", err)
-			} else if !reflect.DeepEqual(lucene, tt.want) {
-				t.Errorf("luceneParser.ParseString( %s ) = %+v, but want %+v", tt.input, lucene, tt.want)
-			} else if lucene.String() != tt.wantStr {
-				t.Errorf("luceneParser.ParseString( %s ) = %s, but want %s", tt.input, lucene, tt.wantStr)
-			}
+			lucene, err := ParseLucene(tt.input)
+			assert.Equal(t, tt.wantErr, (err != nil))
+			assert.Equal(t, tt.want, lucene)
+			assert.Equal(t, tt.wantStr, lucene.String())
 		})
 	}
 }
@@ -376,9 +373,7 @@ func TestType(t *testing.T) {
 		},
 	} {
 		t.Run(tt.name, func(t *testing.T) {
-			if tt.input.GetQueryType() != tt.qType {
-				t.Errorf("expect to %v, but got %v", tt.qType, tt.input.GetQueryType())
-			}
+			assert.Equal(t, tt.qType, tt.input.GetQueryType())
 		})
 	}
 }
@@ -419,40 +414,24 @@ func TestWrongString(t *testing.T) {
 		},
 	} {
 		t.Run(tt.name, func(t *testing.T) {
-			if tt.input.String() != "" {
-				t.Errorf("expect to empty")
-			}
+			assert.Equal(t, "", tt.input.String())
 		})
 	}
 }
 
 func TestWrongLuceneString(t *testing.T) {
 	var l *Lucene
-	if l.String() != "" {
-		t.Error("expect to empty")
-	}
+	assert.Equal(t, "", l.String())
 	var o *OrQuery
-	if o.String() != "" {
-		t.Error("expect to empty")
-	}
+	assert.Equal(t, "", o.String())
 	var s *OSQuery
-	if s.String() != "" {
-		t.Error("expect to empty")
-	}
+	assert.Equal(t, "", s.String())
 	var a *AndQuery
-	if a.String() != "" {
-		t.Error("expect to empty")
-	}
+	assert.Equal(t, "", a.String())
 	var x *AnSQuery
-	if x.String() != "" {
-		t.Error("expect to empty")
-	}
+	assert.Equal(t, "", x.String())
 	var f *FieldQuery
-	if f.String() != "" {
-		t.Error("expect to empty")
-	}
+	assert.Equal(t, "", f.String())
 	var p *ParenQuery
-	if p.String() != "" {
-		t.Error("expect to empty")
-	}
+	assert.Equal(t, "", p.String())
 }

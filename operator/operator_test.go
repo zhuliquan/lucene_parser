@@ -1,10 +1,10 @@
 package operator
 
 import (
-	"reflect"
 	"testing"
 
 	"github.com/alecthomas/participle"
+	"github.com/stretchr/testify/assert"
 	"github.com/zhuliquan/lucene_parser/token"
 )
 
@@ -43,29 +43,19 @@ func TestAndSymbol(t *testing.T) {
 	for _, tt := range testCases {
 		t.Run(tt.name, func(t *testing.T) {
 			var symbol = &AndSymbol{}
-			if err := operatorParser.ParseString(tt.input, symbol); err != nil {
-				t.Errorf("failed to parse input: %s, err: %+v", tt.input, err)
-			} else if !reflect.DeepEqual(symbol, tt.want) {
-				t.Errorf("ParseString( %s ) = %+v, want: %+v", tt.input, symbol, tt.want)
-			} else if symbol.String() != tt.wantStr {
-				t.Errorf("expect %s, but %s", symbol.String(), tt.wantStr)
-			} else if symbol.GetLogicType() != AND_LOGIC_TYPE {
-				t.Errorf("expect got AND LOGIC TYPE")
-			}
+			err := operatorParser.ParseString(tt.input, symbol)
+			assert.Nil(t, err)
+			assert.Equal(t, tt.want, symbol)
+			assert.Equal(t, tt.wantStr, symbol.String())
+			assert.Equal(t, AND_LOGIC_TYPE, symbol.GetLogicType())
 		})
 	}
 
 	var o *AndSymbol
-	if o.String() != "" {
-		t.Error("expect empty")
-	}
-	if o.GetLogicType() != UNKNOWN_LOGIC_TYPE {
-		t.Error("expect UNKNOWN")
-	}
+	assert.Empty(t, o.String())
+	assert.Equal(t, UNKNOWN_LOGIC_TYPE, o.GetLogicType())
 	o = &AndSymbol{Symbol: ""}
-	if o.String() != "" {
-		t.Error("expect empty")
-	}
+	assert.Empty(t, o.String())
 }
 
 func TestOrSymbol(t *testing.T) {
@@ -104,29 +94,19 @@ func TestOrSymbol(t *testing.T) {
 	for _, tt := range testCases {
 		t.Run(tt.name, func(t *testing.T) {
 			var symbol = &OrSymbol{}
-			if err := operatorParser.ParseString(tt.input, symbol); err != nil {
-				t.Errorf("failed to parse input: %s, err: %+v", tt.input, err)
-			} else if !reflect.DeepEqual(symbol, tt.want) {
-				t.Errorf("ParseString( %s ) = %+v, want: %+v", tt.input, symbol, tt.want)
-			} else if symbol.String() != tt.wantStr {
-				t.Errorf("expect %s, but %s", symbol.String(), tt.wantStr)
-			} else if symbol.GetLogicType() != OR_LOGIC_TYPE {
-				t.Errorf("expect got OR LOGIC TYPE")
-			}
+			err := operatorParser.ParseString(tt.input, symbol)
+			assert.Nil(t, err)
+			assert.Equal(t, tt.want, symbol)
+			assert.Equal(t, tt.wantStr, symbol.String())
+			assert.Equal(t, OR_LOGIC_TYPE, symbol.GetLogicType())
 		})
 	}
 
 	var o *OrSymbol
-	if o.String() != "" {
-		t.Error("expect empty")
-	}
-	if o.GetLogicType() != UNKNOWN_LOGIC_TYPE {
-		t.Error("expect UNKNOWN")
-	}
+	assert.Empty(t, o.String())
+	assert.Equal(t, UNKNOWN_LOGIC_TYPE, o.GetLogicType())
 	o = &OrSymbol{Symbol: ""}
-	if o.String() != "" {
-		t.Error("expect empty")
-	}
+	assert.Empty(t, o.String())
 }
 
 func TestNotSymbol(t *testing.T) {
@@ -164,32 +144,21 @@ func TestNotSymbol(t *testing.T) {
 	for _, tt := range testCases {
 		t.Run(tt.name, func(t *testing.T) {
 			var symbol = &NotSymbol{}
-			if err := operatorParser.ParseString(tt.input, symbol); err != nil {
-				t.Errorf("failed to parse input: %s, err: %+v", tt.input, err)
-			} else if !reflect.DeepEqual(symbol, tt.want) {
-				t.Errorf("ParseString( %s ) = %+v, want: %+v", tt.input, symbol, tt.want)
-			} else if symbol.String() != tt.wantStr {
-				t.Errorf("expect %s, but %s", symbol.String(), tt.wantStr)
-			} else if symbol.GetLogicType() != NOT_LOGIC_TYPE {
-				t.Errorf("expect NOT LOGIC TYPE")
-			}
+			err := operatorParser.ParseString(tt.input, symbol)
+			assert.Nil(t, err)
+			assert.Equal(t, tt.want, symbol)
+			assert.Equal(t, tt.wantStr, symbol.String())
+			assert.Equal(t, NOT_LOGIC_TYPE, symbol.GetLogicType())
 		})
 	}
 
 	var o *NotSymbol
-	if o.String() != "" {
-		t.Error("expect empty")
-	}
-	if o.GetLogicType() != UNKNOWN_LOGIC_TYPE {
-		t.Error("expect UNKNOWN")
-	}
+	assert.Empty(t, o.String())
+	assert.Equal(t, UNKNOWN_LOGIC_TYPE, o.GetLogicType())
 	o = &NotSymbol{Symbol: ""}
-	if o.String() != "" {
-		t.Error("expect empty")
-	}
+	assert.Empty(t, o.String())
 }
 
 func TestPrefixOperator(t *testing.T) {
-	
 
 }

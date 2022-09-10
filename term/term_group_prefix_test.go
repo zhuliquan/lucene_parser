@@ -3,11 +3,11 @@
 package term
 
 import (
-	"math"
 	"reflect"
 	"testing"
 
 	"github.com/alecthomas/participle"
+	"github.com/stretchr/testify/assert"
 	op "github.com/zhuliquan/lucene_parser/operator"
 	"github.com/zhuliquan/lucene_parser/token"
 )
@@ -350,11 +350,9 @@ func TestPrefixTermGroup(t *testing.T) {
 	for _, tt := range testCases {
 		t.Run(tt.name, func(t *testing.T) {
 			var out = &PrefixTermGroup{}
-			if err := termParser.ParseString(tt.input, out); err != nil {
-				t.Errorf("failed to parse input: %s, err: %+v", tt.input, err)
-			} else if !reflect.DeepEqual(tt.want, out) {
-				t.Errorf("termParser.ParseString( %s ) = %+v, want: %+v", tt.input, out, tt.want)
-			}
+			err := termParser.ParseString(tt.input, out)
+			assert.Nil(t, err)
+			assert.Equal(t, tt.want, out)
 		})
 	}
 }
@@ -496,13 +494,10 @@ func TestTermGroup(t *testing.T) {
 	for _, tt := range testCases {
 		t.Run(tt.name, func(t *testing.T) {
 			var out = &TermGroup{}
-			if err := termParser.ParseString(tt.input, out); err != nil {
-				t.Errorf("failed to parse input: %s, err: %+v", tt.input, err)
-			} else if !reflect.DeepEqual(tt.want, out) {
-				t.Errorf("termParser.ParseString( %s ) = %+v, want: %+v", tt.input, out, tt.want)
-			} else if math.Abs(tt.boost-out.Boost()) > 1E-6 {
-				t.Errorf("expect get boost: %+v, but get boost: %+v", tt.boost, out.Boost())
-			}
+			err := termParser.ParseString(tt.input, out)
+			assert.Nil(t, err)
+			assert.Equal(t, tt.want, out)
+			assert.Equal(t, tt.boost, out.Boost())
 		})
 	}
 }

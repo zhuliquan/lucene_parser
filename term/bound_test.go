@@ -1,8 +1,9 @@
 package term
 
 import (
-	"reflect"
 	"testing"
+
+	"github.com/stretchr/testify/assert"
 )
 
 func TestBoundType(t *testing.T) {
@@ -39,9 +40,7 @@ func TestBoundType(t *testing.T) {
 		},
 	} {
 		t.Run(tt.name, func(t *testing.T) {
-			if tt.input.GetBoundType() != tt.bType {
-				t.Errorf("expect got: %v, but got: %v", tt.bType, tt.input.GetBoundType())
-			}
+			assert.Equal(t, tt.bType, tt.input.GetBoundType())
 		})
 	}
 }
@@ -75,27 +74,18 @@ func TestRangeValue(t *testing.T) {
 		},
 	} {
 		t.Run(tt.name, func(t *testing.T) {
-			if tt.input.String() != tt.wantS {
-				t.Errorf("expect %s, but %s", tt.wantS, tt.input.String())
-			}
-			if s, _ := tt.input.Value(func(s string) (interface{}, error) { return s, nil }); !reflect.DeepEqual(s, tt.value) {
-				t.Errorf("expect %v, but %v", tt.value, s)
-			}
+			assert.Equal(t, tt.wantS, tt.input.String())
+			s, _ := tt.input.Value(func(s string) (interface{}, error) { return s, nil })
+			assert.Equal(t, tt.value, s)
 		})
 	}
 
 	var s *RangeValue
-	if s.String() != "" {
-		t.Errorf("expect empty")
-	}
-	if x, _ := s.Value(func(s string) (interface{}, error) { return s, nil }); !reflect.DeepEqual(x, nil) {
-		t.Errorf("expect empty")
-	}
+	assert.Empty(t, s.String())
+	x, _ := s.Value(func(s string) (interface{}, error) { return s, nil })
+	assert.Equal(t, nil, x)
 	s = &RangeValue{}
-	if s.String() != "" {
-		t.Errorf("expect empty")
-	}
-	if x, _ := s.Value(func(s string) (interface{}, error) { return s, nil }); !reflect.DeepEqual(x, "") {
-		t.Errorf("expect empty")
-	}
+	assert.Empty(t, s.String())
+	x, _ = s.Value(func(s string) (interface{}, error) { return s, nil })
+	assert.Equal(t, "", x)
 }

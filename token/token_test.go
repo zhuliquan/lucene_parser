@@ -3,6 +3,8 @@ package token
 import (
 	"reflect"
 	"testing"
+
+	"github.com/stretchr/testify/assert"
 )
 
 func TestLexer(t *testing.T) {
@@ -379,38 +381,22 @@ func TestLexer(t *testing.T) {
 				t.Errorf("Scan ( %+v ) = %+v, but want: %+v", tt.input, out, tt.want)
 			} else {
 				for i := 0; i < len(out); i++ {
-					if out[i].GetTokenType() != tt.typeS[i] {
-						t.Errorf("expect get type: %+v, but get type: %+v", tt.typeS[i], out[i].GetTokenType())
-					}
+					assert.Equal(t, tt.typeS[i], out[i].GetTokenType())
 				}
 				for i := 0; i < len(out); i++ {
-					if out[i].String() != tt.wantS[i] {
-						t.Errorf("expect get string: %+v, but get string: %+v", tt.wantS[i], out[i].String())
-					}
+					assert.Equal(t, tt.wantS[i], out[i].String())
 				}
 			}
 		})
 	}
 
 	var x *Token
-	if x.String() != "" {
-		t.Error("expect empty")
-	}
-	if x.GetTokenType() != UNKNOWN_TOKEN_TYPE {
-		t.Error("expect unknown type")
-	}
+	assert.Equal(t, "", x.String())
+	assert.Equal(t, UNKNOWN_TOKEN_TYPE, x.GetTokenType())
 	x = &Token{}
-	if x.String() != "" {
-		t.Error("expect empty")
-	}
-	if x.GetTokenType() != UNKNOWN_TOKEN_TYPE {
-		t.Error("expect unknown type")
-	}
+	assert.Equal(t, "", x.String())
+	assert.Equal(t, UNKNOWN_TOKEN_TYPE, x.GetTokenType())
 	x = &Token{EOL: "\n"}
-	if x.String() != "\n" {
-		t.Errorf("expect \n")
-	}
-	if x.GetTokenType() != EOL_TOKEN_TYPE {
-		t.Error("expect eol token")
-	}
+	assert.Equal(t, "\n", x.String())
+	assert.Equal(t, EOL_TOKEN_TYPE, x.GetTokenType())
 }
