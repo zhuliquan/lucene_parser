@@ -1,6 +1,7 @@
 package term
 
 import (
+	"math"
 	"strconv"
 )
 
@@ -8,7 +9,7 @@ import (
 type RangeTerm struct {
 	SRangeTerm  *SRangeTerm `parser:"( @@ " json:"s_range_term"`
 	DRangeTerm  *DRangeTerm `parser:"| @@)" json:"d_range_term"`
-	BoostSymbol string      `parser:"@(BOOST NUMBER (DOT NUMBER)?)?" json:"boost_symbol"`
+	BoostSymbol string      `parser:"@(BOOST NUMBER? (DOT NUMBER)?)?" json:"boost_symbol"`
 }
 
 func (t *RangeTerm) GetTermType() TermType {
@@ -61,8 +62,8 @@ func (t *RangeTerm) Boost() float64 {
 type FuzzyTerm struct {
 	SingleTerm  *SingleTerm `parser:"( @@ " json:"single_term"`
 	PhraseTerm  *PhraseTerm `parser:"| @@)" json:"phrase_term"`
-	FuzzySymbol string      `parser:"( @(FUZZY NUMBER?)  " json:"fuzzy_symbol"`
-	BoostSymbol string      `parser:"| @(BOOST NUMBER (DOT NUMBER)?))?" json:"boost_symbol"`
+	FuzzySymbol string      `parser:"( @(FUZZY NUMBER? (DOT NUMBER)?)  " json:"fuzzy_symbol"`
+	BoostSymbol string      `parser:"| @(BOOST NUMBER? (DOT NUMBER)?))?" json:"boost_symbol"`
 }
 
 func (t *FuzzyTerm) GetTermType() TermType {
@@ -100,10 +101,11 @@ func (t *FuzzyTerm) Fuzziness() int {
 	if t == nil || len(t.FuzzySymbol) == 0 || (t.SingleTerm == nil && t.PhraseTerm == nil) {
 		return 0
 	} else if t.FuzzySymbol == "~" {
-		return 1
+		// default fuzziness
+		return -1
 	} else {
-		var v, _ = strconv.Atoi(t.FuzzySymbol[1:])
-		return v
+		var v, _ = strconv.ParseFloat(t.FuzzySymbol[1:], 64)
+		return int(math.Round(v))
 	}
 }
 
