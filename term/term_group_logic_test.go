@@ -328,6 +328,102 @@ func TestTermGroup(t *testing.T) {
 			termType: GROUP_TERM_TYPE,
 			wantStr:  `( ( ( quick AND fox ) OR ( brown AND fox ) OR fox ) AND NOT news )`,
 		},
+		{
+			name:  "TestLogicTermGroup03",
+			input: `(((quick and fox) OR (brown AND fox) OR fox) AND NOT news)^`,
+			want: &TermGroup{
+				LogicTermGroup: &LogicTermGroup{
+					OrTermGroup: &OrTermGroup{
+						AndTermGroup: &AndTermGroup{
+							ParenTermGroup: &ParenTermGroup{
+								SubTermGroup: &LogicTermGroup{
+									OrTermGroup: &OrTermGroup{
+										AndTermGroup: &AndTermGroup{
+											ParenTermGroup: &ParenTermGroup{
+												SubTermGroup: &LogicTermGroup{
+													OrTermGroup: &OrTermGroup{
+														AndTermGroup: &AndTermGroup{
+															TermGroupElem: &TermGroupElem{
+																SingleTerm: &SingleTerm{Begin: "quick"},
+															},
+														},
+														AnSTermGroup: []*AnSTermGroup{
+															{
+																AndSymbol: &op.AndSymbol{Symbol: "and"},
+																AndTermGroup: &AndTermGroup{
+																	TermGroupElem: &TermGroupElem{
+																		SingleTerm: &SingleTerm{Begin: "fox"},
+																	},
+																},
+															},
+														},
+													},
+												},
+											},
+										},
+									},
+									OSTermGroup: []*OSTermGroup{
+										{
+											OrSymbol: &op.OrSymbol{Symbol: "OR"},
+											OrTermGroup: &OrTermGroup{
+												AndTermGroup: &AndTermGroup{
+													ParenTermGroup: &ParenTermGroup{
+														SubTermGroup: &LogicTermGroup{
+															OrTermGroup: &OrTermGroup{
+																AndTermGroup: &AndTermGroup{
+																	TermGroupElem: &TermGroupElem{
+																		SingleTerm: &SingleTerm{Begin: "brown"},
+																	},
+																},
+																AnSTermGroup: []*AnSTermGroup{
+																	{
+																		AndSymbol: &op.AndSymbol{Symbol: "AND"},
+																		AndTermGroup: &AndTermGroup{
+																			TermGroupElem: &TermGroupElem{
+																				SingleTerm: &SingleTerm{Begin: "fox"},
+																			},
+																		},
+																	},
+																},
+															},
+														},
+													},
+												},
+											},
+										},
+										{
+											OrSymbol: &op.OrSymbol{Symbol: "OR"},
+											OrTermGroup: &OrTermGroup{
+												AndTermGroup: &AndTermGroup{
+													TermGroupElem: &TermGroupElem{
+														SingleTerm: &SingleTerm{Begin: "fox"},
+													},
+												},
+											},
+										},
+									},
+								},
+							},
+						},
+						AnSTermGroup: []*AnSTermGroup{
+							{
+								AndSymbol: &op.AndSymbol{Symbol: "AND"},
+								AndTermGroup: &AndTermGroup{
+									NotSymbol: &op.NotSymbol{Symbol: "NOT"},
+									TermGroupElem: &TermGroupElem{
+										SingleTerm: &SingleTerm{Begin: "news"},
+									},
+								},
+							},
+						},
+					},
+				},
+				BoostSymbol: "^",
+			},
+			boost:    1.0,
+			termType: GROUP_TERM_TYPE | BOOST_TERM_TYPE,
+			wantStr:  `( ( ( quick AND fox ) OR ( brown AND fox ) OR fox ) AND NOT news )^`,
+		},
 	}
 	for _, tt := range testCases {
 		t.Run(tt.name, func(t *testing.T) {

@@ -21,6 +21,8 @@ This package can parse lucene query used by ES (ElasticSearch), this package is 
 
 - 2、according to definition of fuzziness, specific fuzziness must to be integer. if you input float fuzziness, we will round this number. For example: input query `x:foo~1.2`, you will get fuzziness `1`; input query `x:foo~1.6` you will get fuzziness `2`.
 
+- 3、if you input boost symbol but value, you will get 1.0 by invoking function `Boost` of term. for instance query `foo:bar^`.
+
 ## Usage
 ```golang
 package main
@@ -85,8 +87,8 @@ or_symbol  = whitespace, (( '|'，'|' ) | 'OR' | 'or' ), whitespace ;
 not_symbol = ('!' | 'NOT' | 'not' ), whitespace ;
 
 (* modifier *)
-fuzzy_modifier = '~', [ number ] ;
-boost_modifier = '^', float ;
+fuzzy_modifier = '~', [ float ] ;
+boost_modifier = '^', [ float ] ;
 
 (* basic element *)
 identifier = ident_char, { ident_char } ;
@@ -101,4 +103,3 @@ quote      = '"' ;
 eol        = '\n' ;
 dot        = '.' ;
 ```
-

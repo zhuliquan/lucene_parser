@@ -169,10 +169,17 @@ func TestRangeTerm(t *testing.T) {
 			bound: &Bound{LeftValue: &RangeValue{SingleValue: []string{"2012", "-", "01", "-", "01"}, flag: false}, RightValue: &RangeValue{InfinityVal: "*", flag: true}, LeftInclude: false, RightInclude: false},
 		},
 		{
-			name:  "TestRangeTerm02",
+			name:  "TestRangeTerm15",
 			input: `<="dsada 78"^.9`,
 			want:  &RangeTerm{SRangeTerm: &SRangeTerm{Symbol: "<=", Value: &RangeValue{PhraseValue: []string{`dsada`, ` `, `78`}}}, BoostSymbol: "^.9"},
 			boost: 0.9,
+			bound: &Bound{LeftValue: &RangeValue{InfinityVal: "*", flag: false}, RightValue: &RangeValue{PhraseValue: []string{`dsada`, ` `, `78`}, flag: true}, LeftInclude: false, RightInclude: true},
+		},
+		{
+			name:  "TestRangeTerm16",
+			input: `<="dsada 78"^`,
+			want:  &RangeTerm{SRangeTerm: &SRangeTerm{Symbol: "<=", Value: &RangeValue{PhraseValue: []string{`dsada`, ` `, `78`}}}, BoostSymbol: "^"},
+			boost: 1.0,
 			bound: &Bound{LeftValue: &RangeValue{InfinityVal: "*", flag: false}, RightValue: &RangeValue{PhraseValue: []string{`dsada`, ` `, `78`}, flag: true}, LeftInclude: false, RightInclude: true},
 		},
 	}
@@ -324,6 +331,15 @@ func TestFuzzyTerm(t *testing.T) {
 			wildcard: true,
 			fuzzy:    0,
 			boost:    8.0,
+		},
+		{
+			name:     "TestFuzzyTerm10_01",
+			input:    `\/dsada\/\ dasda80980?*\^\^^`,
+			want:     &FuzzyTerm{SingleTerm: &SingleTerm{Begin: `\/dsada\/\ dasda`, Chars: []string{`80980`, `?`, `*`, `\^\^`}}, BoostSymbol: `^`},
+			valueS:   `\/dsada\/\ dasda80980?*\^\^^`,
+			wildcard: true,
+			fuzzy:    0,
+			boost:    1.0,
 		},
 		{
 			name:     "TestFuzzyTerm11",

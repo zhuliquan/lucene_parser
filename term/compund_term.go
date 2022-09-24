@@ -50,7 +50,7 @@ func (t *RangeTerm) GetBound() *Bound {
 func (t *RangeTerm) Boost() float64 {
 	if t == nil || (t.DRangeTerm == nil && t.SRangeTerm == nil) {
 		return 0.0
-	} else if len(t.BoostSymbol) == 0 {
+	} else if len(t.BoostSymbol) == 0 || t.BoostSymbol == "^" {
 		return 1.0
 	} else {
 		var res, _ = strconv.ParseFloat(t.BoostSymbol[1:], 64)
@@ -89,7 +89,7 @@ func (t *FuzzyTerm) GetTermType() TermType {
 func (t *FuzzyTerm) Boost() float64 {
 	if t == nil || (t.SingleTerm == nil && t.PhraseTerm == nil) {
 		return 0.0
-	} else if len(t.BoostSymbol) == 0 {
+	} else if len(t.BoostSymbol) == 0 || t.BoostSymbol == "^" {
 		return 1.0
 	} else {
 		var res, _ = strconv.ParseFloat(t.BoostSymbol[1:], 64)
