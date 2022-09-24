@@ -8,12 +8,18 @@ This package can parse lucene query used by ES (ElasticSearch), this package is 
 - 4、support bound range query,  for instance `x:[1 TO 2]`, `x:[1 TO 2}`.
 - 5、support side range query, for instance `x:>1` , `x:>=1` , `x:<1` , `x:<=1`.
 - 6、support boost modifier, for instance `x:1^2` , `x:"dsada 8908"^3`.
-- 7、support fuzzy query, for instance `x:for~2` , `x:"foo bar"~2`.
-- 8、support term group query, for instance `x:(foo OR bar)`, `x:(>1 && <2)`.
+- 7、support [fuzzy query](https://www.elastic.co/guide/en/elasticsearch/guide/current/fuzzy-query.html) with default [fuzziness](https://www.elastic.co/guide/en/elasticsearch/guide/current/fuzziness.html) or specific fuzziness, for instance `x:for~1.0`, `x;foo~`.
+- 8、support proximity query, for instance `x:"foo bar"~2`.
+- 9、support term group query, for instance `x:(foo OR bar)`, `x:(>1 && <2)`.
 
 ## Limitations
 - 1、only support lucene query with **field name**, instead of query without **field name** (i.e. this project can't parse query like `foo OR bar`, `foo AND bar`).
 - 2、don't support prefix operator `'+'` / `'-'`, for instance `+fo0 -bar`.
+
+## Note
+- 1、If similarity is not specified in the fuzzy query, and you will get `-1` by invoking function `Fuzziness` of term, which is allow the user to customize the default fuzziness or parameter of [AUTO fuzziness](https://www.elastic.co/guide/en/elasticsearch/reference/8.4/common-options.html#fuzziness). For example, when -1 is returned, you can specify the maximum and minimum term length of the AUTO parameter according to the fuzziness definition.
+
+- 2、according to definition of fuzziness, specific fuzziness must to be integer. if you input float fuzziness, we will round this number. For example: input query `x:foo~1.2`, you will get fuzziness `1`; input query `x:foo~1.6` you will get fuzziness `2`.
 
 ## Usage
 ```golang
