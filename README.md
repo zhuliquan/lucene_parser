@@ -4,7 +4,7 @@ This package can parse lucene query used by ES (ElasticSearch), this package is 
 ## Features
 - 1、support phrase term query, for instance `x:"foo bar"`.
 - 2、support regexp term query, for instance `x:/\d+\\.?\d+/`.
-- 3、support bool operator （i.e. `AND`, `OR`, `NOT`, `&&`, `||`, `!`） join sub query, for instance `x:1 AND y:2`, `x:1 || y:2`.
+- 3、support bool operator （i.e. `AND`, `OR`, `NOT`, `&&`, `||`, `!`） join sub query, for instance `x:1 AND y:2`, `x:1 || y:2`, we also support lower case bool operator (i.e. `and`, `or`, `not`).
 - 4、support bound range query,  for instance `x:[1 TO 2]`, `x:[1 TO 2}`.
 - 5、support side range query, for instance `x:>1` , `x:>=1` , `x:<1` , `x:<=1`.
 - 6、support boost modifier, for instance `x:1^2` , `x:"dsada 8908"^3`.
@@ -13,8 +13,9 @@ This package can parse lucene query used by ES (ElasticSearch), this package is 
 - 9、support term group query, for instance `x:(foo OR bar)`, `x:(>1 && <2)`.
 
 ## Limitations
-- 1、only support lucene query with **field name**, instead of query without **field name** (i.e. this project can't parse query like `foo OR bar`, `foo AND bar`).
+- 1、only support lucene query with **field name**, instead of query without **field name** (i.e. this project can't parse query like `foo OR bar`, `foo AND bar`, but can parse `foo:bar`, `foo:(bar1 AND bar2)`).
 - 2、don't support prefix operator `'+'` / `'-'`, for instance `+fo0 -bar`.
+- 3、don't support fuzziness of similarity (float number between 0 and 1), instead of fuzziness of maximum edit distance (i.e. Levenshtein Edit Distance — the number of one character changes that need to be made to one string to make it the same as another string.).
 
 ## Note
 - 1、If similarity is not specified in the fuzzy query, and you will get `-1` by invoking function `Fuzziness` of term, which is allow the user to customize the default fuzziness or parameter of [AUTO fuzziness](https://www.elastic.co/guide/en/elasticsearch/reference/8.4/common-options.html#fuzziness). For example, when -1 is returned, you can specify the maximum and minimum term length of the AUTO parameter according to the fuzziness definition.
