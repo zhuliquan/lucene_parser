@@ -1,7 +1,6 @@
 package term
 
 import (
-	"math"
 	"strconv"
 )
 
@@ -89,23 +88,16 @@ func (t *FuzzyTerm) GetTermType() TermType {
 func (t *FuzzyTerm) Boost() float64 {
 	if t == nil || (t.SingleTerm == nil && t.PhraseTerm == nil) {
 		return 0.0
-	} else if len(t.BoostSymbol) == 0 || t.BoostSymbol == "^" {
-		return 1.0
 	} else {
-		var res, _ = strconv.ParseFloat(t.BoostSymbol[1:], 64)
-		return res
+		return getBoostValue(t.BoostSymbol)
 	}
 }
 
 func (t *FuzzyTerm) Fuzziness() int {
 	if t == nil || len(t.FuzzySymbol) == 0 || (t.SingleTerm == nil && t.PhraseTerm == nil) {
 		return 0
-	} else if t.FuzzySymbol == "~" {
-		// default fuzziness
-		return -1
 	} else {
-		var v, _ = strconv.ParseFloat(t.FuzzySymbol[1:], 64)
-		return int(math.Round(v))
+		return getFuzziness(t.FuzzySymbol)
 	}
 }
 

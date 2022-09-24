@@ -1,7 +1,6 @@
 package term
 
 import (
-	"strconv"
 	"strings"
 
 	op "github.com/zhuliquan/lucene_parser/operator"
@@ -115,11 +114,8 @@ func (t *TermGroup) String() string {
 func (t *TermGroup) Boost() float64 {
 	if t == nil || t.LogicTermGroup == nil {
 		return 0.0
-	} else if len(t.BoostSymbol) == 0 || t.BoostSymbol == "^" {
-		return 1.0
 	} else {
-		var res, _ = strconv.ParseFloat(t.BoostSymbol[1:], 64)
-		return res
+		return getBoostValue(t.BoostSymbol)
 	}
 }
 
