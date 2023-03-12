@@ -7,6 +7,23 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
+func Scan(exp string) []*Token {
+	var tokens = []*Token{}
+	var ch = make(chan *Token, 100)
+	if err := Scanner.ParseString(exp, ch); err != nil {
+		return nil
+	} else {
+		for c := range ch {
+			tokens = append(tokens, c)
+		}
+		return tokens
+	}
+}
+
+func StringAddr(res string) *string {
+	return &res
+}
+
 func TestLexer(t *testing.T) {
 	var err error
 	if err != nil {
@@ -26,23 +43,23 @@ func TestLexer(t *testing.T) {
 			name:  "TestScan01",
 			input: `\ \ \:7:>8908 8+9 x:>=90`,
 			want: []*Token{
-				{IDENT: `\ \ \:`},
-				{NUMBER: `7`},
-				{COLON: ":"},
-				{COMPARE: ">"},
-				{NUMBER: "8908"},
-				{WHITESPACE: " "},
-				{NUMBER: "8"},
-				{PLUS: "+"},
-				{NUMBER: "9"},
-				{WHITESPACE: " "},
-				{IDENT: "x"},
-				{COLON: ":"},
-				{COMPARE: ">="},
-				{NUMBER: "90"},
+				{ESCAPE: StringAddr(`\ \ \:`)},
+				{NUMBER: StringAddr(`7`)},
+				{COLON: StringAddr(":")},
+				{COMPARE: StringAddr(">")},
+				{NUMBER: StringAddr("8908")},
+				{WHITESPACE: StringAddr(" ")},
+				{NUMBER: StringAddr("8")},
+				{PLUS: StringAddr("+")},
+				{NUMBER: StringAddr("9")},
+				{WHITESPACE: StringAddr(" ")},
+				{IDENT: StringAddr("x")},
+				{COLON: StringAddr(":")},
+				{COMPARE: StringAddr(">=")},
+				{NUMBER: StringAddr("90")},
 			},
 			typeS: []TokenType{
-				IDENT_TOKEN_TYPE,
+				ESCAPE_TOKEN_TYPE,
 				NUMBER_TOKEN_TYPE,
 				COLON_TOKEN_TYPE,
 				COMPARE_TOKEN_TYPE,
@@ -78,34 +95,34 @@ func TestLexer(t *testing.T) {
 			name:  "TestScan02",
 			input: `now-8d x:/[\d\s]+/ y:"dasda 8\ : +"`,
 			want: []*Token{
-				{IDENT: "now"},
-				{MINUS: "-"},
-				{NUMBER: "8"},
-				{IDENT: "d"},
-				{WHITESPACE: " "},
-				{IDENT: "x"},
-				{COLON: ":"},
-				{SLASH: "/"},
-				{LBRACK: "["},
-				{REVERSE: "\\"},
-				{IDENT: "d"},
-				{REVERSE: "\\"},
-				{IDENT: "s"},
-				{RBRACK: "]"},
-				{PLUS: "+"},
-				{SLASH: "/"},
-				{WHITESPACE: " "},
-				{IDENT: "y"},
-				{COLON: ":"},
-				{QUOTE: "\""},
-				{IDENT: "dasda"},
-				{WHITESPACE: " "},
-				{NUMBER: "8"},
-				{IDENT: "\\ "},
-				{COLON: ":"},
-				{WHITESPACE: " "},
-				{PLUS: "+"},
-				{QUOTE: "\""},
+				{IDENT: StringAddr("now")},
+				{MINUS: StringAddr("-")},
+				{NUMBER: StringAddr("8")},
+				{IDENT: StringAddr("d")},
+				{WHITESPACE: StringAddr(" ")},
+				{IDENT: StringAddr("x")},
+				{COLON: StringAddr(":")},
+				{SLASH: StringAddr("/")},
+				{LBRACK: StringAddr("[")},
+				{REVERSE: StringAddr("\\")},
+				{IDENT: StringAddr("d")},
+				{REVERSE: StringAddr("\\")},
+				{IDENT: StringAddr("s")},
+				{RBRACK: StringAddr("]")},
+				{PLUS: StringAddr("+")},
+				{SLASH: StringAddr("/")},
+				{WHITESPACE: StringAddr(" ")},
+				{IDENT: StringAddr("y")},
+				{COLON: StringAddr(":")},
+				{QUOTE: StringAddr("\"")},
+				{IDENT: StringAddr("dasda")},
+				{WHITESPACE: StringAddr(" ")},
+				{NUMBER: StringAddr("8")},
+				{ESCAPE: StringAddr("\\ ")},
+				{COLON: StringAddr(":")},
+				{WHITESPACE: StringAddr(" ")},
+				{PLUS: StringAddr("+")},
+				{QUOTE: StringAddr("\"")},
 			},
 			typeS: []TokenType{
 				IDENT_TOKEN_TYPE,
@@ -131,7 +148,7 @@ func TestLexer(t *testing.T) {
 				IDENT_TOKEN_TYPE,
 				WHITESPACE_TOKEN_TYPE,
 				NUMBER_TOKEN_TYPE,
-				IDENT_TOKEN_TYPE,
+				ESCAPE_TOKEN_TYPE,
 				COLON_TOKEN_TYPE,
 				WHITESPACE_TOKEN_TYPE,
 				PLUS_TOKEN_TYPE,
@@ -172,53 +189,54 @@ func TestLexer(t *testing.T) {
 			name:  "TestScan03",
 			input: `\!\:.\ \\:<=<(you OR !& \!\&*\** [{ you\[\]+ you?}])^090~9~ouo |!!&&`,
 			want: []*Token{
-				{IDENT: `\!\:`},
-				{DOT: `.`},
-				{IDENT: `\ \\`},
-				{COLON: ":"},
-				{COMPARE: "<="},
-				{COMPARE: "<"},
-				{LPAREN: "("},
-				{IDENT: "you"},
-				{WHITESPACE: " "},
-				{IDENT: "OR"},
-				{WHITESPACE: " "},
-				{NOT: "!"},
-				{AND: "&"},
-				{WHITESPACE: " "},
-				{IDENT: `\!\&`},
-				{WILDCARD: "*"},
-				{IDENT: `\*`},
-				{WILDCARD: "*"},
-				{WHITESPACE: " "},
-				{LBRACK: "["},
-				{LBRACE: "{"},
-				{WHITESPACE: " "},
-				{IDENT: `you\[\]`},
-				{PLUS: `+`},
-				{WHITESPACE: " "},
-				{IDENT: "you"},
-				{WILDCARD: "?"},
-				{RBRACE: "}"},
-				{RBRACK: "]"},
-				{RPAREN: ")"},
-				{BOOST: `^`},
-				{NUMBER: `090`},
-				{FUZZY: `~`},
-				{NUMBER: `9`},
-				{FUZZY: `~`},
-				{IDENT: "ouo"},
-				{WHITESPACE: " "},
-				{SOR: "|"},
-				{NOT: "!"},
-				{NOT: "!"},
-				{AND: "&"},
-				{AND: "&"},
+				{ESCAPE: StringAddr(`\!\:`)},
+				{DOT: StringAddr(`.`)},
+				{ESCAPE: StringAddr(`\ \\`)},
+				{COLON: StringAddr(":")},
+				{COMPARE: StringAddr("<=")},
+				{COMPARE: StringAddr("<")},
+				{LPAREN: StringAddr("(")},
+				{IDENT: StringAddr("you")},
+				{WHITESPACE: StringAddr(" ")},
+				{IDENT: StringAddr("OR")},
+				{WHITESPACE: StringAddr(" ")},
+				{NOT: StringAddr("!")},
+				{AND: StringAddr("&")},
+				{WHITESPACE: StringAddr(" ")},
+				{ESCAPE: StringAddr(`\!\&`)},
+				{WILDCARD: StringAddr("*")},
+				{ESCAPE: StringAddr(`\*`)},
+				{WILDCARD: StringAddr("*")},
+				{WHITESPACE: StringAddr(" ")},
+				{LBRACK: StringAddr("[")},
+				{LBRACE: StringAddr("{")},
+				{WHITESPACE: StringAddr(" ")},
+				{IDENT: StringAddr(`you`)},
+				{ESCAPE: StringAddr(`\[\]`)},
+				{PLUS: StringAddr(`+`)},
+				{WHITESPACE: StringAddr(" ")},
+				{IDENT: StringAddr("you")},
+				{WILDCARD: StringAddr("?")},
+				{RBRACE: StringAddr("}")},
+				{RBRACK: StringAddr("]")},
+				{RPAREN: StringAddr(")")},
+				{BOOST: StringAddr(`^`)},
+				{NUMBER: StringAddr(`090`)},
+				{FUZZY: StringAddr(`~`)},
+				{NUMBER: StringAddr(`9`)},
+				{FUZZY: StringAddr(`~`)},
+				{IDENT: StringAddr("ouo")},
+				{WHITESPACE: StringAddr(" ")},
+				{SOR: StringAddr("|")},
+				{NOT: StringAddr("!")},
+				{NOT: StringAddr("!")},
+				{AND: StringAddr("&")},
+				{AND: StringAddr("&")},
 			},
 			typeS: []TokenType{
-				IDENT_TOKEN_TYPE,
+				ESCAPE_TOKEN_TYPE,
 				DOT_TOKEN_TYPE,
-				IDENT_TOKEN_TYPE,
+				ESCAPE_TOKEN_TYPE,
 				COLON_TOKEN_TYPE,
 				COMPARE_TOKEN_TYPE,
 				COMPARE_TOKEN_TYPE,
@@ -230,15 +248,16 @@ func TestLexer(t *testing.T) {
 				NOT_TOKEN_TYPE,
 				AND_TOKEN_TYPE,
 				WHITESPACE_TOKEN_TYPE,
-				IDENT_TOKEN_TYPE,
+				ESCAPE_TOKEN_TYPE,
 				WILDCARD_TOKEN_TYPE,
-				IDENT_TOKEN_TYPE,
+				ESCAPE_TOKEN_TYPE,
 				WILDCARD_TOKEN_TYPE,
 				WHITESPACE_TOKEN_TYPE,
 				LBRACK_TOKEN_TYPE,
 				LBRACE_TOKEN_TYPE,
 				WHITESPACE_TOKEN_TYPE,
 				IDENT_TOKEN_TYPE,
+				ESCAPE_TOKEN_TYPE,
 				PLUS_TOKEN_TYPE,
 				WHITESPACE_TOKEN_TYPE,
 				IDENT_TOKEN_TYPE,
@@ -282,7 +301,8 @@ func TestLexer(t *testing.T) {
 				"[",
 				"{",
 				" ",
-				`you\[\]`,
+				`you`,
+				`\[\]`,
 				`+`,
 				" ",
 				"you",
@@ -308,26 +328,26 @@ func TestLexer(t *testing.T) {
 			name:  "TestScan04",
 			input: `x:2021-09/d y:/89\/\d+\d*/`,
 			want: []*Token{
-				{IDENT: `x`},
-				{COLON: ":"},
-				{NUMBER: "2021"},
-				{MINUS: "-"},
-				{NUMBER: "09"},
-				{SLASH: "/"},
-				{IDENT: "d"},
-				{WHITESPACE: " "},
-				{IDENT: "y"},
-				{COLON: ":"},
-				{SLASH: "/"},
-				{NUMBER: "89"},
-				{IDENT: "\\/"},
-				{REVERSE: `\`},
-				{IDENT: "d"},
-				{PLUS: `+`},
-				{REVERSE: "\\"},
-				{IDENT: "d"},
-				{WILDCARD: "*"},
-				{SLASH: "/"},
+				{IDENT: StringAddr(`x`)},
+				{COLON: StringAddr(":")},
+				{NUMBER: StringAddr("2021")},
+				{MINUS: StringAddr("-")},
+				{NUMBER: StringAddr("09")},
+				{SLASH: StringAddr("/")},
+				{IDENT: StringAddr("d")},
+				{WHITESPACE: StringAddr(" ")},
+				{IDENT: StringAddr("y")},
+				{COLON: StringAddr(":")},
+				{SLASH: StringAddr("/")},
+				{NUMBER: StringAddr("89")},
+				{ESCAPE: StringAddr("\\/")},
+				{REVERSE: StringAddr(`\`)},
+				{IDENT: StringAddr("d")},
+				{PLUS: StringAddr(`+`)},
+				{REVERSE: StringAddr("\\")},
+				{IDENT: StringAddr("d")},
+				{WILDCARD: StringAddr("*")},
+				{SLASH: StringAddr("/")},
 			},
 			typeS: []TokenType{
 				IDENT_TOKEN_TYPE,
@@ -342,7 +362,7 @@ func TestLexer(t *testing.T) {
 				COLON_TOKEN_TYPE,
 				SLASH_TOKEN_TYPE,
 				NUMBER_TOKEN_TYPE,
-				IDENT_TOKEN_TYPE,
+				ESCAPE_TOKEN_TYPE,
 				REVERSE_TOKEN_TYPE,
 				IDENT_TOKEN_TYPE,
 				PLUS_TOKEN_TYPE,
@@ -381,10 +401,10 @@ func TestLexer(t *testing.T) {
 				t.Errorf("Scan ( %+v ) = %+v, but want: %+v", tt.input, out, tt.want)
 			} else {
 				for i := 0; i < len(out); i++ {
-					assert.Equal(t, tt.typeS[i], out[i].GetTokenType())
+					assert.Equal(t, tt.wantS[i], out[i].String())
 				}
 				for i := 0; i < len(out); i++ {
-					assert.Equal(t, tt.wantS[i], out[i].String())
+					assert.Equal(t, tt.typeS[i], GetTokenType(out[i].String()))
 				}
 			}
 		})
@@ -392,11 +412,11 @@ func TestLexer(t *testing.T) {
 
 	var x *Token
 	assert.Equal(t, "", x.String())
-	assert.Equal(t, UNKNOWN_TOKEN_TYPE, x.GetTokenType())
+	assert.Equal(t, UNKNOWN_TOKEN_TYPE, GetTokenType(x.String()))
 	x = &Token{}
 	assert.Equal(t, "", x.String())
-	assert.Equal(t, UNKNOWN_TOKEN_TYPE, x.GetTokenType())
-	x = &Token{EOL: "\n"}
+	assert.Equal(t, UNKNOWN_TOKEN_TYPE, GetTokenType(x.String()))
+	x = &Token{EOL: StringAddr("\n")}
 	assert.Equal(t, "\n", x.String())
-	assert.Equal(t, EOL_TOKEN_TYPE, x.GetTokenType())
+	assert.Equal(t, EOL_TOKEN_TYPE, GetTokenType(x.String()))
 }

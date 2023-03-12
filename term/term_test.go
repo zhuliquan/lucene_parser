@@ -96,7 +96,7 @@ func TestTerm(t *testing.T) {
 		{
 			name:      "TestTerm06",
 			input:     `\/dsada\/\ dasda80980?*`,
-			want:      &Term{FuzzyTerm: &FuzzyTerm{SingleTerm: &SingleTerm{Begin: `\/dsada\/\ dasda`, Chars: []string{`80980`, `?`, `*`}}}},
+			want:      &Term{FuzzyTerm: &FuzzyTerm{SingleTerm: &SingleTerm{Begin: `\/`, Chars: []string{`dsada`, `\/\ `, `dasda`, `80980`, `?`, `*`}}}},
 			wantStr:   `\/dsada\/\ dasda80980?*`,
 			boost:     1.0,
 			valueS:    `\/dsada\/\ dasda80980?*`,
@@ -107,7 +107,7 @@ func TestTerm(t *testing.T) {
 		{
 			name:      "TestTerm07",
 			input:     `\/dsada\/\ dasda80980?*\^\^^08`,
-			want:      &Term{FuzzyTerm: &FuzzyTerm{SingleTerm: &SingleTerm{Begin: `\/dsada\/\ dasda`, Chars: []string{`80980`, `?`, `*`, `\^\^`}}, BoostSymbol: `^08`}},
+			want:      &Term{FuzzyTerm: &FuzzyTerm{SingleTerm: &SingleTerm{Begin: `\/`, Chars: []string{`dsada`, `\/\ `, `dasda`, `80980`, `?`, `*`, `\^\^`}}, BoostSymbol: `^08`}},
 			wantStr:   `\/dsada\/\ dasda80980?*\^\^^08`,
 			boost:     8.0,
 			valueS:    `\/dsada\/\ dasda80980?*\^\^`,
@@ -118,7 +118,7 @@ func TestTerm(t *testing.T) {
 		{
 			name:      "TestTerm08",
 			input:     `\/dsada\/\ dasda80980?*\^\^~8`,
-			want:      &Term{FuzzyTerm: &FuzzyTerm{SingleTerm: &SingleTerm{Begin: `\/dsada\/\ dasda`, Chars: []string{`80980`, `?`, `*`, `\^\^`}}, FuzzySymbol: `~8`}},
+			want:      &Term{FuzzyTerm: &FuzzyTerm{SingleTerm: &SingleTerm{Begin: `\/`, Chars: []string{`dsada`, `\/\ `, `dasda`, `80980`, `?`, `*`, `\^\^`}}, FuzzySymbol: `~8`}},
 			wantStr:   `\/dsada\/\ dasda80980?*\^\^~8`,
 			boost:     1.0,
 			valueS:    `\/dsada\/\ dasda80980?*\^\^`,

@@ -1,3 +1,4 @@
+//go:build prefix_group
 // +build prefix_group
 
 package term
@@ -46,14 +47,14 @@ func TestPrefixTerm(t *testing.T) {
 		{
 			name:  "TestPrefixTerm04",
 			input: `\+\/dsada\/\ dasda80980?*`,
-			want:  &PrefixTerm{Elem: &TermGroupElem{SingleTerm: &SingleTerm{Begin: `\+\/dsada\/\ dasda80980`, Chars: []string{`?`, `*`}}}},
+			want:  &PrefixTerm{Elem: &TermGroupElem{SingleTerm: &SingleTerm{Begin: `\+`, Chars: []string{`\/`, `dsada`, `\/\ `, `dasda`, `80980`, `?`, `*`}}}},
 			oType: op.SHOULD_PREFIX_TYPE,
 		},
 		{
 			name:  "TestPrefixTerm05",
 			input: `+\/dsada\/\ dasda80980?*`,
 			want: &PrefixTerm{Symbol: "+", Elem: &TermGroupElem{
-				SingleTerm: &SingleTerm{Begin: `\/dsada\/\ dasda80980`, Chars: []string{`?`, `*`}},
+				SingleTerm: &SingleTerm{Begin: `\/`, Chars: []string{`dsada`, `\/\ `, `dasda`, `80980`, `?`, `*`}},
 			}},
 			oType: op.MUST_PREFIX_TYPE,
 		},
@@ -61,7 +62,7 @@ func TestPrefixTerm(t *testing.T) {
 			name:  "TestPrefixTerm06",
 			input: `-\-\/dsada\/\ dasda80980?*`,
 			want: &PrefixTerm{Symbol: "-", Elem: &TermGroupElem{
-				SingleTerm: &SingleTerm{Begin: `\-\/dsada\/\ dasda80980`, Chars: []string{`?`, `*`}},
+				SingleTerm: &SingleTerm{Begin: `\-`, Chars: []string{`\/`, `dsada`, `\/\ `, `dasda`, `80980`, `?`, `*`}},
 			}},
 			oType: op.MUST_NOT_PREFIX_TYPE,
 		},
@@ -161,19 +162,19 @@ func TestWPrefixTerm(t *testing.T) {
 		{
 			name:  "TestWPrefixTerm04",
 			input: `  \+\/dsada\/\ dasda80980?*`,
-			want:  &WPrefixTerm{Elem: &TermGroupElem{SingleTerm: &SingleTerm{Begin: `\+\/dsada\/\ dasda80980`, Chars: []string{`?`, `*`}}}},
+			want:  &WPrefixTerm{Elem: &TermGroupElem{SingleTerm: &SingleTerm{Begin: `\+`, Chars: []string{`\/`, `dsada`, `\/\ `, `dasda`, `80980`, `?`, `*`}}}},
 			oType: op.SHOULD_PREFIX_TYPE,
 		},
 		{
 			name:  "TestWPrefixTerm05",
 			input: `  +\/dsada\/\ dasda80980?*`,
-			want:  &WPrefixTerm{Symbol: "+", Elem: &TermGroupElem{SingleTerm: &SingleTerm{Begin: `\/dsada\/\ dasda80980`, Chars: []string{`?`, `*`}}}},
+			want:  &WPrefixTerm{Symbol: "+", Elem: &TermGroupElem{SingleTerm: &SingleTerm{Begin: `\/`, Chars: []string{`dsada`, `\/\ `, `dasda`, `80980`, `?`, `*`}}}},
 			oType: op.MUST_PREFIX_TYPE,
 		},
 		{
 			name:  "TestWPrefixTerm06",
 			input: `  -\-\/dsada\/\ dasda80980?*`,
-			want:  &WPrefixTerm{Symbol: "-", Elem: &TermGroupElem{SingleTerm: &SingleTerm{Begin: `\-\/dsada\/\ dasda80980`, Chars: []string{`?`, `*`}}}},
+			want:  &WPrefixTerm{Symbol: "-", Elem: &TermGroupElem{SingleTerm: &SingleTerm{Begin: `\-`, Chars: []string{`\/`, `dsada`, `\/\ `, `dasda`, `80980`, `?`, `*`}}}},
 			oType: op.MUST_NOT_PREFIX_TYPE,
 		},
 		{
@@ -257,8 +258,8 @@ func TestPrefixTermGroup(t *testing.T) {
 					{Elem: &TermGroupElem{PhraseTerm: &PhraseTerm{Value: []string{`dsada`, ` `, `78`}}}},
 					{Symbol: "+", Elem: &TermGroupElem{PhraseTerm: &PhraseTerm{Value: []string{`89080`, ` `, `xxx`}}}},
 					{Symbol: "-", Elem: &TermGroupElem{PhraseTerm: &PhraseTerm{Value: []string{`xx`, ` `, `yyyy`}}}},
-					{Symbol: "+", Elem: &TermGroupElem{SingleTerm: &SingleTerm{Value: []string{`\+dsada\ 7897`}}}},
-					{Symbol: "-", Elem: &TermGroupElem{SingleTerm: &SingleTerm{Value: []string{`\-\-dsada\-7897`}}}},
+					{Symbol: "+", Elem: &TermGroupElem{SingleTerm: &SingleTerm{Value: []string{`\+`, `dsada`, `\ `, `7897`}}}},
+					{Symbol: "-", Elem: &TermGroupElem{SingleTerm: &SingleTerm{Value: []string{`\-\-`, `dsada`, `\-`, `7897`}}}},
 				},
 			},
 		},
@@ -380,8 +381,8 @@ func TestTermGroup(t *testing.T) {
 						{Elem: &TermGroupElem{PhraseTerm: &PhraseTerm{Chars: []string{`dsada`, ` `, `78`}}}},
 						{Symbol: "+", Elem: &TermGroupElem{PhraseTerm: &PhraseTerm{Value: []string{`89080`, ` `, `xxx`}}}},
 						{Symbol: "-", Elem: &TermGroupElem{PhraseTerm: &PhraseTerm{Value: []string{`xx`, ` `, `yyyy`}}}},
-						{Symbol: "+", Elem: &TermGroupElem{SingleTerm: &SingleTerm{Value: []string{`\+dsada\ `, `7897`}}}},
-						{Symbol: "-", Elem: &TermGroupElem{SingleTerm: &SingleTerm{Value: []string{`\-\-dsada\-`, `7897`}}}},
+						{Symbol: "+", Elem: &TermGroupElem{SingleTerm: &SingleTerm{Value: []string{`\+`, `dsada`, `\ `, `7897`}}}},
+						{Symbol: "-", Elem: &TermGroupElem{SingleTerm: &SingleTerm{Value: []string{`\-\-`, `dsada`, `\-`, `7897`}}}},
 					},
 				},
 				BoostSymbol: "^1.8",

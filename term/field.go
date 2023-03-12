@@ -1,9 +1,11 @@
 package term
 
-import "strings"
+import (
+	"strings"
+)
 
 type Field struct {
-	Value []string `parser:"@(IDENT|MINUS|NUMBER|DOT)+"`
+	Value []string `parser:"@(IDENT|ESCAPE|MINUS|NUMBER|DOT)+"`
 }
 
 func (f *Field) String() string {

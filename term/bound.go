@@ -30,7 +30,7 @@ type RangeValue struct {
 	flag        bool     // 表示左右的
 	InfinityVal string   `parser:"  @('*')" json:"infinity_val"`
 	PhraseValue []string `parser:"| QUOTE @( REVERSE QUOTE | !QUOTE )* QUOTE" json:"phrase_value"`
-	SingleValue []string `parser:"| @(IDENT|NUMBER|DOT|PLUS|MINUS|SOR|SLASH|COLON)+" json:"simple_value"`
+	SingleValue []string `parser:"| @(IDENT|ESCAPE|NUMBER|DOT|PLUS|MINUS|SOR|SLASH|COLON)+" json:"simple_value"`
 }
 
 func (v *RangeValue) String() string {

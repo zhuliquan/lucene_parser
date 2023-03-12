@@ -3,12 +3,14 @@ package term
 import (
 	"fmt"
 	"strings"
+
+	"github.com/zhuliquan/lucene_parser/token"
 )
 
 // simple term: is a single term without escape char and whitespace
 type SingleTerm struct {
-	Begin    string   `parser:"@(IDENT|NUMBER|WILDCARD|MINUS|PLUS)" json:"begin"`
-	Chars    []string `parser:"@(IDENT|NUMBER|DOT|WILDCARD|MINUS|PLUS|MINUS|SOR|SLASH)*" json:"chars"`
+	Begin    string   `parser:"@(IDENT|ESCAPE|NUMBER|WILDCARD|MINUS|PLUS)" json:"begin"`
+	Chars    []string `parser:"@(IDENT|ESCAPE|NUMBER|DOT|WILDCARD|MINUS|PLUS|MINUS|SOR|SLASH)*" json:"chars"`
 	wildcard int8
 }
 
@@ -48,7 +50,7 @@ func (t *SingleTerm) haveWildcard() bool {
 		return true
 	} else {
 		for _, tk := range t.Chars {
-			if tk == "*" || tk == "?" {
+			if token.GetTokenType(tk) == token.WILDCARD_TOKEN_TYPE {
 				t.wildcard = 1
 				return true
 			}
@@ -101,7 +103,7 @@ func (t *PhraseTerm) haveWildcard() bool {
 		return true
 	} else {
 		for _, tk := range t.Chars {
-			if tk == "*" || tk == "?" {
+			if token.GetTokenType(tk) == token.WILDCARD_TOKEN_TYPE {
 				t.wildcard = 1
 				return true
 			}
@@ -140,7 +142,7 @@ func (t *RegexpTerm) String() string {
 	}
 }
 
-//double side of range term: a term is surrounded by brace / bracket, for instance [1 TO 2] / [1 TO 2} / {1 TO 2] / {1 TO 2}
+// double side of range term: a term is surrounded by brace / bracket, for instance [1 TO 2] / [1 TO 2} / {1 TO 2] / {1 TO 2}
 type DRangeTerm struct {
 	LBRACKET string      `parser:"@(LBRACE|LBRACK) WHITESPACE*" json:"left_bracket"`
 	LValue   *RangeValue `parser:"@@ WHITESPACE+ 'TO'" json:"left_value"`
