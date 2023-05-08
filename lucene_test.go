@@ -182,7 +182,7 @@ func TestLucene(t *testing.T) {
 		},
 		{
 			name:  "TestLucene04",
-			input: `x:(txt OR foo OR bar) AND NOT x-y:"xxx" OR NOT zz:iopio\ 90`,
+			input: `x:(txt OR foo OR bar) AND NOT x-y:"xxx" OR !zz:iopio\ 90`,
 			want: &Lucene{
 				OrQuery: &OrQuery{
 					AndQuery: &AndQuery{
@@ -243,11 +243,11 @@ func TestLucene(t *testing.T) {
 						OrSymbol: &operator.OrSymbol{Symbol: "OR"},
 						OrQuery: &OrQuery{
 							AndQuery: &AndQuery{
-								NotSymbol: &operator.NotSymbol{Symbol: "NOT"},
+								NotSymbol: &operator.NotSymbol{Symbol: "!"},
 								FieldQuery: &FieldQuery{
 									Field: &term.Field{Value: []string{"zz"}},
 									Term: &term.Term{FuzzyTerm: &term.FuzzyTerm{
-										SingleTerm: &term.SingleTerm{Begin: `iopio\ `, Chars: []string{`90`}},
+										SingleTerm: &term.SingleTerm{Begin: `iopio`, Chars: []string{`\ `, `90`}},
 									}},
 								},
 							},

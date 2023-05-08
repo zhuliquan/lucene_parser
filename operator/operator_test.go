@@ -38,6 +38,12 @@ func TestAndSymbol(t *testing.T) {
 			want:    &AndSymbol{Symbol: "&&"},
 			wantStr: " AND ",
 		},
+		{
+			name:    "TestAndSymbol04",
+			input:   `&&`,
+			want:    &AndSymbol{Symbol: "&&"},
+			wantStr: " AND ",
+		},
 	}
 
 	for _, tt := range testCases {
@@ -89,6 +95,12 @@ func TestOrSymbol(t *testing.T) {
 			want:    &OrSymbol{Symbol: "||"},
 			wantStr: " OR ",
 		},
+		{
+			name:    "TestOrSymbol04",
+			input:   `||`,
+			want:    &OrSymbol{Symbol: "||"},
+			wantStr: " OR ",
+		},
 	}
 
 	for _, tt := range testCases {
@@ -136,6 +148,12 @@ func TestNotSymbol(t *testing.T) {
 		{
 			name:    "TestNotSymbol03",
 			input:   `! `,
+			want:    &NotSymbol{Symbol: "!"},
+			wantStr: "NOT ",
+		},
+		{
+			name:    "TestNotSymbol04",
+			input:   `!`,
 			want:    &NotSymbol{Symbol: "!"},
 			wantStr: "NOT ",
 		},
