@@ -420,7 +420,7 @@ func TestTerm(t *testing.T) {
 				RangeTerm: &RangeTerm{
 					SRangeTerm: &SRangeTerm{
 						Symbol: "<=",
-						Value:  &RangeValue{SingleValue: []string{`dsada\ `, `78`}},
+						Value:  &RangeValue{SingleValue: []string{`dsada`, `\ `, `78`}},
 					},
 				},
 			},
@@ -428,14 +428,14 @@ func TestTerm(t *testing.T) {
 			boost:   1.0,
 			valueS: &Bound{
 				LeftValue:    &RangeValue{InfinityVal: "*", flag: false},
-				RightValue:   &RangeValue{SingleValue: []string{`dsada\ `, `78`}, flag: true},
+				RightValue:   &RangeValue{SingleValue: []string{`dsada`, `\ `, `78`}, flag: true},
 				LeftInclude:  false,
 				RightInclude: true,
 			},
 			fuzziness: 0,
 			bound: &Bound{
 				LeftValue:    &RangeValue{InfinityVal: "*", flag: false},
-				RightValue:   &RangeValue{SingleValue: []string{`dsada\ `, `78`}, flag: true},
+				RightValue:   &RangeValue{SingleValue: []string{`dsada`, `\ `, `78`}, flag: true},
 				LeftInclude:  false,
 				RightInclude: true,
 			},
@@ -448,7 +448,7 @@ func TestTerm(t *testing.T) {
 				RangeTerm: &RangeTerm{
 					SRangeTerm: &SRangeTerm{
 						Symbol: "<",
-						Value:  &RangeValue{SingleValue: []string{`dsada\ `, `78`}},
+						Value:  &RangeValue{SingleValue: []string{`dsada`, `\ `, `78`}},
 					},
 					BoostSymbol: "^08",
 				},
@@ -457,14 +457,14 @@ func TestTerm(t *testing.T) {
 			boost:   8.0,
 			valueS: &Bound{
 				LeftValue:    &RangeValue{InfinityVal: "*", flag: false},
-				RightValue:   &RangeValue{SingleValue: []string{`dsada\ `, `78`}, flag: true},
+				RightValue:   &RangeValue{SingleValue: []string{`dsada`, `\ `, `78`}, flag: true},
 				LeftInclude:  false,
 				RightInclude: false,
 			},
 			fuzziness: 0,
 			bound: &Bound{
 				LeftValue:    &RangeValue{InfinityVal: "*", flag: false},
-				RightValue:   &RangeValue{SingleValue: []string{`dsada\ `, `78`}, flag: true},
+				RightValue:   &RangeValue{SingleValue: []string{`dsada`, `\ `, `78`}, flag: true},
 				LeftInclude:  false,
 				RightInclude: false,
 			},
@@ -477,7 +477,7 @@ func TestTerm(t *testing.T) {
 				RangeTerm: &RangeTerm{
 					SRangeTerm: &SRangeTerm{
 						Symbol: ">",
-						Value:  &RangeValue{SingleValue: []string{`dsada\ `, `78`}},
+						Value:  &RangeValue{SingleValue: []string{`dsada`, `\ `, `78`}},
 					},
 					BoostSymbol: "^080",
 				},
@@ -485,14 +485,14 @@ func TestTerm(t *testing.T) {
 			wantStr: `{ dsada\ 78 TO * }^080`,
 			boost:   80.0,
 			valueS: &Bound{
-				LeftValue:    &RangeValue{SingleValue: []string{`dsada\ `, `78`}, flag: false},
+				LeftValue:    &RangeValue{SingleValue: []string{`dsada`, `\ `, `78`}, flag: false},
 				RightValue:   &RangeValue{InfinityVal: "*", flag: true},
 				LeftInclude:  false,
 				RightInclude: false,
 			},
 			fuzziness: 0,
 			bound: &Bound{
-				LeftValue:    &RangeValue{SingleValue: []string{`dsada\ `, `78`}, flag: false},
+				LeftValue:    &RangeValue{SingleValue: []string{`dsada`, `\ `, `78`}, flag: false},
 				RightValue:   &RangeValue{InfinityVal: "*", flag: true},
 				LeftInclude:  false,
 				RightInclude: false,

@@ -438,10 +438,10 @@ func TestSRangeTerm(t *testing.T) {
 		{
 			name:  "SRangeTerm02",
 			input: `<"dsada\\ 78"`,
-			want:  &SRangeTerm{Symbol: "<", Value: &RangeValue{PhraseValue: []string{`dsada\\`, ` `, `78`}}},
+			want:  &SRangeTerm{Symbol: "<", Value: &RangeValue{PhraseValue: []string{`dsada`, `\\`, ` `, `78`}}},
 			bound: &Bound{
 				LeftValue:    &RangeValue{InfinityVal: "*", flag: false},
-				RightValue:   &RangeValue{PhraseValue: []string{`dsada\\`, ` `, `78`}, flag: true},
+				RightValue:   &RangeValue{PhraseValue: []string{`dsada`, `\\`, ` `, `78`}, flag: true},
 				LeftInclude:  false,
 				RightInclude: false,
 			},
@@ -453,9 +453,9 @@ func TestSRangeTerm(t *testing.T) {
 		{
 			name:  "SRangeTerm03",
 			input: `>=dsada\ 78`,
-			want:  &SRangeTerm{Symbol: ">=", Value: &RangeValue{SingleValue: []string{`dsada\ `, `78`}}},
+			want:  &SRangeTerm{Symbol: ">=", Value: &RangeValue{SingleValue: []string{`dsada`, `\ `, `78`}}},
 			bound: &Bound{
-				LeftValue:    &RangeValue{SingleValue: []string{`dsada\ `, `78`}, flag: false},
+				LeftValue:    &RangeValue{SingleValue: []string{`dsada`, `\ `, `78`}, flag: false},
 				RightValue:   &RangeValue{InfinityVal: "*", flag: true},
 				LeftInclude:  true,
 				RightInclude: false,
@@ -468,9 +468,9 @@ func TestSRangeTerm(t *testing.T) {
 		{
 			name:  "SRangeTerm04",
 			input: `>dsada\ 78`,
-			want:  &SRangeTerm{Symbol: ">", Value: &RangeValue{SingleValue: []string{`dsada\ `, `78`}}},
+			want:  &SRangeTerm{Symbol: ">", Value: &RangeValue{SingleValue: []string{`dsada`, `\ `, `78`}}},
 			bound: &Bound{
-				LeftValue:    &RangeValue{SingleValue: []string{`dsada\ `, `78`}, flag: false},
+				LeftValue:    &RangeValue{SingleValue: []string{`dsada`, `\ `, `78`}, flag: false},
 				RightValue:   &RangeValue{InfinityVal: "*", flag: true},
 				LeftInclude:  false,
 				RightInclude: false,
