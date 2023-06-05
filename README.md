@@ -51,10 +51,10 @@ lucene parser will convert string of lucene query to ast, according to EBNF of l
 ```ebnf
 (* lucene expression *)
 lucene = or_query, { or_sym_query } ;
-or_sym_query  = or_symbol, [ not_symbol ], or_query ;
+or_sym_query  = ( or_symbol | whitespace, not_symbol ), or_query ;
 or_query      = and_query, { and_sym_query } ;
-and_sym_query = and_symbol, [ not_symbol ], and_query ;
-and_query     = ( not_symbol, lucene ) | ( '(', lucene, ')' ) | ( field, term ) ;
+and_sym_query = and_symbol, and_query ;
+and_query     = [ not_symbol ], ( '(', [ whitespace ], lucene, [ whitespace ], ')' | ( field, term) ) ;
 
 (* field and term *)
 field_char       = identifier | '-' | number | dot ;
@@ -62,12 +62,12 @@ field            = field_char, { field_char }, ':' ;
 term = range_term | fuzzy_term | regexp_term | term_group ;
 
 (* term group *)
-term_group = logic_term_group, [ boost_modifier ] ;
+term_group = '(', logic_term_group, ')', [ boost_modifier ] ;
 logic_term_group   = or_term_group, { or_sym_term_group } ;
-or_sym_term_group  = or_symbol, [ not_symbol ], or_term_group ;
+or_sym_term_group  = ( or_symbol | whitespace, not_symbol ), or_term_group ;
 or_term_group      = and_term_group, { and_sym_term_group } ;
-and_sym_term_group = and_symbol, [ not_symbol ], and_term_group ;
-and_term_group     = ( not_symbol，logic_term_group ) | ( '(' , logic_term_group, ')' ) | group_elem ;
+and_sym_term_group = and_symbol, and_term_group ;
+and_term_group     = [ not_symbol ], ( '(', [whitespace] , logic_term_group, [whitespace], ')'  | group_elem );
 group_elem = simple_term | phrase_term | single_range_term | double_range_term ;
 
 (* compound term *)
@@ -77,7 +77,7 @@ fuzzy_term = ( simple_term | phrase_term ), [ fuzzy_modifier | boost_modifier ] 
 (* simple term *)
 double_range_term = ('[' | '{' ), [whitespace], range_value, whitespace, 'TO', whitespace, range_value, [whitespace], ( ']' | '}' ) ;
 single_range_term = [ ('>' | '<'), ['='] ], range_value ;
-range_value       = phrase_term | (identifier | number | '.' | '+' | '-' | '|' | '/' | ':'), { (identifier | '+' | '-' | dot | ) } | '*' ;
+range_value       = phrase_term | (identifier | number | '.' | '+' | '-' | '|' | '/' | ':') { (identifier | '+' | '-' | dot | ) } | '*' ;
 simple_term      = (identifier | number | '+' | '-'), { simple_term_char } ;
 phrase_term      = quote, phrase_term_char, {phrase_term_char}, quote ;
 regexp_term      = '/', regexp_term_char, { regexp_term_char }, '/' ;
@@ -86,23 +86,24 @@ simple_term_char = identifier | number | dot | '?' | '*' | '-' | '+' | '|' | '/'
 regexp_term_char = ( -'/' | '\\', '/') ;
 
 (* bool operator *)
-and_symbol = whitespace, (( '&'，'&' ) | 'AND' | 'and' ), whitespace ;
-or_symbol  = whitespace, (( '|'，'|' ) | 'OR' | 'or' ), whitespace ;
-not_symbol = ('!' | 'NOT' | 'not' ), whitespace ;
+and_symbol = whitespace , (( '&', '&' ) | 'AND' | 'and' ), whitespace ;
+or_symbol  = whitespace , (( '|', '|' ) | 'OR' | 'or' ), whitespace ;
+not_symbol = ('!' , [whitespace] ) | (('NOT' | 'not' ), whitespace ;
 
 (* modifier *)
 fuzzy_modifier = '~', [ float ] ;
 boost_modifier = '^', [ float ] ;
 
 (* basic element *)
-identifier = ident_char, { ident_char } ;
+identifier = ident_char , { ident_char } ;
 number     = digit , { digit } ;
 float      = digit , { digit }, [ dot, digit, { digit } ] ;
 escape     = '-' | '+' | '!' | '&' | '|' | '?' | '*' | '\\' | '(' | ')' | '[' | ']' | '{' | '}' | '/' | '<' | '>' | '=' | '~' | '^'  | ':' ;
 compare    = ('<' | '>')，[ '=' ] ;
-ident_char = ( -( escape | digit | dot | whitespace | quote ) | '\\' , (escape | whitespace) ) ;
-digit      = '0' | '1' | '2' | '3' | '4' | '5' | '6' | '7' | '8' | '9' ;
-whitespace = '\t' | '\r' | '\f' | ' ' ;
+ident_char = ( -( escape | digit | dot | whitespace_char | quote ) | '\\' , (escape | whitespace_char) ) ;
+digit      = '0' ... '9' ;
+whitespace = whitespace_char , { whitespace_char };
+whitespace_char = '\t' | '\r' | '\f' | ' ' ;
 quote      = '"' ;
 eol        = '\n' ;
 dot        = '.' ;
