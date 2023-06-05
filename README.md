@@ -11,11 +11,14 @@ This package can parse lucene query used by ES (ElasticSearch), this package is 
 - 7、support [fuzzy query](https://www.elastic.co/guide/en/elasticsearch/guide/current/fuzzy-query.html) with default [fuzziness](https://www.elastic.co/guide/en/elasticsearch/guide/current/fuzziness.html) or specific fuzziness, for instance `x:for~1.0`, `x;foo~`.
 - 8、support proximity query, for instance `x:"foo bar"~2`.
 - 9、support term group query, for instance `x:(foo OR bar)`, `x:(>1 && <2)`.
+- 10、support not operator be used with just one term (i.g. `not x:y`), this feature is differs from [the definition of `NOT` in standard lucene syntax](https://lucene.apache.org/core/2_9_4/queryparsersyntax.html#NOT).
+- 11、support ignore `OR` operator when it behind with `NOT` operator (i.e. you can write `x:y or not x2:y2` as `x:y not x2:y2`).
 
 ## Limitations
 - 1、only support lucene query with **field name**, instead of query without **field name** (i.e. this project can't parse query like `foo OR bar`, `foo AND bar`, but can parse `foo:bar`, `foo:(bar1 AND bar2)`).
 - 2、don't support prefix operator `'+'` / `'-'`, for instance `+fo0 -bar`.
 - 3、don't support fuzziness of similarity (float number between 0 and 1), instead of fuzziness of maximum edit distance (i.e. Levenshtein Edit Distance — the number of one character changes that need to be made to one string to make it the same as another string.).
+- 4、don't support space is regard as `OR` operator (i.g. `x1:y1 x2:y2`), but support space + `NOT` operator convert to `OR NOT` operator (i.g. `x:y not x1:y2` => `x:y or not x2:y2`). (I don't know how to handle expression which includes both `or` token and space token (i.g. `x y or z`) . If you have good idea, please contact me)
 
 ## Note
 - 1、If similarity is not specified in the fuzzy query, and you will get `-1` by invoking function `Fuzziness` of term, which is allow the user to customize the default fuzziness or parameter of [AUTO fuzziness](https://www.elastic.co/guide/en/elasticsearch/reference/8.4/common-options.html#fuzziness). For example, when -1 is returned, you can specify the maximum and minimum term length of the AUTO parameter according to the fuzziness definition.
