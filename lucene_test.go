@@ -19,6 +19,73 @@ func TestLucene(t *testing.T) {
 
 	var testCases = []testCase{
 		{
+			name:  "Test_space_not_replace_or_not_01",
+			input: `x:1 NOT x:2`,
+			want: &Lucene{
+				OrQuery: &OrQuery{
+					AndQuery: &AndQuery{
+						FieldQuery: &FieldQuery{
+							Field: &term.Field{Value: []string{"x"}},
+							Term: &term.Term{FuzzyTerm: &term.FuzzyTerm{
+								SingleTerm: &term.SingleTerm{Begin: "1"},
+							}},
+						},
+					},
+				},
+				OSQuery: []*OSQuery{
+					{
+						NotSymbol: &operator.NotSymbol{Symbol: "NOT"},
+						OrQuery: &OrQuery{
+							AndQuery: &AndQuery{
+								FieldQuery: &FieldQuery{
+									Field: &term.Field{Value: []string{"x"}},
+									Term: &term.Term{FuzzyTerm: &term.FuzzyTerm{
+										SingleTerm: &term.SingleTerm{Begin: "2"},
+									}},
+								},
+							},
+						},
+					},
+				},
+			},
+			wantErr: false,
+			wantStr: `x:1 OR NOT x:2`,
+		},
+		{
+			name:  "Test_space_not_replace_or_not_02",
+			input: `!x:1 NOT x:2`,
+			want: &Lucene{
+				OrQuery: &OrQuery{
+					AndQuery: &AndQuery{
+						NotSymbol: &operator.NotSymbol{Symbol: "!"},
+						FieldQuery: &FieldQuery{
+							Field: &term.Field{Value: []string{"x"}},
+							Term: &term.Term{FuzzyTerm: &term.FuzzyTerm{
+								SingleTerm: &term.SingleTerm{Begin: "1"},
+							}},
+						},
+					},
+				},
+				OSQuery: []*OSQuery{
+					{
+						NotSymbol: &operator.NotSymbol{Symbol: "NOT"},
+						OrQuery: &OrQuery{
+							AndQuery: &AndQuery{
+								FieldQuery: &FieldQuery{
+									Field: &term.Field{Value: []string{"x"}},
+									Term: &term.Term{FuzzyTerm: &term.FuzzyTerm{
+										SingleTerm: &term.SingleTerm{Begin: "2"},
+									}},
+								},
+							},
+						},
+					},
+				},
+			},
+			wantErr: false,
+			wantStr: `NOT x:1 OR NOT x:2`,
+		},
+		{
 			name:  "TestLucene01",
 			input: `x:1 AND NOT x:2`,
 			want: &Lucene{

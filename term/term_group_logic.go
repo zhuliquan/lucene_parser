@@ -41,16 +41,22 @@ func (t *OrTermGroup) String() string {
 	}
 }
 
+// "or" | " !" | " not "
 type OSTermGroup struct {
-	OrSymbol    *op.OrSymbol `parser:"@@ " json:"or_symbol"`
-	OrTermGroup *OrTermGroup `parser:"@@ " json:"or_term_group"`
+	OrSymbol    *op.OrSymbol  `parser:"( @@ " json:"or_symbol"`
+	NotSymbol   *op.NotSymbol `parser:"| WHITESPACE+ @@)" json:"not_symbol"`
+	OrTermGroup *OrTermGroup  `parser:"@@ " json:"or_term_group"`
 }
 
 func (t *OSTermGroup) String() string {
 	if t == nil || t.OrTermGroup == nil {
 		return ""
 	} else {
-		return t.OrSymbol.String() + t.OrTermGroup.String()
+		if t.OrSymbol != nil {
+			return t.OrSymbol.String() + t.OrTermGroup.String()
+		} else {
+			return " OR " + t.NotSymbol.String() + t.OrTermGroup.String()
+		}
 	}
 }
 

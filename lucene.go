@@ -88,10 +88,11 @@ func (q *OrQuery) String() string {
 	}
 }
 
-//or symbol query: or query is prefix with or symbol
+// or symbol query: or query is prefix with or symbol
 type OSQuery struct {
-	OrSymbol *op.OrSymbol `parser:"@@" json:"or_symbol"`
-	OrQuery  *OrQuery     `parser:"@@" json:"or_query"`
+	OrSymbol  *op.OrSymbol  `parser:"( @@ " json:"or_symbol"`
+	NotSymbol *op.NotSymbol `parser:"| WHITESPACE+ @@)" json:"not_symbol"`
+	OrQuery   *OrQuery      `parser:"@@ " json:"or_query"`
 }
 
 func (q *OSQuery) GetQueryType() QueryType {
@@ -102,7 +103,11 @@ func (q *OSQuery) String() string {
 	if q == nil || q.OrQuery == nil {
 		return ""
 	} else {
-		return q.OrSymbol.String() + q.OrQuery.String()
+		if q.OrSymbol != nil {
+			return q.OrSymbol.String() + q.OrQuery.String()
+		} else {
+			return " OR " + q.NotSymbol.String() + q.OrQuery.String()
+		}
 	}
 }
 

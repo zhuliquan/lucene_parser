@@ -1,6 +1,8 @@
 package term
 
 import (
+	"encoding/json"
+	"reflect"
 	"testing"
 
 	"github.com/alecthomas/participle"
@@ -137,6 +139,86 @@ func TestTermGroup(t *testing.T) {
 		wantStr  string
 	}
 	var testCases = []testCase{
+		{
+			name:  "Test_Space_not_as_or_not",
+			input: `( x not y !z and x1 and not x2 not x3 OR not x4)`,
+			want: &TermGroup{
+				LogicTermGroup: &LogicTermGroup{
+					OrTermGroup: &OrTermGroup{
+						AndTermGroup: &AndTermGroup{
+							TermGroupElem: &TermGroupElem{
+								SingleTerm: &SingleTerm{Begin: "x"},
+							},
+						},
+					},
+					OSTermGroup: []*OSTermGroup{
+						{
+							NotSymbol: &op.NotSymbol{Symbol: "not"},
+							OrTermGroup: &OrTermGroup{
+								AndTermGroup: &AndTermGroup{
+									TermGroupElem: &TermGroupElem{
+										SingleTerm: &SingleTerm{Begin: "y"},
+									},
+								},
+							},
+						},
+						{
+							NotSymbol: &op.NotSymbol{Symbol: "!"},
+							OrTermGroup: &OrTermGroup{
+								AndTermGroup: &AndTermGroup{
+									TermGroupElem: &TermGroupElem{
+										SingleTerm: &SingleTerm{Begin: "z"},
+									},
+								},
+								AnSTermGroup: []*AnSTermGroup{
+									{
+										AndSymbol: &op.AndSymbol{Symbol: "and"},
+										AndTermGroup: &AndTermGroup{
+											TermGroupElem: &TermGroupElem{
+												SingleTerm: &SingleTerm{Begin: "x", Chars: []string{"1"}},
+											},
+										},
+									},
+									{
+										AndSymbol: &op.AndSymbol{Symbol: "and"},
+										AndTermGroup: &AndTermGroup{
+											NotSymbol: &op.NotSymbol{Symbol: "not"},
+											TermGroupElem: &TermGroupElem{
+												SingleTerm: &SingleTerm{Begin: "x", Chars: []string{"2"}},
+											},
+										},
+									},
+								},
+							},
+						},
+						{
+							NotSymbol: &op.NotSymbol{Symbol: "not"},
+							OrTermGroup: &OrTermGroup{
+								AndTermGroup: &AndTermGroup{
+									TermGroupElem: &TermGroupElem{
+										SingleTerm: &SingleTerm{Begin: "x", Chars: []string{"3"}},
+									},
+								},
+							},
+						},
+						{
+							OrSymbol: &op.OrSymbol{Symbol: "OR"},
+							OrTermGroup: &OrTermGroup{
+								AndTermGroup: &AndTermGroup{
+									NotSymbol: &op.NotSymbol{Symbol: "not"},
+									TermGroupElem: &TermGroupElem{
+										SingleTerm: &SingleTerm{Begin: "x", Chars: []string{"4"}},
+									},
+								},
+							},
+						},
+					},
+				},
+			},
+			boost:    1.0,
+			termType: GROUP_TERM_TYPE,
+			wantStr:  `( x OR NOT y OR NOT z AND x1 AND NOT x2 OR NOT x3 OR NOT x4 )`,
+		},
 		{
 			name:  "TestLogicTermGroup01",
 			input: `(((quick and fox) OR (brown AND fox) OR fox) AND NOT news)^8.78`,
@@ -431,6 +513,11 @@ func TestTermGroup(t *testing.T) {
 			err := termParser.ParseString(tt.input, out)
 			assert.Nil(t, err)
 			assert.Equal(t, tt.want, out)
+			if !reflect.DeepEqual(tt.want, out) {
+				x1, _ := json.Marshal(tt.want)
+				x2, _ := json.Marshal(out)
+				t.Logf("want: %s, out: %s\n", x1, x2)
+			}
 			assert.Equal(t, tt.boost, out.Boost())
 			assert.Equal(t, tt.termType, out.GetTermType())
 			assert.Equal(t, tt.wantStr, out.String())
