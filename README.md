@@ -71,7 +71,7 @@ and_term_group     = [ not_symbol ], ( '(', [whitespace] , logic_term_group, [wh
 group_elem = simple_term | phrase_term | single_range_term | double_range_term ;
 
 (* compound term *)
-range_term = ( double_range_term | single_range_term ) [ boost_modifier ] ;
+range_term = ( double_range_term | single_range_term ), [ boost_modifier ] ;
 fuzzy_term = ( simple_term | phrase_term ), [ fuzzy_modifier | boost_modifier ] ;
 
 (* simple term *)
