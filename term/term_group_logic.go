@@ -43,20 +43,15 @@ func (t *OrTermGroup) String() string {
 
 // "or" | " !" | " not "
 type OSTermGroup struct {
-	OrSymbol    *op.OrSymbol  `parser:"( @@ " json:"or_symbol"`
-	NotSymbol   *op.NotSymbol `parser:"| WHITESPACE+ @@)" json:"not_symbol"`
-	OrTermGroup *OrTermGroup  `parser:"@@ " json:"or_term_group"`
+	OrSymbol    *op.OrSymbol `parser:"@@" json:"or_symbol"`
+	OrTermGroup *OrTermGroup `parser:"@@" json:"or_term_group"`
 }
 
 func (t *OSTermGroup) String() string {
 	if t == nil || t.OrTermGroup == nil {
 		return ""
 	} else {
-		if t.OrSymbol != nil {
-			return t.OrSymbol.String() + t.OrTermGroup.String()
-		} else {
-			return " OR " + t.NotSymbol.String() + t.OrTermGroup.String()
-		}
+		return t.OrSymbol.String() + t.OrTermGroup.String()
 	}
 }
 
@@ -79,7 +74,8 @@ func (t *AndTermGroup) String() string {
 }
 
 type AnSTermGroup struct {
-	AndSymbol    *op.AndSymbol `parser:"@@" json:"and_symbol"`
+	AndSymbol    *op.AndSymbol `parser:"( @@ " json:"and_symbol"`
+	NotSymbol    *op.NotSymbol `parser:"| WHITESPACE+ @@)" json:"not_symbol"`
 	AndTermGroup *AndTermGroup `parser:"@@" json:"and_term_group"`
 }
 
@@ -87,7 +83,11 @@ func (t *AnSTermGroup) String() string {
 	if t == nil || t.AndTermGroup == nil {
 		return ""
 	} else {
-		return t.AndSymbol.String() + t.AndTermGroup.String()
+		if t.AndSymbol != nil {
+			return t.AndSymbol.String() + t.AndTermGroup.String()
+		} else {
+			return " AND " + t.NotSymbol.String() + t.AndTermGroup.String()
+		}
 	}
 }
 

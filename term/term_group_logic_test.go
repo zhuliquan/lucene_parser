@@ -150,50 +150,42 @@ func TestTermGroup(t *testing.T) {
 								SingleTerm: &SingleTerm{Begin: "x"},
 							},
 						},
-					},
-					OSTermGroup: []*OSTermGroup{
-						{
-							NotSymbol: &op.NotSymbol{Symbol: "not"},
-							OrTermGroup: &OrTermGroup{
+						AnSTermGroup: []*AnSTermGroup{
+							{
+								NotSymbol: &op.NotSymbol{Symbol: "not"},
 								AndTermGroup: &AndTermGroup{
 									TermGroupElem: &TermGroupElem{
 										SingleTerm: &SingleTerm{Begin: "y"},
 									},
 								},
 							},
-						},
-						{
-							NotSymbol: &op.NotSymbol{Symbol: "!"},
-							OrTermGroup: &OrTermGroup{
+							{
+								NotSymbol: &op.NotSymbol{Symbol: "!"},
 								AndTermGroup: &AndTermGroup{
 									TermGroupElem: &TermGroupElem{
 										SingleTerm: &SingleTerm{Begin: "z"},
 									},
 								},
-								AnSTermGroup: []*AnSTermGroup{
-									{
-										AndSymbol: &op.AndSymbol{Symbol: "and"},
-										AndTermGroup: &AndTermGroup{
-											TermGroupElem: &TermGroupElem{
-												SingleTerm: &SingleTerm{Begin: "x", Chars: []string{"1"}},
-											},
-										},
-									},
-									{
-										AndSymbol: &op.AndSymbol{Symbol: "and"},
-										AndTermGroup: &AndTermGroup{
-											NotSymbol: &op.NotSymbol{Symbol: "not"},
-											TermGroupElem: &TermGroupElem{
-												SingleTerm: &SingleTerm{Begin: "x", Chars: []string{"2"}},
-											},
-										},
+							},
+							{
+								AndSymbol: &op.AndSymbol{Symbol: "and"},
+								AndTermGroup: &AndTermGroup{
+									TermGroupElem: &TermGroupElem{
+										SingleTerm: &SingleTerm{Begin: "x", Chars: []string{"1"}},
 									},
 								},
 							},
-						},
-						{
-							NotSymbol: &op.NotSymbol{Symbol: "not"},
-							OrTermGroup: &OrTermGroup{
+							{
+								AndSymbol: &op.AndSymbol{Symbol: "and"},
+								AndTermGroup: &AndTermGroup{
+									NotSymbol: &op.NotSymbol{Symbol: "not"},
+									TermGroupElem: &TermGroupElem{
+										SingleTerm: &SingleTerm{Begin: "x", Chars: []string{"2"}},
+									},
+								},
+							},
+							{
+								NotSymbol: &op.NotSymbol{Symbol: "not"},
 								AndTermGroup: &AndTermGroup{
 									TermGroupElem: &TermGroupElem{
 										SingleTerm: &SingleTerm{Begin: "x", Chars: []string{"3"}},
@@ -201,6 +193,8 @@ func TestTermGroup(t *testing.T) {
 								},
 							},
 						},
+					},
+					OSTermGroup: []*OSTermGroup{
 						{
 							OrSymbol: &op.OrSymbol{Symbol: "OR"},
 							OrTermGroup: &OrTermGroup{
@@ -217,7 +211,7 @@ func TestTermGroup(t *testing.T) {
 			},
 			boost:    1.0,
 			termType: GROUP_TERM_TYPE,
-			wantStr:  `( x OR NOT y OR NOT z AND x1 AND NOT x2 OR NOT x3 OR NOT x4 )`,
+			wantStr:  `( x AND NOT y AND NOT z AND x1 AND NOT x2 AND NOT x3 OR NOT x4 )`,
 		},
 		{
 			name:  "TestLogicTermGroup01",

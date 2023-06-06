@@ -31,11 +31,9 @@ func TestLucene(t *testing.T) {
 							}},
 						},
 					},
-				},
-				OSQuery: []*OSQuery{
-					{
-						NotSymbol: &operator.NotSymbol{Symbol: "NOT"},
-						OrQuery: &OrQuery{
+					AnSQuery: []*AnSQuery{
+						{
+							NotSymbol: &operator.NotSymbol{Symbol: "NOT"},
 							AndQuery: &AndQuery{
 								FieldQuery: &FieldQuery{
 									Field: &term.Field{Value: []string{"x"}},
@@ -49,7 +47,7 @@ func TestLucene(t *testing.T) {
 				},
 			},
 			wantErr: false,
-			wantStr: `x:1 OR NOT x:2`,
+			wantStr: `x:1 AND NOT x:2`,
 		},
 		{
 			name:  "Test_space_not_replace_or_not_02",
@@ -65,11 +63,9 @@ func TestLucene(t *testing.T) {
 							}},
 						},
 					},
-				},
-				OSQuery: []*OSQuery{
-					{
-						NotSymbol: &operator.NotSymbol{Symbol: "NOT"},
-						OrQuery: &OrQuery{
+					AnSQuery: []*AnSQuery{
+						{
+							NotSymbol: &operator.NotSymbol{Symbol: "NOT"},
 							AndQuery: &AndQuery{
 								FieldQuery: &FieldQuery{
 									Field: &term.Field{Value: []string{"x"}},
@@ -83,7 +79,7 @@ func TestLucene(t *testing.T) {
 				},
 			},
 			wantErr: false,
-			wantStr: `NOT x:1 OR NOT x:2`,
+			wantStr: `NOT x:1 AND NOT x:2`,
 		},
 		{
 			name:  "TestLucene01",

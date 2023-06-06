@@ -90,9 +90,8 @@ func (q *OrQuery) String() string {
 
 // or symbol query: or query is prefix with or symbol
 type OSQuery struct {
-	OrSymbol  *op.OrSymbol  `parser:"( @@ " json:"or_symbol"`
-	NotSymbol *op.NotSymbol `parser:"| WHITESPACE+ @@)" json:"not_symbol"`
-	OrQuery   *OrQuery      `parser:"@@ " json:"or_query"`
+	OrSymbol *op.OrSymbol `parser:"@@" json:"or_symbol"`
+	OrQuery  *OrQuery     `parser:"@@" json:"or_query"`
 }
 
 func (q *OSQuery) GetQueryType() QueryType {
@@ -103,11 +102,7 @@ func (q *OSQuery) String() string {
 	if q == nil || q.OrQuery == nil {
 		return ""
 	} else {
-		if q.OrSymbol != nil {
-			return q.OrSymbol.String() + q.OrQuery.String()
-		} else {
-			return " OR " + q.NotSymbol.String() + q.OrQuery.String()
-		}
+		return q.OrSymbol.String() + q.OrQuery.String()
 	}
 }
 
@@ -136,7 +131,8 @@ func (q *AndQuery) String() string {
 
 // and symbol query: and query is prefix with and symbol
 type AnSQuery struct {
-	AndSymbol *op.AndSymbol `parser:"@@" json:"and_symbol"`
+	AndSymbol *op.AndSymbol `parser:"( @@ " json:"and_symbol"`
+	NotSymbol *op.NotSymbol `parser:"| WHITESPACE+ @@)" json:"not_symbol"`
 	AndQuery  *AndQuery     `parser:"@@" json:"and_query"`
 }
 
@@ -148,7 +144,11 @@ func (q *AnSQuery) String() string {
 	if q == nil || q.AndQuery == nil {
 		return ""
 	} else {
-		return q.AndSymbol.String() + q.AndQuery.String()
+		if q.AndSymbol != nil {
+			return q.AndSymbol.String() + q.AndQuery.String()
+		} else {
+			return " AND " + q.NotSymbol.String() + q.AndQuery.String()
+		}
 	}
 }
 
