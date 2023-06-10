@@ -37,7 +37,7 @@ func TestLogicTermGroup(t *testing.T) {
 											SubTermGroup: &LogicTermGroup{
 												OrTermGroup: &OrTermGroup{
 													AndTermGroup: &AndTermGroup{
-														TermGroupElem: &TermGroupElem{
+														FieldTermGroup: &FieldTermGroup{
 															SingleTerm: &SingleTerm{Begin: "quick"},
 														},
 													},
@@ -45,7 +45,7 @@ func TestLogicTermGroup(t *testing.T) {
 														{
 															AndSymbol: &op.AndSymbol{Symbol: "AND"},
 															AndTermGroup: &AndTermGroup{
-																TermGroupElem: &TermGroupElem{
+																FieldTermGroup: &FieldTermGroup{
 																	SingleTerm: &SingleTerm{Begin: "fox"},
 																},
 															},
@@ -65,7 +65,7 @@ func TestLogicTermGroup(t *testing.T) {
 													SubTermGroup: &LogicTermGroup{
 														OrTermGroup: &OrTermGroup{
 															AndTermGroup: &AndTermGroup{
-																TermGroupElem: &TermGroupElem{
+																FieldTermGroup: &FieldTermGroup{
 																	SingleTerm: &SingleTerm{Begin: "brown"},
 																},
 															},
@@ -73,7 +73,7 @@ func TestLogicTermGroup(t *testing.T) {
 																{
 																	AndSymbol: &op.AndSymbol{Symbol: "AND"},
 																	AndTermGroup: &AndTermGroup{
-																		TermGroupElem: &TermGroupElem{
+																		FieldTermGroup: &FieldTermGroup{
 																			SingleTerm: &SingleTerm{Begin: "fox"},
 																		},
 																	},
@@ -89,7 +89,7 @@ func TestLogicTermGroup(t *testing.T) {
 										OrSymbol: &op.OrSymbol{Symbol: "OR"},
 										OrTermGroup: &OrTermGroup{
 											AndTermGroup: &AndTermGroup{
-												TermGroupElem: &TermGroupElem{
+												FieldTermGroup: &FieldTermGroup{
 													SingleTerm: &SingleTerm{Begin: "fox"},
 												},
 											},
@@ -104,7 +104,7 @@ func TestLogicTermGroup(t *testing.T) {
 							AndSymbol: &op.AndSymbol{Symbol: "AND"},
 							AndTermGroup: &AndTermGroup{
 								NotSymbol: &op.NotSymbol{Symbol: "NOT"},
-								TermGroupElem: &TermGroupElem{
+								FieldTermGroup: &FieldTermGroup{
 									SingleTerm: &SingleTerm{Begin: "news"},
 								},
 							},
@@ -146,7 +146,7 @@ func TestTermGroup(t *testing.T) {
 				LogicTermGroup: &LogicTermGroup{
 					OrTermGroup: &OrTermGroup{
 						AndTermGroup: &AndTermGroup{
-							TermGroupElem: &TermGroupElem{
+							FieldTermGroup: &FieldTermGroup{
 								SingleTerm: &SingleTerm{Begin: "x"},
 							},
 						},
@@ -154,7 +154,7 @@ func TestTermGroup(t *testing.T) {
 							{
 								NotSymbol: &op.NotSymbol{Symbol: "not"},
 								AndTermGroup: &AndTermGroup{
-									TermGroupElem: &TermGroupElem{
+									FieldTermGroup: &FieldTermGroup{
 										SingleTerm: &SingleTerm{Begin: "y"},
 									},
 								},
@@ -162,7 +162,7 @@ func TestTermGroup(t *testing.T) {
 							{
 								NotSymbol: &op.NotSymbol{Symbol: "!"},
 								AndTermGroup: &AndTermGroup{
-									TermGroupElem: &TermGroupElem{
+									FieldTermGroup: &FieldTermGroup{
 										SingleTerm: &SingleTerm{Begin: "z"},
 									},
 								},
@@ -170,7 +170,7 @@ func TestTermGroup(t *testing.T) {
 							{
 								AndSymbol: &op.AndSymbol{Symbol: "and"},
 								AndTermGroup: &AndTermGroup{
-									TermGroupElem: &TermGroupElem{
+									FieldTermGroup: &FieldTermGroup{
 										SingleTerm: &SingleTerm{Begin: "x", Chars: []string{"1"}},
 									},
 								},
@@ -179,7 +179,7 @@ func TestTermGroup(t *testing.T) {
 								AndSymbol: &op.AndSymbol{Symbol: "and"},
 								AndTermGroup: &AndTermGroup{
 									NotSymbol: &op.NotSymbol{Symbol: "not"},
-									TermGroupElem: &TermGroupElem{
+									FieldTermGroup: &FieldTermGroup{
 										SingleTerm: &SingleTerm{Begin: "x", Chars: []string{"2"}},
 									},
 								},
@@ -187,7 +187,7 @@ func TestTermGroup(t *testing.T) {
 							{
 								NotSymbol: &op.NotSymbol{Symbol: "not"},
 								AndTermGroup: &AndTermGroup{
-									TermGroupElem: &TermGroupElem{
+									FieldTermGroup: &FieldTermGroup{
 										SingleTerm: &SingleTerm{Begin: "x", Chars: []string{"3"}},
 									},
 								},
@@ -200,7 +200,7 @@ func TestTermGroup(t *testing.T) {
 							OrTermGroup: &OrTermGroup{
 								AndTermGroup: &AndTermGroup{
 									NotSymbol: &op.NotSymbol{Symbol: "not"},
-									TermGroupElem: &TermGroupElem{
+									FieldTermGroup: &FieldTermGroup{
 										SingleTerm: &SingleTerm{Begin: "x", Chars: []string{"4"}},
 									},
 								},
@@ -228,7 +228,7 @@ func TestTermGroup(t *testing.T) {
 												SubTermGroup: &LogicTermGroup{
 													OrTermGroup: &OrTermGroup{
 														AndTermGroup: &AndTermGroup{
-															TermGroupElem: &TermGroupElem{
+															FieldTermGroup: &FieldTermGroup{
 																SingleTerm: &SingleTerm{Begin: "quick"},
 															},
 														},
@@ -236,7 +236,7 @@ func TestTermGroup(t *testing.T) {
 															{
 																AndSymbol: &op.AndSymbol{Symbol: "and"},
 																AndTermGroup: &AndTermGroup{
-																	TermGroupElem: &TermGroupElem{
+																	FieldTermGroup: &FieldTermGroup{
 																		SingleTerm: &SingleTerm{Begin: "fox"},
 																	},
 																},
@@ -256,7 +256,7 @@ func TestTermGroup(t *testing.T) {
 														SubTermGroup: &LogicTermGroup{
 															OrTermGroup: &OrTermGroup{
 																AndTermGroup: &AndTermGroup{
-																	TermGroupElem: &TermGroupElem{
+																	FieldTermGroup: &FieldTermGroup{
 																		SingleTerm: &SingleTerm{Begin: "brown"},
 																	},
 																},
@@ -264,7 +264,7 @@ func TestTermGroup(t *testing.T) {
 																	{
 																		AndSymbol: &op.AndSymbol{Symbol: "AND"},
 																		AndTermGroup: &AndTermGroup{
-																			TermGroupElem: &TermGroupElem{
+																			FieldTermGroup: &FieldTermGroup{
 																				SingleTerm: &SingleTerm{Begin: "fox"},
 																			},
 																		},
@@ -280,7 +280,7 @@ func TestTermGroup(t *testing.T) {
 											OrSymbol: &op.OrSymbol{Symbol: "OR"},
 											OrTermGroup: &OrTermGroup{
 												AndTermGroup: &AndTermGroup{
-													TermGroupElem: &TermGroupElem{
+													FieldTermGroup: &FieldTermGroup{
 														SingleTerm: &SingleTerm{Begin: "fox"},
 													},
 												},
@@ -295,7 +295,7 @@ func TestTermGroup(t *testing.T) {
 								AndSymbol: &op.AndSymbol{Symbol: "AND"},
 								AndTermGroup: &AndTermGroup{
 									NotSymbol: &op.NotSymbol{Symbol: "NOT"},
-									TermGroupElem: &TermGroupElem{
+									FieldTermGroup: &FieldTermGroup{
 										SingleTerm: &SingleTerm{Begin: "news"},
 									},
 								},
@@ -324,7 +324,7 @@ func TestTermGroup(t *testing.T) {
 												SubTermGroup: &LogicTermGroup{
 													OrTermGroup: &OrTermGroup{
 														AndTermGroup: &AndTermGroup{
-															TermGroupElem: &TermGroupElem{
+															FieldTermGroup: &FieldTermGroup{
 																SingleTerm: &SingleTerm{Begin: "quick"},
 															},
 														},
@@ -332,7 +332,7 @@ func TestTermGroup(t *testing.T) {
 															{
 																AndSymbol: &op.AndSymbol{Symbol: "and"},
 																AndTermGroup: &AndTermGroup{
-																	TermGroupElem: &TermGroupElem{
+																	FieldTermGroup: &FieldTermGroup{
 																		SingleTerm: &SingleTerm{Begin: "fox"},
 																	},
 																},
@@ -352,7 +352,7 @@ func TestTermGroup(t *testing.T) {
 														SubTermGroup: &LogicTermGroup{
 															OrTermGroup: &OrTermGroup{
 																AndTermGroup: &AndTermGroup{
-																	TermGroupElem: &TermGroupElem{
+																	FieldTermGroup: &FieldTermGroup{
 																		SingleTerm: &SingleTerm{Begin: "brown"},
 																	},
 																},
@@ -360,7 +360,7 @@ func TestTermGroup(t *testing.T) {
 																	{
 																		AndSymbol: &op.AndSymbol{Symbol: "AND"},
 																		AndTermGroup: &AndTermGroup{
-																			TermGroupElem: &TermGroupElem{
+																			FieldTermGroup: &FieldTermGroup{
 																				SingleTerm: &SingleTerm{Begin: "fox"},
 																			},
 																		},
@@ -376,7 +376,7 @@ func TestTermGroup(t *testing.T) {
 											OrSymbol: &op.OrSymbol{Symbol: "OR"},
 											OrTermGroup: &OrTermGroup{
 												AndTermGroup: &AndTermGroup{
-													TermGroupElem: &TermGroupElem{
+													FieldTermGroup: &FieldTermGroup{
 														SingleTerm: &SingleTerm{Begin: "fox"},
 													},
 												},
@@ -391,7 +391,7 @@ func TestTermGroup(t *testing.T) {
 								AndSymbol: &op.AndSymbol{Symbol: "AND"},
 								AndTermGroup: &AndTermGroup{
 									NotSymbol: &op.NotSymbol{Symbol: "NOT"},
-									TermGroupElem: &TermGroupElem{
+									FieldTermGroup: &FieldTermGroup{
 										SingleTerm: &SingleTerm{Begin: "news"},
 									},
 								},
@@ -419,7 +419,7 @@ func TestTermGroup(t *testing.T) {
 												SubTermGroup: &LogicTermGroup{
 													OrTermGroup: &OrTermGroup{
 														AndTermGroup: &AndTermGroup{
-															TermGroupElem: &TermGroupElem{
+															FieldTermGroup: &FieldTermGroup{
 																SingleTerm: &SingleTerm{Begin: "quick"},
 															},
 														},
@@ -427,7 +427,7 @@ func TestTermGroup(t *testing.T) {
 															{
 																AndSymbol: &op.AndSymbol{Symbol: "and"},
 																AndTermGroup: &AndTermGroup{
-																	TermGroupElem: &TermGroupElem{
+																	FieldTermGroup: &FieldTermGroup{
 																		SingleTerm: &SingleTerm{Begin: "fox"},
 																	},
 																},
@@ -447,7 +447,7 @@ func TestTermGroup(t *testing.T) {
 														SubTermGroup: &LogicTermGroup{
 															OrTermGroup: &OrTermGroup{
 																AndTermGroup: &AndTermGroup{
-																	TermGroupElem: &TermGroupElem{
+																	FieldTermGroup: &FieldTermGroup{
 																		SingleTerm: &SingleTerm{Begin: "brown"},
 																	},
 																},
@@ -455,7 +455,7 @@ func TestTermGroup(t *testing.T) {
 																	{
 																		AndSymbol: &op.AndSymbol{Symbol: "AND"},
 																		AndTermGroup: &AndTermGroup{
-																			TermGroupElem: &TermGroupElem{
+																			FieldTermGroup: &FieldTermGroup{
 																				SingleTerm: &SingleTerm{Begin: "fox"},
 																			},
 																		},
@@ -471,7 +471,7 @@ func TestTermGroup(t *testing.T) {
 											OrSymbol: &op.OrSymbol{Symbol: "OR"},
 											OrTermGroup: &OrTermGroup{
 												AndTermGroup: &AndTermGroup{
-													TermGroupElem: &TermGroupElem{
+													FieldTermGroup: &FieldTermGroup{
 														SingleTerm: &SingleTerm{Begin: "fox"},
 													},
 												},
@@ -486,7 +486,7 @@ func TestTermGroup(t *testing.T) {
 								AndSymbol: &op.AndSymbol{Symbol: "AND"},
 								AndTermGroup: &AndTermGroup{
 									NotSymbol: &op.NotSymbol{Symbol: "NOT"},
-									TermGroupElem: &TermGroupElem{
+									FieldTermGroup: &FieldTermGroup{
 										SingleTerm: &SingleTerm{Begin: "news"},
 									},
 								},

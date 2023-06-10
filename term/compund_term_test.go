@@ -439,7 +439,7 @@ func TestFuzzyTerm(t *testing.T) {
 func TestTermGroupElem(t *testing.T) {
 	type test struct {
 		name    string
-		input   *TermGroupElem
+		input   *FieldTermGroup
 		tType   TermType
 		valueS  interface{}
 		wantErr error
@@ -455,14 +455,14 @@ func TestTermGroupElem(t *testing.T) {
 		},
 		{
 			name:    "test_empty_case02",
-			input:   &TermGroupElem{},
+			input:   &FieldTermGroup{},
 			tType:   UNKNOWN_TERM_TYPE,
 			valueS:  "",
 			wantErr: nil,
 		},
 		{
 			name: "test_single",
-			input: &TermGroupElem{
+			input: &FieldTermGroup{
 				SingleTerm: &SingleTerm{Begin: "123"},
 			},
 			tType:   SINGLE_TERM_TYPE,
@@ -471,7 +471,7 @@ func TestTermGroupElem(t *testing.T) {
 		},
 		{
 			name: "test_phrase",
-			input: &TermGroupElem{
+			input: &FieldTermGroup{
 				PhraseTerm: &PhraseTerm{Chars: []string{"123"}},
 			},
 			tType:   PHRASE_TERM_TYPE,
@@ -480,7 +480,7 @@ func TestTermGroupElem(t *testing.T) {
 		},
 		{
 			name: "test_s_range",
-			input: &TermGroupElem{
+			input: &FieldTermGroup{
 				SRangeTerm: &SRangeTerm{
 					Symbol: ">",
 					Value:  &RangeValue{SingleValue: []string{"123"}},
@@ -497,7 +497,7 @@ func TestTermGroupElem(t *testing.T) {
 		},
 		{
 			name: "test_d_range",
-			input: &TermGroupElem{
+			input: &FieldTermGroup{
 				DRangeTerm: &DRangeTerm{
 					LBRACKET: "{",
 					RBRACKET: "}",
@@ -522,8 +522,8 @@ func TestTermGroupElem(t *testing.T) {
 			assert.Equal(t, tt.valueS, v)
 		})
 	}
-	var out *TermGroupElem
+	var out *FieldTermGroup
 	assert.Empty(t, out.String())
-	out = &TermGroupElem{}
+	out = &FieldTermGroup{}
 	assert.Empty(t, out.String())
 }

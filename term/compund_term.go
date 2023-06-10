@@ -138,14 +138,14 @@ func (t *FuzzyTerm) Value(f func(string) (interface{}, error)) (interface{}, err
 }
 
 // term group element
-type TermGroupElem struct {
+type FieldTermGroup struct {
 	SingleTerm *SingleTerm `parser:"  @@" json:"single_term"`
 	PhraseTerm *PhraseTerm `parser:"| @@" json:"phrase_term"`
 	SRangeTerm *SRangeTerm `parser:"| @@" json:"single_range_term"`
 	DRangeTerm *DRangeTerm `parser:"| @@" json:"double_range_term"`
 }
 
-func (t *TermGroupElem) String() string {
+func (t *FieldTermGroup) String() string {
 	if t == nil {
 		return ""
 	} else if t.SingleTerm != nil {
@@ -161,7 +161,7 @@ func (t *TermGroupElem) String() string {
 	}
 }
 
-func (t *TermGroupElem) GetTermType() TermType {
+func (t *FieldTermGroup) GetTermType() TermType {
 	if t == nil {
 		return UNKNOWN_TERM_TYPE
 	} else if t.SingleTerm != nil {
@@ -177,7 +177,7 @@ func (t *TermGroupElem) GetTermType() TermType {
 	}
 }
 
-func (t *TermGroupElem) Value(f func(string) (interface{}, error)) (interface{}, error) {
+func (t *FieldTermGroup) Value(f func(string) (interface{}, error)) (interface{}, error) {
 	if t == nil {
 		return nil, ErrEmptyTermGroupElem
 	} else if t.SingleTerm != nil {

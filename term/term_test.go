@@ -517,7 +517,7 @@ func TestTerm(t *testing.T) {
 				LogicTermGroup: &LogicTermGroup{
 					OrTermGroup: &OrTermGroup{
 						AndTermGroup: &AndTermGroup{
-							TermGroupElem: &TermGroupElem{SingleTerm: &SingleTerm{Begin: "foo"}},
+							FieldTermGroup: &FieldTermGroup{SingleTerm: &SingleTerm{Begin: "foo"}},
 						},
 					},
 					OSTermGroup: []*OSTermGroup{
@@ -525,7 +525,7 @@ func TestTerm(t *testing.T) {
 							OrSymbol: &operator.OrSymbol{Symbol: "or"},
 							OrTermGroup: &OrTermGroup{
 								AndTermGroup: &AndTermGroup{
-									TermGroupElem: &TermGroupElem{SingleTerm: &SingleTerm{Begin: "bar"}},
+									FieldTermGroup: &FieldTermGroup{SingleTerm: &SingleTerm{Begin: "bar"}},
 								},
 							},
 						},
@@ -546,7 +546,7 @@ func TestTerm(t *testing.T) {
 				LogicTermGroup: &LogicTermGroup{
 					OrTermGroup: &OrTermGroup{
 						AndTermGroup: &AndTermGroup{
-							TermGroupElem: &TermGroupElem{SingleTerm: &SingleTerm{Begin: "foo"}},
+							FieldTermGroup: &FieldTermGroup{SingleTerm: &SingleTerm{Begin: "foo"}},
 						},
 					},
 					OSTermGroup: []*OSTermGroup{
@@ -554,7 +554,7 @@ func TestTerm(t *testing.T) {
 							OrSymbol: &operator.OrSymbol{Symbol: "OR"},
 							OrTermGroup: &OrTermGroup{
 								AndTermGroup: &AndTermGroup{
-									TermGroupElem: &TermGroupElem{SingleTerm: &SingleTerm{Begin: "bar"}},
+									FieldTermGroup: &FieldTermGroup{SingleTerm: &SingleTerm{Begin: "bar"}},
 								},
 							},
 						},
@@ -562,7 +562,7 @@ func TestTerm(t *testing.T) {
 							OrSymbol: &operator.OrSymbol{Symbol: "or"},
 							OrTermGroup: &OrTermGroup{
 								AndTermGroup: &AndTermGroup{
-									TermGroupElem: &TermGroupElem{DRangeTerm: &DRangeTerm{
+									FieldTermGroup: &FieldTermGroup{DRangeTerm: &DRangeTerm{
 										LBRACKET: "[",
 										LValue:   &RangeValue{SingleValue: []string{"1"}},
 										RValue:   &RangeValue{SingleValue: []string{"2"}},
@@ -573,7 +573,7 @@ func TestTerm(t *testing.T) {
 									{
 										AndSymbol: &operator.AndSymbol{Symbol: "AND"},
 										AndTermGroup: &AndTermGroup{
-											TermGroupElem: &TermGroupElem{
+											FieldTermGroup: &FieldTermGroup{
 												SRangeTerm: &SRangeTerm{
 													Symbol: ">",
 													Value:  &RangeValue{SingleValue: []string{"10"}},
@@ -584,7 +584,7 @@ func TestTerm(t *testing.T) {
 									{
 										AndSymbol: &operator.AndSymbol{Symbol: "AND"},
 										AndTermGroup: &AndTermGroup{
-											TermGroupElem: &TermGroupElem{
+											FieldTermGroup: &FieldTermGroup{
 												SRangeTerm: &SRangeTerm{
 													Symbol: "<",
 													Value:  &RangeValue{SingleValue: []string{"20"}},
@@ -595,7 +595,7 @@ func TestTerm(t *testing.T) {
 									{
 										AndSymbol: &operator.AndSymbol{Symbol: "and"},
 										AndTermGroup: &AndTermGroup{
-											TermGroupElem: &TermGroupElem{
+											FieldTermGroup: &FieldTermGroup{
 												PhraseTerm: &PhraseTerm{
 													Chars: []string{"abc"},
 												},

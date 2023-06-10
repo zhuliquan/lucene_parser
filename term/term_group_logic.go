@@ -58,7 +58,7 @@ func (t *OSTermGroup) String() string {
 type AndTermGroup struct {
 	NotSymbol      *op.NotSymbol   `parser:"@@?" json:"not_symbol"`
 	ParenTermGroup *ParenTermGroup `parser:"( @@ " json:"paren_term_group"`
-	TermGroupElem  *TermGroupElem  `parser:"| @@)" json:"term_group_elem"`
+	FieldTermGroup *FieldTermGroup `parser:"| @@)" json:"field_term_group"`
 }
 
 func (t *AndTermGroup) String() string {
@@ -66,8 +66,8 @@ func (t *AndTermGroup) String() string {
 		return ""
 	} else if t.ParenTermGroup != nil {
 		return t.NotSymbol.String() + t.ParenTermGroup.String()
-	} else if t.TermGroupElem != nil {
-		return t.NotSymbol.String() + t.TermGroupElem.String()
+	} else if t.FieldTermGroup != nil {
+		return t.NotSymbol.String() + t.FieldTermGroup.String()
 	} else {
 		return ""
 	}

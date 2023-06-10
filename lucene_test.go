@@ -255,7 +255,7 @@ func TestLucene(t *testing.T) {
 								LogicTermGroup: &term.LogicTermGroup{
 									OrTermGroup: &term.OrTermGroup{
 										AndTermGroup: &term.AndTermGroup{
-											TermGroupElem: &term.TermGroupElem{
+											FieldTermGroup: &term.FieldTermGroup{
 												SingleTerm: &term.SingleTerm{Begin: "txt"},
 											},
 										},
@@ -265,7 +265,7 @@ func TestLucene(t *testing.T) {
 											OrSymbol: &operator.OrSymbol{Symbol: "OR"},
 											OrTermGroup: &term.OrTermGroup{
 												AndTermGroup: &term.AndTermGroup{
-													TermGroupElem: &term.TermGroupElem{
+													FieldTermGroup: &term.FieldTermGroup{
 														SingleTerm: &term.SingleTerm{Begin: "foo"},
 													},
 												},
@@ -275,7 +275,7 @@ func TestLucene(t *testing.T) {
 											OrSymbol: &operator.OrSymbol{Symbol: "OR"},
 											OrTermGroup: &term.OrTermGroup{
 												AndTermGroup: &term.AndTermGroup{
-													TermGroupElem: &term.TermGroupElem{
+													FieldTermGroup: &term.FieldTermGroup{
 														SingleTerm: &term.SingleTerm{Begin: "bar"},
 													},
 												},
@@ -337,12 +337,12 @@ func TestLucene(t *testing.T) {
 											Term: &term.Term{
 												TermGroup: &term.TermGroup{
 													LogicTermGroup: &term.LogicTermGroup{
-														OrTermGroup: &term.OrTermGroup{AndTermGroup: &term.AndTermGroup{TermGroupElem: &term.TermGroupElem{SingleTerm: &term.SingleTerm{Begin: "foo"}}}},
+														OrTermGroup: &term.OrTermGroup{AndTermGroup: &term.AndTermGroup{FieldTermGroup: &term.FieldTermGroup{SingleTerm: &term.SingleTerm{Begin: "foo"}}}},
 														OSTermGroup: []*term.OSTermGroup{
 															{
 																OrSymbol: &operator.OrSymbol{Symbol: "or"},
 																OrTermGroup: &term.OrTermGroup{
-																	AndTermGroup: &term.AndTermGroup{TermGroupElem: &term.TermGroupElem{SingleTerm: &term.SingleTerm{Begin: "bar"}}},
+																	AndTermGroup: &term.AndTermGroup{FieldTermGroup: &term.FieldTermGroup{SingleTerm: &term.SingleTerm{Begin: "bar"}}},
 																},
 															},
 														},
