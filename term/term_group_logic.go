@@ -121,7 +121,7 @@ func (t *TermGroup) Boost() BoostValue {
 	if t == nil || t.LogicTermGroup == nil {
 		return NoBoost
 	} else {
-		return getBoostValue(t.BoostSymbol)
+		return GetBoostValue(t.BoostSymbol)
 	}
 }
 

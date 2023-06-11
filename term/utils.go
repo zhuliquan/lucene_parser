@@ -22,7 +22,7 @@ var DefaultBoost BoostValue = 1.0 // no boost symbol
 var NoFuzzy Fuzziness = 0.0
 var NoBoost BoostValue = 0.0
 
-func getBoostValue(boostSymbol string) BoostValue {
+func GetBoostValue(boostSymbol string) BoostValue {
 	if len(boostSymbol) == 0 || boostSymbol == "^" {
 		// default boost
 		return DefaultBoost

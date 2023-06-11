@@ -46,7 +46,7 @@ func (t *RangeTerm) Boost() BoostValue {
 	if t == nil || (t.DRangeTerm == nil && t.SRangeTerm == nil) {
 		return NoBoost
 	} else {
-		return getBoostValue(t.BoostSymbol)
+		return GetBoostValue(t.BoostSymbol)
 	}
 }
 
@@ -82,7 +82,7 @@ func (t *FuzzyTerm) Boost() BoostValue {
 	if t == nil || (t.SingleTerm == nil && t.PhraseTerm == nil) {
 		return NoBoost
 	} else {
-		return getBoostValue(t.BoostSymbol)
+		return GetBoostValue(t.BoostSymbol)
 	}
 }
 
