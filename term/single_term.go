@@ -155,8 +155,8 @@ func (t *DRangeTerm) GetBound() *Bound {
 	} else {
 		return nil
 	}
-	res.LeftValue.flag = false
-	res.RightValue.flag = true
+	res.LeftValue.SideFlag = false
+	res.RightValue.SideFlag = true
 	res.LeftInclude = res.LeftInclude && !t.LValue.IsInf(0)
 	res.RightInclude = res.RightInclude && !t.RValue.IsInf(0)
 	return res
