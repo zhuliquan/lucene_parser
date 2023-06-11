@@ -19,22 +19,22 @@ func TestBoundType(t *testing.T) {
 			bType: UNKNOWN_BOUND_TYPE,
 		},
 		{
-			name:  "test_le_re",
+			name:  "test_left_exclude_right_exclude",
 			input: &Bound{LeftInclude: false, RightInclude: false},
 			bType: LEFT_EXCLUDE_RIGHT_EXCLUDE,
 		},
 		{
-			name:  "test_le_ri",
+			name:  "test_left_exclude_right_include",
 			input: &Bound{LeftInclude: false, RightInclude: true},
 			bType: LEFT_EXCLUDE_RIGHT_INCLUDE,
 		},
 		{
-			name:  "test_li_re",
+			name:  "test_left_include_right_exclude",
 			input: &Bound{LeftInclude: true, RightInclude: false},
 			bType: LEFT_INCLUDE_RIGHT_EXCLUDE,
 		},
 		{
-			name:  "test_li_ri",
+			name:  "test_left_include_right_include",
 			input: &Bound{LeftInclude: true, RightInclude: true},
 			bType: LEFT_INCLUDE_RIGHT_INCLUDE,
 		},

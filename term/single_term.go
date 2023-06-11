@@ -63,7 +63,7 @@ func (t *SingleTerm) haveWildcard() bool {
 
 // phrase term: a series of terms be surrounded with quotation, for instance "foo bar".
 type PhraseTerm struct {
-	Chars    []string `parser:"QUOTE @( REVERSE QUOTE | !QUOTE )* QUOTE" json:"chars"`
+	Chars []string `parser:"QUOTE @( REVERSE QUOTE | !QUOTE )* QUOTE" json:"chars"`
 }
 
 func (t *PhraseTerm) GetTermType() TermType {
@@ -108,6 +108,13 @@ func (t *RegexpTerm) Value(f func(string) (interface{}, error)) (interface{}, er
 	} else {
 		return f(strings.Join(t.Chars, ""))
 	}
+}
+
+func (t *RegexpTerm) Boost() BoostValue {
+	if t == nil {
+		return NoBoost
+	}
+	return DefaultBoost
 }
 
 func (t *RegexpTerm) String() string {

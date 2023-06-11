@@ -24,7 +24,7 @@ func TestLogicTermGroup(t *testing.T) {
 	}
 	var testCases = []testCase{
 		{
-			name:  "TestLogicTermGroup01",
+			name:  "test_(((quick AND fox) OR (brown AND fox) OR fox) AND NOT news)",
 			input: `((quick AND fox) OR (brown AND fox) OR fox) AND NOT news`,
 			want: &LogicTermGroup{
 				OrTermGroup: &OrTermGroup{
@@ -134,13 +134,13 @@ func TestTermGroup(t *testing.T) {
 		name     string
 		input    string
 		want     *TermGroup
-		boost    float64
+		boost    BoostValue
 		termType TermType
 		wantStr  string
 	}
 	var testCases = []testCase{
 		{
-			name:  "Test_Space_not_as_or_not",
+			name:  "test_(( x not y !z and x1 and not x2 not x3 OR not x4))",
 			input: `( x not y !z and x1 and not x2 not x3 OR not x4)`,
 			want: &TermGroup{
 				LogicTermGroup: &LogicTermGroup{
@@ -209,12 +209,12 @@ func TestTermGroup(t *testing.T) {
 					},
 				},
 			},
-			boost:    1.0,
+			boost:    DefaultBoost,
 			termType: GROUP_TERM_TYPE,
 			wantStr:  `( x AND NOT y AND NOT z AND x1 AND NOT x2 AND NOT x3 OR NOT x4 )`,
 		},
 		{
-			name:  "TestLogicTermGroup01",
+			name:  "test_((((quick and fox) OR (brown AND fox) OR fox) AND NOT news)^8.78)",
 			input: `(((quick and fox) OR (brown AND fox) OR fox) AND NOT news)^8.78`,
 			want: &TermGroup{
 				LogicTermGroup: &LogicTermGroup{
@@ -305,12 +305,12 @@ func TestTermGroup(t *testing.T) {
 				},
 				BoostSymbol: "^8.78",
 			},
-			boost:    8.78,
+			boost:    BoostValue(8.78),
 			termType: GROUP_TERM_TYPE | BOOST_TERM_TYPE,
 			wantStr:  `( ( ( quick AND fox ) OR ( brown AND fox ) OR fox ) AND NOT news )^8.78`,
 		},
 		{
-			name:  "TestLogicTermGroup02",
+			name:  "test_((((quick and fox) OR (brown AND fox) OR fox) AND NOT news))",
 			input: `(((quick and fox) OR (brown AND fox) OR fox) AND NOT news)`,
 			want: &TermGroup{
 				LogicTermGroup: &LogicTermGroup{
@@ -400,12 +400,12 @@ func TestTermGroup(t *testing.T) {
 					},
 				},
 			},
-			boost:    1.0,
+			boost:    DefaultBoost,
 			termType: GROUP_TERM_TYPE,
 			wantStr:  `( ( ( quick AND fox ) OR ( brown AND fox ) OR fox ) AND NOT news )`,
 		},
 		{
-			name:  "TestLogicTermGroup03",
+			name:  "test_((((quick and fox) OR (brown AND fox) OR fox) AND NOT news)^)",
 			input: `(((quick and fox) OR (brown AND fox) OR fox) AND NOT news)^`,
 			want: &TermGroup{
 				LogicTermGroup: &LogicTermGroup{
@@ -496,7 +496,7 @@ func TestTermGroup(t *testing.T) {
 				},
 				BoostSymbol: "^",
 			},
-			boost:    1.0,
+			boost:    DefaultBoost,
 			termType: GROUP_TERM_TYPE | BOOST_TERM_TYPE,
 			wantStr:  `( ( ( quick AND fox ) OR ( brown AND fox ) OR fox ) AND NOT news )^`,
 		},
@@ -520,12 +520,12 @@ func TestTermGroup(t *testing.T) {
 	// test empty term group
 	var out *TermGroup
 	assert.Equal(t, "", out.String())
-	assert.Equal(t, 0.0, out.Boost())
+	assert.Equal(t, NoBoost, out.Boost())
 	assert.Equal(t, UNKNOWN_TERM_TYPE, out.GetTermType())
 
 	out = &TermGroup{}
 	assert.Equal(t, "", out.String())
-	assert.Equal(t, 0.0, out.Boost())
+	assert.Equal(t, NoBoost, out.Boost())
 	assert.Equal(t, UNKNOWN_TERM_TYPE, out.GetTermType())
 	_, err := out.Value(func(s string) (interface{}, error) { return s, nil })
 	assert.Equal(t, ErrEmptyGroupTerm, err)

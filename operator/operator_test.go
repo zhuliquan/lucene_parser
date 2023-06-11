@@ -21,25 +21,25 @@ func TestAndSymbol(t *testing.T) {
 	}
 	var testCases = []testCase{
 		{
-			name:    "TestAndSymbol01",
+			name:    "test_AND_space_symbol",
 			input:   ` AND   `,
 			want:    &AndSymbol{Symbol: "AND"},
 			wantStr: " AND ",
 		},
 		{
-			name:    "TestAndSymbol02",
+			name:    "Test_and_space_symbol",
 			input:   ` and `,
 			want:    &AndSymbol{Symbol: "and"},
 			wantStr: " AND ",
 		},
 		{
-			name:    "TestAndSymbol03",
+			name:    "Test_&&_space_symbol",
 			input:   ` && `,
 			want:    &AndSymbol{Symbol: "&&"},
 			wantStr: " AND ",
 		},
 		{
-			name:    "TestAndSymbol04",
+			name:    "Test_&&_symbol",
 			input:   `&&`,
 			want:    &AndSymbol{Symbol: "&&"},
 			wantStr: " AND ",
@@ -78,25 +78,25 @@ func TestOrSymbol(t *testing.T) {
 	}
 	var testCases = []testCase{
 		{
-			name:    "TestOrSymbol01",
+			name:    "test_OR_space_symbol",
 			input:   ` OR  `,
 			want:    &OrSymbol{Symbol: "OR"},
 			wantStr: " OR ",
 		},
 		{
-			name:    "TestOrSymbol02",
+			name:    "test_or_space_symbol",
 			input:   ` or  `,
 			want:    &OrSymbol{Symbol: "or"},
 			wantStr: " OR ",
 		},
 		{
-			name:    "TestOrSymbol03",
+			name:    "test_||_space_symbol",
 			input:   ` ||  `,
 			want:    &OrSymbol{Symbol: "||"},
 			wantStr: " OR ",
 		},
 		{
-			name:    "TestOrSymbol04",
+			name:    "test_||_symbol",
 			input:   `||`,
 			want:    &OrSymbol{Symbol: "||"},
 			wantStr: " OR ",
@@ -134,25 +134,25 @@ func TestNotSymbol(t *testing.T) {
 	}
 	var testCases = []testCase{
 		{
-			name:    "TestNotSymbol01",
+			name:    "test_NOT_SPACE_symbol",
 			input:   `NOT `,
 			want:    &NotSymbol{Symbol: "NOT"},
 			wantStr: "NOT ",
 		},
 		{
-			name:    "TestNotSymbol02",
+			name:    "test_not_SPACE_symbol",
 			input:   `not `,
 			want:    &NotSymbol{Symbol: "not"},
 			wantStr: "NOT ",
 		},
 		{
-			name:    "TestNotSymbol03",
+			name:    "test_!_SPACE_symbol",
 			input:   `! `,
 			want:    &NotSymbol{Symbol: "!"},
 			wantStr: "NOT ",
 		},
 		{
-			name:    "TestNotSymbol04",
+			name:    "test_!_symbol",
 			input:   `!`,
 			want:    &NotSymbol{Symbol: "!"},
 			wantStr: "NOT ",

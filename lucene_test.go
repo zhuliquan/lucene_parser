@@ -82,7 +82,7 @@ func TestLucene(t *testing.T) {
 			wantStr: `NOT x:1 AND NOT x:2`,
 		},
 		{
-			name:  "TestLucene01",
+			name:  "test_(x:1 AND NOT x:2)",
 			input: `x:1 AND NOT x:2`,
 			want: &Lucene{
 				OrQuery: &OrQuery{
@@ -114,7 +114,7 @@ func TestLucene(t *testing.T) {
 			wantStr: `x:1 AND NOT x:2`,
 		},
 		{
-			name:  "TestLucene02",
+			name:  "test_(NOT (x:1 AND y:2) OR z:9)",
 			input: `NOT (x:1 AND y:2) OR z:9`,
 			want: &Lucene{
 				OrQuery: &OrQuery{
@@ -169,7 +169,7 @@ func TestLucene(t *testing.T) {
 			wantStr: `NOT ( x:1 AND y:2 ) OR z:9`,
 		},
 		{
-			name:  "TestLucene03",
+			name:  "test_((x:1 AND NOT y:2) AND (NOT x:8 AND k:90))",
 			input: `(x:1 AND NOT y:2) AND (NOT x:8 AND k:90)`,
 			want: &Lucene{
 				OrQuery: &OrQuery{
@@ -244,7 +244,7 @@ func TestLucene(t *testing.T) {
 			wantStr: `( x:1 AND NOT y:2 ) AND ( NOT x:8 AND k:90 )`,
 		},
 		{
-			name:  "TestLucene04",
+			name:  "test_(x:(txt OR foo OR bar) AND NOT x-y:\"xxx\" OR !zz:iopio\\ 90)",
 			input: `x:(txt OR foo OR bar) AND NOT x-y:"xxx" OR !zz:iopio\ 90`,
 			want: &Lucene{
 				OrQuery: &OrQuery{
@@ -322,7 +322,7 @@ func TestLucene(t *testing.T) {
 			wantStr: `x:( txt OR foo OR bar ) AND NOT x-y:"xxx" OR NOT zz:iopio\ 90`,
 		},
 		{
-			name:  "TestLucene05",
+			name:  "test_((NOT x:(foo or bar)) AND z:you)",
 			input: `(NOT x:(foo or bar)) AND z:you`,
 			want: &Lucene{
 				OrQuery: &OrQuery{

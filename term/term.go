@@ -63,19 +63,17 @@ func (t *Term) GetBound() *Bound {
 	}
 }
 
-func (t *Term) Fuzziness() int {
-	if t == nil {
-		return 0
-	} else if t.FuzzyTerm != nil {
-		return t.FuzzyTerm.Fuzziness()
+func (t *Term) Fuzziness() Fuzziness {
+	if t == nil || t.FuzzyTerm == nil {
+		return NoFuzzy
 	} else {
-		return 0
+		return t.FuzzyTerm.Fuzzy()
 	}
 }
 
-func (t *Term) Boost() float64 {
+func (t *Term) Boost() BoostValue {
 	if t == nil {
-		return 0.0
+		return NoBoost
 	} else if t.FuzzyTerm != nil {
 		return t.FuzzyTerm.Boost()
 	} else if t.RangeTerm != nil {
@@ -83,8 +81,8 @@ func (t *Term) Boost() float64 {
 	} else if t.TermGroup != nil {
 		return t.TermGroup.Boost()
 	} else if t.RegexpTerm != nil {
-		return 1.0
+		return t.RegexpTerm.Boost()
 	} else {
-		return 0.0
+		return NoBoost
 	}
 }

@@ -20,114 +20,114 @@ func TestTerm(t *testing.T) {
 		input     string
 		want      *Term
 		wantStr   string
-		boost     float64
+		boost     BoostValue
 		valueS    interface{}
-		fuzziness int
+		fuzziness Fuzziness
 		bound     *Bound
 		tType     TermType
 	}
 	var testCases = []testCase{
 		{
-			name:      "TestTerm01",
+			name:      "test_phrase_with_space",
 			input:     `"dsada 78"`,
 			want:      &Term{FuzzyTerm: &FuzzyTerm{PhraseTerm: &PhraseTerm{Chars: []string{`dsada`, ` `, `78`}}}},
 			wantStr:   "\"dsada 78\"",
-			boost:     1.0,
+			boost:     DefaultBoost,
 			valueS:    "dsada 78",
-			fuzziness: 0,
+			fuzziness: NoFuzzy,
 			bound:     nil,
 			tType:     PHRASE_TERM_TYPE,
 		},
 		{
-			name:      "TestTerm02",
+			name:      "test_phrase_with_space_and_boost",
 			input:     `"dsada 78"^08`,
 			want:      &Term{FuzzyTerm: &FuzzyTerm{PhraseTerm: &PhraseTerm{Chars: []string{`dsada`, ` `, `78`}}, BoostSymbol: "^08"}},
 			wantStr:   `"dsada 78"^08`,
-			boost:     8.0,
+			boost:     BoostValue(8.0),
 			valueS:    "dsada 78",
-			fuzziness: 0,
+			fuzziness: NoFuzzy,
 			bound:     nil,
 			tType:     PHRASE_TERM_TYPE | BOOST_TERM_TYPE,
 		},
 		{
-			name:      "TestTerm03",
+			name:      "test_phrase_with_space_and_fuzzy_01",
 			input:     `"dsada 78"~8`,
 			want:      &Term{FuzzyTerm: &FuzzyTerm{PhraseTerm: &PhraseTerm{Chars: []string{`dsada`, ` `, `78`}}, FuzzySymbol: "~8"}},
 			wantStr:   `"dsada 78"~8`,
-			boost:     1.0,
+			boost:     DefaultBoost,
 			valueS:    "dsada 78",
-			fuzziness: 8,
+			fuzziness: Fuzziness(8.0),
 			bound:     nil,
 			tType:     PHRASE_TERM_TYPE | FUZZY_TERM_TYPE,
 		},
 		{
-			name:      "TestTerm03_01",
+			name:      "test_phrase_with_space_and_fuzzy_02",
 			input:     `"dsada 78"~8.1`,
 			want:      &Term{FuzzyTerm: &FuzzyTerm{PhraseTerm: &PhraseTerm{Chars: []string{`dsada`, ` `, `78`}}, FuzzySymbol: "~8.1"}},
 			wantStr:   `"dsada 78"~8.1`,
-			boost:     1.0,
+			boost:     DefaultBoost,
 			valueS:    "dsada 78",
-			fuzziness: 8,
+			fuzziness: Fuzziness(8.1),
 			bound:     nil,
 			tType:     PHRASE_TERM_TYPE | FUZZY_TERM_TYPE,
 		},
 		{
-			name:      "TestTerm03_02",
+			name:      "test_phrase_with_space_and_fuzzy_03",
 			input:     `"dsada 78"~8.6`,
 			want:      &Term{FuzzyTerm: &FuzzyTerm{PhraseTerm: &PhraseTerm{Chars: []string{`dsada`, ` `, `78`}}, FuzzySymbol: "~8.6"}},
 			wantStr:   `"dsada 78"~8.6`,
-			boost:     1.0,
+			boost:     DefaultBoost,
 			valueS:    "dsada 78",
-			fuzziness: 9,
+			fuzziness: Fuzziness(8.6),
 			bound:     nil,
 			tType:     PHRASE_TERM_TYPE | FUZZY_TERM_TYPE,
 		},
 		{
-			name:      "TestTerm05",
+			name:      "test_regex",
 			input:     `/dsada 78/`,
 			want:      &Term{RegexpTerm: &RegexpTerm{Chars: []string{`dsada`, ` `, `78`}}},
 			wantStr:   `/dsada 78/`,
-			boost:     1.0,
+			boost:     DefaultBoost,
 			valueS:    "dsada 78",
-			fuzziness: 0,
+			fuzziness: NoFuzzy,
 			bound:     nil,
 			tType:     REGEXP_TERM_TYPE,
 		},
 		{
-			name:      "TestTerm06",
+			name:      "test_single_with_escape_and_wildcard",
 			input:     `\/dsada\/\ dasda80980?*`,
 			want:      &Term{FuzzyTerm: &FuzzyTerm{SingleTerm: &SingleTerm{Begin: `\/`, Chars: []string{`dsada`, `\/\ `, `dasda`, `80980`, `?`, `*`}}}},
 			wantStr:   `\/dsada\/\ dasda80980?*`,
-			boost:     1.0,
+			boost:     DefaultBoost,
 			valueS:    `\/dsada\/\ dasda80980?*`,
-			fuzziness: 0,
+			fuzziness: NoFuzzy,
 			bound:     nil,
 			tType:     SINGLE_TERM_TYPE | WILDCARD_TERM_TYPE,
 		},
 		{
-			name:      "TestTerm07",
+			name:      "test_single_with_escape_and_wildcard_and_boost",
 			input:     `\/dsada\/\ dasda80980?*\^\^^08`,
 			want:      &Term{FuzzyTerm: &FuzzyTerm{SingleTerm: &SingleTerm{Begin: `\/`, Chars: []string{`dsada`, `\/\ `, `dasda`, `80980`, `?`, `*`, `\^\^`}}, BoostSymbol: `^08`}},
 			wantStr:   `\/dsada\/\ dasda80980?*\^\^^08`,
-			boost:     8.0,
+			boost:     BoostValue(8),
 			valueS:    `\/dsada\/\ dasda80980?*\^\^`,
-			fuzziness: 0,
+			fuzziness: NoFuzzy,
 			bound:     nil,
 			tType:     SINGLE_TERM_TYPE | BOOST_TERM_TYPE | WILDCARD_TERM_TYPE,
 		},
 		{
-			name:      "TestTerm08",
+			name:      "test_single_with_escape_and_wildcard_and_fuzzy",
 			input:     `\/dsada\/\ dasda80980?*\^\^~8`,
 			want:      &Term{FuzzyTerm: &FuzzyTerm{SingleTerm: &SingleTerm{Begin: `\/`, Chars: []string{`dsada`, `\/\ `, `dasda`, `80980`, `?`, `*`, `\^\^`}}, FuzzySymbol: `~8`}},
 			wantStr:   `\/dsada\/\ dasda80980?*\^\^~8`,
-			boost:     1.0,
+			boost:     DefaultBoost,
 			valueS:    `\/dsada\/\ dasda80980?*\^\^`,
-			fuzziness: 8,
+			fuzziness: Fuzziness(8),
 			bound:     nil,
 			tType:     SINGLE_TERM_TYPE | FUZZY_TERM_TYPE | WILDCARD_TERM_TYPE,
 		},
 		{
-			name:  "TestTerm10",
+			name:  "test_double_range_left_include_and_right_include_with_boost",
 			input: `[1 TO 2]^7`,
 			want: &Term{RangeTerm: &RangeTerm{
 				DRangeTerm: &DRangeTerm{
@@ -139,14 +139,14 @@ func TestTerm(t *testing.T) {
 				BoostSymbol: "^7",
 			}},
 			wantStr: `[ 1 TO 2 ]^7`,
-			boost:   7.0,
+			boost:   BoostValue(7),
 			valueS: &Bound{
 				LeftValue:    &RangeValue{SingleValue: []string{"1"}, flag: false},
 				RightValue:   &RangeValue{SingleValue: []string{"2"}, flag: true},
 				LeftInclude:  true,
 				RightInclude: true,
 			},
-			fuzziness: 0,
+			fuzziness: NoFuzzy,
 			bound: &Bound{
 				LeftValue:    &RangeValue{SingleValue: []string{"1"}, flag: false},
 				RightValue:   &RangeValue{SingleValue: []string{"2"}, flag: true},
@@ -156,7 +156,7 @@ func TestTerm(t *testing.T) {
 			tType: RANGE_TERM_TYPE | BOOST_TERM_TYPE,
 		},
 		{
-			name:  "TestTerm11",
+			name:  "test_double_range_left_include_and_right_exclude_with_boost",
 			input: `[1 TO 2 }^7`,
 			want: &Term{RangeTerm: &RangeTerm{
 				DRangeTerm: &DRangeTerm{
@@ -168,14 +168,14 @@ func TestTerm(t *testing.T) {
 				BoostSymbol: "^7",
 			}},
 			wantStr: `[ 1 TO 2 }^7`,
-			boost:   7.0,
+			boost:   BoostValue(7),
 			valueS: &Bound{
 				LeftValue:    &RangeValue{SingleValue: []string{"1"}, flag: false},
 				RightValue:   &RangeValue{SingleValue: []string{"2"}, flag: true},
 				LeftInclude:  true,
 				RightInclude: false,
 			},
-			fuzziness: 0,
+			fuzziness: NoFuzzy,
 			bound: &Bound{
 				LeftValue:    &RangeValue{SingleValue: []string{"1"}, flag: false},
 				RightValue:   &RangeValue{SingleValue: []string{"2"}, flag: true},
@@ -185,7 +185,7 @@ func TestTerm(t *testing.T) {
 			tType: RANGE_TERM_TYPE | BOOST_TERM_TYPE,
 		},
 		{
-			name:  `TestTerm12`,
+			name:  `test_double_range_left_exclude_and_right_exclude_with_boost`,
 			input: `{ 1 TO 2}^7`,
 			want: &Term{RangeTerm: &RangeTerm{
 				DRangeTerm: &DRangeTerm{
@@ -197,14 +197,14 @@ func TestTerm(t *testing.T) {
 				BoostSymbol: "^7",
 			}},
 			wantStr: `{ 1 TO 2 }^7`,
-			boost:   7.0,
+			boost:   BoostValue(7),
 			valueS: &Bound{
 				LeftValue:    &RangeValue{SingleValue: []string{"1"}, flag: false},
 				RightValue:   &RangeValue{SingleValue: []string{"2"}, flag: true},
 				LeftInclude:  false,
 				RightInclude: false,
 			},
-			fuzziness: 0,
+			fuzziness: NoFuzzy,
 			bound: &Bound{
 				LeftValue:    &RangeValue{SingleValue: []string{"1"}, flag: false},
 				RightValue:   &RangeValue{SingleValue: []string{"2"}, flag: true},
@@ -214,7 +214,7 @@ func TestTerm(t *testing.T) {
 			tType: RANGE_TERM_TYPE | BOOST_TERM_TYPE,
 		},
 		{
-			name:  `TestTerm13`,
+			name:  `test_double_range_left_exclude_and_right_exclude_with_boost`,
 			input: `{ 1 TO 2]^7`,
 			want: &Term{RangeTerm: &RangeTerm{
 				DRangeTerm: &DRangeTerm{
@@ -226,14 +226,14 @@ func TestTerm(t *testing.T) {
 				BoostSymbol: "^7",
 			}},
 			wantStr: `{ 1 TO 2 ]^7`,
-			boost:   7.0,
+			boost:   BoostValue(7),
 			valueS: &Bound{
 				LeftValue:    &RangeValue{SingleValue: []string{"1"}, flag: false},
 				RightValue:   &RangeValue{SingleValue: []string{"2"}, flag: true},
 				LeftInclude:  false,
 				RightInclude: true,
 			},
-			fuzziness: 0,
+			fuzziness: NoFuzzy,
 			bound: &Bound{
 				LeftValue:    &RangeValue{SingleValue: []string{"1"}, flag: false},
 				RightValue:   &RangeValue{SingleValue: []string{"2"}, flag: true},
@@ -243,7 +243,7 @@ func TestTerm(t *testing.T) {
 			tType: RANGE_TERM_TYPE | BOOST_TERM_TYPE,
 		},
 		{
-			name:  `TestTerm14`,
+			name:  `test_double_range_left_exclude_and_right_inf_with_boost`,
 			input: `[10 TO *]^7`,
 			want: &Term{RangeTerm: &RangeTerm{
 				DRangeTerm: &DRangeTerm{
@@ -255,14 +255,14 @@ func TestTerm(t *testing.T) {
 				BoostSymbol: "^7",
 			}},
 			wantStr: `[ 10 TO * ]^7`,
-			boost:   7.0,
+			boost:   BoostValue(7),
 			valueS: &Bound{
 				LeftValue:    &RangeValue{SingleValue: []string{"10"}, flag: false},
 				RightValue:   &RangeValue{InfinityVal: "*", flag: true},
 				LeftInclude:  true,
 				RightInclude: false,
 			},
-			fuzziness: 0,
+			fuzziness: NoFuzzy,
 			bound: &Bound{
 				LeftValue:    &RangeValue{SingleValue: []string{"10"}, flag: false},
 				RightValue:   &RangeValue{InfinityVal: "*", flag: true},
@@ -272,7 +272,7 @@ func TestTerm(t *testing.T) {
 			tType: RANGE_TERM_TYPE | BOOST_TERM_TYPE,
 		},
 		{
-			name:  `TestTerm15`,
+			name:  `test_double_range_left_inf_and_right_exclude_with_boost`,
 			input: `{* TO 2012-01-01}`,
 			want: &Term{RangeTerm: &RangeTerm{
 				DRangeTerm: &DRangeTerm{
@@ -283,14 +283,14 @@ func TestTerm(t *testing.T) {
 				},
 			}},
 			wantStr: `{ * TO 2012-01-01 }`,
-			boost:   1.0,
+			boost:   DefaultBoost,
 			valueS: &Bound{
 				LeftValue:    &RangeValue{InfinityVal: "*", flag: false},
 				RightValue:   &RangeValue{SingleValue: []string{"2012", "-", "01", "-", "01"}, flag: true},
 				LeftInclude:  false,
 				RightInclude: false,
 			},
-			fuzziness: 0,
+			fuzziness: NoFuzzy,
 			bound: &Bound{
 				LeftValue:    &RangeValue{InfinityVal: "*", flag: false},
 				RightValue:   &RangeValue{SingleValue: []string{"2012", "-", "01", "-", "01"}, flag: true},
@@ -300,7 +300,7 @@ func TestTerm(t *testing.T) {
 			tType: RANGE_TERM_TYPE,
 		},
 		{
-			name:  `TestTerm16`,
+			name:  `test_double_range_left_inf_and_right_exclude`,
 			input: `{* TO "2012-01-01 09:08:16"}`,
 			want: &Term{RangeTerm: &RangeTerm{
 				DRangeTerm: &DRangeTerm{
@@ -311,14 +311,14 @@ func TestTerm(t *testing.T) {
 				},
 			}},
 			wantStr: `{ * TO "2012-01-01 09:08:16" }`,
-			boost:   1.0,
+			boost:   DefaultBoost,
 			valueS: &Bound{
 				LeftValue:    &RangeValue{InfinityVal: "*", flag: false},
 				RightValue:   &RangeValue{PhraseValue: []string{"2012", "-", "01", "-", "01", " ", "09", ":", "08", ":", "16"}, flag: true},
 				LeftInclude:  false,
 				RightInclude: false,
 			},
-			fuzziness: 0,
+			fuzziness: NoFuzzy,
 			bound: &Bound{
 				LeftValue:    &RangeValue{InfinityVal: "*", flag: false},
 				RightValue:   &RangeValue{PhraseValue: []string{"2012", "-", "01", "-", "01", " ", "09", ":", "08", ":", "16"}, flag: true},
@@ -328,7 +328,7 @@ func TestTerm(t *testing.T) {
 			tType: RANGE_TERM_TYPE,
 		},
 		{
-			name:  "TestTerm17",
+			name:  "test_single_range_lte_phrase",
 			input: `<="dsada 78"`,
 			want: &Term{
 				RangeTerm: &RangeTerm{
@@ -339,14 +339,14 @@ func TestTerm(t *testing.T) {
 				},
 			},
 			wantStr: `{ * TO "dsada 78" ]`,
-			boost:   1.0,
+			boost:   DefaultBoost,
 			valueS: &Bound{
 				LeftValue:    &RangeValue{InfinityVal: "*", flag: false},
 				RightValue:   &RangeValue{PhraseValue: []string{`dsada`, ` `, `78`}, flag: true},
 				LeftInclude:  false,
 				RightInclude: true,
 			},
-			fuzziness: 0,
+			fuzziness: NoFuzzy,
 			bound: &Bound{
 				LeftValue:    &RangeValue{InfinityVal: "*", flag: false},
 				RightValue:   &RangeValue{PhraseValue: []string{`dsada`, ` `, `78`}, flag: true},
@@ -356,7 +356,7 @@ func TestTerm(t *testing.T) {
 			tType: RANGE_TERM_TYPE,
 		},
 		{
-			name:  "TestTerm18",
+			name:  "test_single_range_lt_phrase_with_boost",
 			input: `<"dsada 78"^08`,
 			want: &Term{
 				RangeTerm: &RangeTerm{
@@ -368,14 +368,14 @@ func TestTerm(t *testing.T) {
 				},
 			},
 			wantStr: `{ * TO "dsada 78" }^08`,
-			boost:   8.0,
+			boost:   BoostValue(8),
 			valueS: &Bound{
 				LeftValue:    &RangeValue{InfinityVal: "*", flag: false},
 				RightValue:   &RangeValue{PhraseValue: []string{`dsada`, ` `, `78`}, flag: true},
 				LeftInclude:  false,
 				RightInclude: false,
 			},
-			fuzziness: 0,
+			fuzziness: NoFuzzy,
 			bound: &Bound{
 				LeftValue:    &RangeValue{InfinityVal: "*", flag: false},
 				RightValue:   &RangeValue{PhraseValue: []string{`dsada`, ` `, `78`}, flag: true},
@@ -385,7 +385,7 @@ func TestTerm(t *testing.T) {
 			tType: RANGE_TERM_TYPE | BOOST_TERM_TYPE,
 		},
 		{
-			name:  "TestTerm20",
+			name:  "test_single_range_gt_phrase_with_boost",
 			input: `>"dsada 78"^080`,
 			want: &Term{
 				RangeTerm: &RangeTerm{
@@ -397,14 +397,14 @@ func TestTerm(t *testing.T) {
 				},
 			},
 			wantStr: `{ "dsada 78" TO * }^080`,
-			boost:   80.0,
+			boost:   BoostValue(80),
 			valueS: &Bound{
 				LeftValue:    &RangeValue{PhraseValue: []string{`dsada`, ` `, `78`}, flag: false},
 				RightValue:   &RangeValue{InfinityVal: "*", flag: true},
 				LeftInclude:  false,
 				RightInclude: false,
 			},
-			fuzziness: 0,
+			fuzziness: NoFuzzy,
 			bound: &Bound{
 				LeftValue:    &RangeValue{PhraseValue: []string{`dsada`, ` `, `78`}, flag: false},
 				RightValue:   &RangeValue{InfinityVal: "*", flag: true},
@@ -414,7 +414,7 @@ func TestTerm(t *testing.T) {
 			tType: RANGE_TERM_TYPE | BOOST_TERM_TYPE,
 		},
 		{
-			name:  "TestTerm21",
+			name:  "test_single_range_lte_single",
 			input: `<=dsada\ 78`,
 			want: &Term{
 				RangeTerm: &RangeTerm{
@@ -425,14 +425,14 @@ func TestTerm(t *testing.T) {
 				},
 			},
 			wantStr: `{ * TO dsada\ 78 ]`,
-			boost:   1.0,
+			boost:   DefaultBoost,
 			valueS: &Bound{
 				LeftValue:    &RangeValue{InfinityVal: "*", flag: false},
 				RightValue:   &RangeValue{SingleValue: []string{`dsada`, `\ `, `78`}, flag: true},
 				LeftInclude:  false,
 				RightInclude: true,
 			},
-			fuzziness: 0,
+			fuzziness: NoFuzzy,
 			bound: &Bound{
 				LeftValue:    &RangeValue{InfinityVal: "*", flag: false},
 				RightValue:   &RangeValue{SingleValue: []string{`dsada`, `\ `, `78`}, flag: true},
@@ -442,7 +442,7 @@ func TestTerm(t *testing.T) {
 			tType: RANGE_TERM_TYPE,
 		},
 		{
-			name:  "TestTerm22",
+			name:  "test_single_range_lt_single_with_boost",
 			input: `<dsada\ 78^08`,
 			want: &Term{
 				RangeTerm: &RangeTerm{
@@ -454,14 +454,14 @@ func TestTerm(t *testing.T) {
 				},
 			},
 			wantStr: `{ * TO dsada\ 78 }^08`,
-			boost:   8.0,
+			boost:   BoostValue(8),
 			valueS: &Bound{
 				LeftValue:    &RangeValue{InfinityVal: "*", flag: false},
 				RightValue:   &RangeValue{SingleValue: []string{`dsada`, `\ `, `78`}, flag: true},
 				LeftInclude:  false,
 				RightInclude: false,
 			},
-			fuzziness: 0,
+			fuzziness: NoFuzzy,
 			bound: &Bound{
 				LeftValue:    &RangeValue{InfinityVal: "*", flag: false},
 				RightValue:   &RangeValue{SingleValue: []string{`dsada`, `\ `, `78`}, flag: true},
@@ -471,7 +471,7 @@ func TestTerm(t *testing.T) {
 			tType: RANGE_TERM_TYPE | BOOST_TERM_TYPE,
 		},
 		{
-			name:  "TestTerm24",
+			name:  "test_single_range_gt_single_with_boost",
 			input: `>dsada\ 78^080`,
 			want: &Term{
 				RangeTerm: &RangeTerm{
@@ -483,14 +483,14 @@ func TestTerm(t *testing.T) {
 				},
 			},
 			wantStr: `{ dsada\ 78 TO * }^080`,
-			boost:   80.0,
+			boost:   BoostValue(80.0),
 			valueS: &Bound{
 				LeftValue:    &RangeValue{SingleValue: []string{`dsada`, `\ `, `78`}, flag: false},
 				RightValue:   &RangeValue{InfinityVal: "*", flag: true},
 				LeftInclude:  false,
 				RightInclude: false,
 			},
-			fuzziness: 0,
+			fuzziness: NoFuzzy,
 			bound: &Bound{
 				LeftValue:    &RangeValue{SingleValue: []string{`dsada`, `\ `, `78`}, flag: false},
 				RightValue:   &RangeValue{InfinityVal: "*", flag: true},
@@ -500,18 +500,18 @@ func TestTerm(t *testing.T) {
 			tType: RANGE_TERM_TYPE | BOOST_TERM_TYPE,
 		},
 		{
-			name:      "TestTerm25",
+			name:      "test_regex",
 			input:     `/\d+\d+\.\d+.+/`,
 			want:      &Term{RegexpTerm: &RegexpTerm{Chars: []string{`\`, `d`, `+`, `\`, `d`, `+`, `\`, `.`, `\`, `d`, `+`, `.`, `+`}}},
 			wantStr:   `/\d+\d+\.\d+.+/`,
-			boost:     1.0,
+			boost:     DefaultBoost,
 			valueS:    `\d+\d+\.\d+.+`,
-			fuzziness: 0,
+			fuzziness: NoFuzzy,
 			bound:     nil,
 			tType:     REGEXP_TERM_TYPE,
 		},
 		{
-			name:  "TestTerm26",
+			name:  "test_or_group",
 			input: `(foo or bar)`,
 			want: &Term{TermGroup: &TermGroup{
 				LogicTermGroup: &LogicTermGroup{
@@ -533,14 +533,14 @@ func TestTerm(t *testing.T) {
 				},
 			}},
 			wantStr:   `( foo OR bar )`,
-			boost:     1.0,
+			boost:     DefaultBoost,
 			valueS:    `foo OR bar`,
-			fuzziness: 0,
+			fuzziness: NoFuzzy,
 			bound:     nil,
 			tType:     GROUP_TERM_TYPE,
 		},
 		{
-			name:  "TestTerm27",
+			name:  "test_term_group_with_boost",
 			input: `(foo OR bar or [1 TO 2] AND >10 AND <20 and "abc")^7`,
 			want: &Term{TermGroup: &TermGroup{
 				LogicTermGroup: &LogicTermGroup{
@@ -610,9 +610,9 @@ func TestTerm(t *testing.T) {
 				BoostSymbol: "^7",
 			}},
 			wantStr:   `( foo OR bar OR [ 1 TO 2 ] AND { 10 TO * } AND { * TO 20 } AND "abc" )^7`,
-			boost:     7.0,
+			boost:     BoostValue(7),
 			valueS:    `foo OR bar OR [ 1 TO 2 ] AND { 10 TO * } AND { * TO 20 } AND "abc"`,
-			fuzziness: 0,
+			fuzziness: NoFuzzy,
 			bound:     nil,
 			tType:     GROUP_TERM_TYPE | BOOST_TERM_TYPE,
 		},
@@ -635,15 +635,15 @@ func TestTerm(t *testing.T) {
 	}
 	var out *Term
 	assert.Equal(t, "", out.String())
-	assert.Equal(t, 0.0, out.Boost())
-	assert.Equal(t, 0, out.Fuzziness())
+	assert.Equal(t, NoBoost, out.Boost())
+	assert.Equal(t, NoFuzzy, out.Fuzziness())
 	assert.Equal(t, UNKNOWN_TERM_TYPE, out.GetTermType())
 	_, err := out.Value(func(s string) (interface{}, error) { return s, nil })
 	assert.Equal(t, ErrEmptyTerm, err)
 	out = &Term{}
 	assert.Equal(t, "", out.String())
-	assert.Equal(t, 0.0, out.Boost())
-	assert.Equal(t, 0, out.Fuzziness())
+	assert.Equal(t, NoBoost, out.Boost())
+	assert.Equal(t, NoFuzzy, out.Fuzziness())
 	assert.Equal(t, UNKNOWN_TERM_TYPE, out.GetTermType())
 	v, _ := out.Value(func(s string) (interface{}, error) { return s, nil })
 	assert.Equal(t, "", v)
@@ -663,22 +663,22 @@ func TestTermIsRegexp(t *testing.T) {
 
 	var testCases = []testCase{
 		{
-			name:  "TestRegexpTerm01",
+			name:  "test_no_regex",
 			input: `12313\+90`,
 			want:  false,
 		},
 		{
-			name:  "TestRegexpTerm02",
+			name:  "tes_regex",
 			input: `/[1-9]+\.\d+/`,
 			want:  true,
 		},
 		{
-			name:  "TestRegexpTerm03",
+			name:  "test_phrase",
 			input: `"dsad 7089"`,
 			want:  false,
 		},
 		{
-			name:  "TestRegexpTerm04",
+			name:  "test_range",
 			input: `[1 TO 454 ]`,
 			want:  false,
 		},
@@ -709,47 +709,47 @@ func TestTermIsWildcard(t *testing.T) {
 
 	var testCases = []testCase{
 		{
-			name:  "TestWildcard01",
+			name:  "test_?_wildcard",
 			input: `12313?`,
 			want:  true,
 		},
 		{
-			name:  "TestWildcard02",
+			name:  "test_escape_?",
 			input: `12313\?`,
 			want:  false,
 		},
 		{
-			name:  "TestWildcard03",
+			name:  "test_*_wildcard",
 			input: `12313*`,
 			want:  true,
 		},
 		{
-			name:  "TestWildcard04",
+			name:  "test_escape_*",
 			input: `12313\*`,
 			want:  false,
 		},
 		{
-			name:  "TestWildcard05",
+			name:  "test_regex",
 			input: `/[1-9]+\.\d+/`,
 			want:  false,
 		},
 		{
-			name:  "TestWildcard06",
+			name:  "test_?_wildcard_and_?_wildcard",
 			input: `"dsad?\? 7089*"`,
 			want:  false,
 		},
 		{
-			name:  "TestWildcard07",
+			name:  "test_phrase",
 			input: `"dsadad 789"`,
 			want:  false,
 		},
 		{
-			name:  "TestWildcard08",
+			name:  "test_range",
 			input: `[1 TO 2]`,
 			want:  false,
 		},
 		{
-			name:  "TestWildcard09",
+			name:  "test_single",
 			input: `"178"`,
 			want:  false,
 		},
@@ -781,22 +781,22 @@ func TestTermIsRange(t *testing.T) {
 
 	var testCases = []testCase{
 		{
-			name:  "TestRangeTerm01",
+			name:  "test_single",
 			input: `12313\+90`,
 			want:  false,
 		},
 		{
-			name:  "TestRangeTerm02",
+			name:  "test_regex",
 			input: `/[1-9]+\.\d+/`,
 			want:  false,
 		},
 		{
-			name:  "TestRangeTerm03",
+			name:  "rest_phrase",
 			input: `"dsad 7089"`,
 			want:  false,
 		},
 		{
-			name:  "TestRangeTerm04",
+			name:  "test_range",
 			input: `[1 TO 454 ]`,
 			want:  true,
 		},
@@ -822,39 +822,39 @@ func TestTermFuzziness(t *testing.T) {
 	type testCase struct {
 		name  string
 		input string
-		want  int
+		want  Fuzziness
 	}
 
 	var testCases = []testCase{
 		{
-			name:  "TestFuzzines01",
+			name:  "test_no_fuzzy",
 			input: `12313\+90`,
-			want:  0,
+			want:  NoFuzzy,
 		},
 		{
-			name:  "TestFuzzines02",
+			name:  "test_regex",
 			input: `/[1-9]+\.\d+/`,
-			want:  0,
+			want:  NoFuzzy,
 		},
 		{
-			name:  "TestFuzzines03",
+			name:  "test_phrase",
 			input: `"dsad 7089"`,
-			want:  0,
+			want:  NoFuzzy,
 		},
 		{
-			name:  "TestFuzzines04",
+			name:  "test_range",
 			input: `[1 TO 454 ]`,
-			want:  0,
+			want:  NoFuzzy,
 		},
 		{
-			name:  "TestFuzzines05",
+			name:  "test_single_with_fuzzy",
 			input: `12313\+90~3`,
-			want:  3,
+			want:  Fuzziness(3),
 		},
 		{
-			name:  "TestFuzzines06",
+			name:  "test_phrase_with_fuzzy",
 			input: `"dsad 7089"~3`,
-			want:  3,
+			want:  Fuzziness(3),
 		},
 	}
 
@@ -879,49 +879,49 @@ func TestTermBoost(t *testing.T) {
 	type testCase struct {
 		name  string
 		input string
-		want  float64
+		want  BoostValue
 	}
 
 	var testCases = []testCase{
 		{
-			name:  "TestBoost01",
+			name:  "test_single_default_boost",
 			input: `12313\+90`,
-			want:  1.0,
+			want:  DefaultBoost,
 		},
 		{
-			name:  "TestBoost02",
+			name:  "test_regex_default_boost",
 			input: `/[1-9]+\.\d+/`,
-			want:  1.0,
+			want:  DefaultBoost,
 		},
 		{
-			name:  "TestBoost03",
+			name:  "test_phrase_default_boost",
 			input: `"dsad 7089"`,
-			want:  1.0,
+			want:  DefaultBoost,
 		},
 		{
-			name:  "TestBoost04",
+			name:  "test_range_default_boost",
 			input: `[1 TO 454 ]`,
-			want:  1.0,
+			want:  DefaultBoost,
 		},
 		{
-			name:  "TestBoost05",
+			name:  "test_single_with_float_boost",
 			input: `12313\+90^1.2`,
-			want:  1.2,
+			want:  BoostValue(1.2),
 		},
 		{
-			name:  "TestBoost06",
+			name:  "test_single_with_less_one_boost",
 			input: `12313\+90^0.2`,
-			want:  0.2,
+			want:  BoostValue(0.2),
 		},
 		{
-			name:  "TestBoost07",
+			name:  "test_single_with_great_one_boost",
 			input: `"dsad 7089"^3.8`,
-			want:  3.8,
+			want:  BoostValue(3.8),
 		},
 		{
-			name:  "TestBoost08",
+			name:  "test_phrase_with_less_one_boost",
 			input: `"dsad 7089"^0.8`,
-			want:  0.8,
+			want:  BoostValue(0.8),
 		},
 	}
 

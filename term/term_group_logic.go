@@ -117,9 +117,9 @@ func (t *TermGroup) String() string {
 	}
 }
 
-func (t *TermGroup) Boost() float64 {
+func (t *TermGroup) Boost() BoostValue {
 	if t == nil || t.LogicTermGroup == nil {
-		return 0.0
+		return NoBoost
 	} else {
 		return getBoostValue(t.BoostSymbol)
 	}

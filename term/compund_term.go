@@ -1,9 +1,5 @@
 package term
 
-import (
-	"strconv"
-)
-
 // single side range term or double side range and with boost like this [1 TO 2]^2
 type RangeTerm struct {
 	SRangeTerm  *SRangeTerm `parser:"( @@ " json:"s_range_term"`
@@ -46,14 +42,11 @@ func (t *RangeTerm) GetBound() *Bound {
 	}
 }
 
-func (t *RangeTerm) Boost() float64 {
+func (t *RangeTerm) Boost() BoostValue {
 	if t == nil || (t.DRangeTerm == nil && t.SRangeTerm == nil) {
-		return 0.0
-	} else if len(t.BoostSymbol) == 0 || t.BoostSymbol == "^" {
-		return 1.0
+		return NoBoost
 	} else {
-		var res, _ = strconv.ParseFloat(t.BoostSymbol[1:], 64)
-		return res
+		return getBoostValue(t.BoostSymbol)
 	}
 }
 
@@ -85,19 +78,19 @@ func (t *FuzzyTerm) GetTermType() TermType {
 	return res
 }
 
-func (t *FuzzyTerm) Boost() float64 {
+func (t *FuzzyTerm) Boost() BoostValue {
 	if t == nil || (t.SingleTerm == nil && t.PhraseTerm == nil) {
-		return 0.0
+		return NoBoost
 	} else {
 		return getBoostValue(t.BoostSymbol)
 	}
 }
 
-func (t *FuzzyTerm) Fuzziness() int {
+func (t *FuzzyTerm) Fuzzy() Fuzziness {
 	if t == nil || len(t.FuzzySymbol) == 0 || (t.SingleTerm == nil && t.PhraseTerm == nil) {
-		return 0
+		return NoFuzzy
 	} else {
-		return getFuzziness(t.FuzzySymbol)
+		return getFuzzyValue(t.FuzzySymbol)
 	}
 }
 

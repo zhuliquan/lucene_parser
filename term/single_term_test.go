@@ -23,21 +23,21 @@ func TestSingleTerm(t *testing.T) {
 	}
 	var testCases = []testCase{
 		{
-			name:     "TestSimpleTerm01",
+			name:     "test_escape_slush_and_?_wildcard",
 			input:    `\/dsada\/\ dasda80980?`,
 			want:     &SingleTerm{Begin: `\/`, Chars: []string{`dsada`, `\/\ `, `dasda`, `80980`, `?`}},
 			values:   `\/dsada\/\ dasda80980?`,
 			wildcard: true,
 		},
 		{
-			name:     "TestSimpleTerm02",
+			name:     "test_escape_slush_and_*_wildcard",
 			input:    `\/dsada\/\ dasda80980*`,
 			want:     &SingleTerm{Begin: `\/`, Chars: []string{`dsada`, `\/\ `, `dasda`, `80980`, `*`}},
 			values:   `\/dsada\/\ dasda80980*`,
 			wildcard: true,
 		},
 		{
-			name:     "TestSimpleTerm03",
+			name:     "test_escape_slush_and_escape_wildcard",
 			input:    `\/dsada\/\ dasda8\?0980\*`,
 			want:     &SingleTerm{Begin: `\/`, Chars: []string{`dsada`, `\/\ `, `dasda`, `8`, `\?`, `0980`, `\*`}},
 			values:   `\/dsada\/\ dasda8\?0980\*`,
@@ -77,58 +77,22 @@ func TestPhraseTerm(t *testing.T) {
 	}
 	var testCases = []testCase{
 		{
-			name:   "TestPhraseTerm01",
+			name:   "test_word_with_space",
 			input:  `"dsada 78"`,
 			want:   &PhraseTerm{Chars: []string{`dsada`, ` `, `78`}},
 			values: `"dsada 78"`,
 		},
 		{
-			name:   "TestPhraseTerm02",
-			input:  `"*dsada 78"`,
-			want:   &PhraseTerm{Chars: []string{`*`, `dsada`, ` `, `78`}},
-			values: `"*dsada 78"`,
-		},
-		{
-			name:   "TestPhraseTerm03",
-			input:  `"?dsada 78"`,
-			want:   &PhraseTerm{Chars: []string{`?`, `dsada`, ` `, `78`}},
-			values: `"?dsada 78"`,
-		},
-		{
-			name:   "TestPhraseTerm04",
-			input:  `"dsada* 78"`,
-			want:   &PhraseTerm{Chars: []string{`dsada`, `*`, ` `, `78`}},
-			values: `"dsada* 78"`,
-		},
-		{
-			name:   "TestPhraseTerm05",
-			input:  `"dsada? 78"`,
-			want:   &PhraseTerm{Chars: []string{`dsada`, `?`, ` `, `78`}},
-			values: `"dsada? 78"`,
-		},
-		{
-			name:   "TestPhraseTerm06",
+			name:   "test_word_with_space_and_escape_char",
 			input:  `"dsada\* 78"`,
 			want:   &PhraseTerm{Chars: []string{`dsada`, `\*`, ` `, `78`}},
 			values: `"dsada\* 78"`,
 		},
 		{
-			name:   "TestPhraseTerm07",
-			input:  `"dsada\? 78"`,
-			want:   &PhraseTerm{Chars: []string{`dsada`, `\?`, ` `, `78`}},
-			values: `"dsada\? 78"`,
-		},
-		{
-			name:     "TestPhraseTerm09",
-			input:    `"\*dsada 78"`,
-			want:     &PhraseTerm{Chars: []string{`\*`, `dsada`, ` `, `78`}},
-			values:   `"\*dsada 78"`,
-		},
-		{
-			name:     "TestPhraseTerm10",
-			input:    `"\?dsada 78"`,
-			want:     &PhraseTerm{Chars: []string{`\?`, `dsada`, ` `, `78`}},
-			values:   `"\?dsada 78"`,
+			name:   "test_word_with_space_and_escape_char_begin",
+			input:  `"\*dsada 78"`,
+			want:   &PhraseTerm{Chars: []string{`\*`, `dsada`, ` `, `78`}},
+			values: `"\*dsada 78"`,
 		},
 	}
 
@@ -158,17 +122,20 @@ func TestRegexpTerm(t *testing.T) {
 		name  string
 		input string
 		want  *RegexpTerm
+		boost BoostValue
 	}
 	var testCases = []testCase{
 		{
-			name:  "RegexpTerm01",
+			name:  "test_regex_no_special",
 			input: `/dsada 78/`,
 			want:  &RegexpTerm{Chars: []string{`dsada`, ` `, `78`}},
+			boost: DefaultBoost,
 		},
 		{
-			name:  "RegexpTerm02",
+			name:  "test_regex_with_escape",
 			input: `/\d+\/\d+\.\d+.+/`,
 			want:  &RegexpTerm{Chars: []string{`\`, `d`, `+`, `\/`, `\`, `d`, `+`, `\`, `.`, `\`, `d`, `+`, `.`, `+`}},
+			boost: DefaultBoost,
 		},
 	}
 
@@ -178,10 +145,12 @@ func TestRegexpTerm(t *testing.T) {
 			err := termParser.ParseString(tt.input, out)
 			assert.Nil(t, err)
 			assert.Equal(t, tt.want, out)
+			assert.Equal(t, tt.boost, out.Boost())
 		})
 	}
 	var s *RegexpTerm
 	assert.Empty(t, s.String())
+	assert.Equal(t, NoBoost, s.Boost())
 	assert.Equal(t, UNKNOWN_TERM_TYPE, s.GetTermType())
 	_, err := s.Value(func(s string) (interface{}, error) { return s, nil })
 	assert.Equal(t, ErrEmptyRegexpTerm, err)
@@ -205,7 +174,7 @@ func TestDRangeTerm(t *testing.T) {
 	}
 	var testCases = []testCase{
 		{
-			name:  "DRangeTerm01",
+			name:  "test_left_include_right_include",
 			input: `[1 TO 2]`,
 			want: &DRangeTerm{
 				LBRACKET: "[",
@@ -225,7 +194,7 @@ func TestDRangeTerm(t *testing.T) {
 			rpinf: false,
 		},
 		{
-			name:  "DRangeTerm02",
+			name:  "test_left_include_right_exclude",
 			input: `[1 TO 2 }`,
 			want: &DRangeTerm{
 				LBRACKET: "[",
@@ -245,7 +214,7 @@ func TestDRangeTerm(t *testing.T) {
 			rpinf: false,
 		},
 		{
-			name:  `DRangeTerm03`,
+			name:  `test_left_exclude_right_exclude`,
 			input: `{ 1 TO 2}`,
 			want: &DRangeTerm{
 				LBRACKET: "{",
@@ -265,7 +234,7 @@ func TestDRangeTerm(t *testing.T) {
 			rpinf: false,
 		},
 		{
-			name:  `DRangeTerm04`,
+			name:  `test_left_exclude_right_include`,
 			input: `{ 1 TO 2]`,
 			want: &DRangeTerm{
 				LBRACKET: "{",
@@ -285,7 +254,7 @@ func TestDRangeTerm(t *testing.T) {
 			rpinf: false,
 		},
 		{
-			name:  `DRangeTerm05`,
+			name:  `test_left_include_right_exclude`,
 			input: `[10 TO *]`,
 			want: &DRangeTerm{
 				LBRACKET: "[",
@@ -305,7 +274,7 @@ func TestDRangeTerm(t *testing.T) {
 			rpinf: true,
 		},
 		{
-			name:  `DRangeTerm06`,
+			name:  `test_left_inf_right_date_exclude`,
 			input: `{* TO 2012-01-01}`,
 			want: &DRangeTerm{
 				LBRACKET: "{",
@@ -325,7 +294,7 @@ func TestDRangeTerm(t *testing.T) {
 			rpinf: false,
 		},
 		{
-			name:  `DRangeTerm07`,
+			name:  `test_left_inf_right_phrase_exclude`,
 			input: `{* TO "2012-01-01 09:08:16"}`,
 			want: &DRangeTerm{
 				LBRACKET: "{",
@@ -345,7 +314,7 @@ func TestDRangeTerm(t *testing.T) {
 			rpinf: false,
 		},
 		{
-			name:  `DRangeTerm08`,
+			name:  `test_left_inf_right_single_with_escape_exclude`,
 			input: `{* TO 2012/01/01T09:08.16||8d/M }`,
 			want: &DRangeTerm{
 				LBRACKET: "{",
@@ -409,7 +378,7 @@ func TestSRangeTerm(t *testing.T) {
 	}
 	var testCases = []testCase{
 		{
-			name:  "SRangeTerm01",
+			name:  "test_lte_phrase",
 			input: `<="dsada\455 78"`,
 			want:  &SRangeTerm{Symbol: "<=", Value: &RangeValue{PhraseValue: []string{`dsada`, `\`, `455`, ` `, `78`}}},
 			bound: &Bound{
@@ -424,7 +393,7 @@ func TestSRangeTerm(t *testing.T) {
 			rpinf: false,
 		},
 		{
-			name:  "SRangeTerm02",
+			name:  "test_lt_single",
 			input: `<"dsada\\ 78"`,
 			want:  &SRangeTerm{Symbol: "<", Value: &RangeValue{PhraseValue: []string{`dsada`, `\\`, ` `, `78`}}},
 			bound: &Bound{
@@ -439,7 +408,7 @@ func TestSRangeTerm(t *testing.T) {
 			rpinf: false,
 		},
 		{
-			name:  "SRangeTerm03",
+			name:  "test_gte_single",
 			input: `>=dsada\ 78`,
 			want:  &SRangeTerm{Symbol: ">=", Value: &RangeValue{SingleValue: []string{`dsada`, `\ `, `78`}}},
 			bound: &Bound{
@@ -454,7 +423,7 @@ func TestSRangeTerm(t *testing.T) {
 			rpinf: true,
 		},
 		{
-			name:  "SRangeTerm04",
+			name:  "test_gt_single",
 			input: `>dsada\ 78`,
 			want:  &SRangeTerm{Symbol: ">", Value: &RangeValue{SingleValue: []string{`dsada`, `\ `, `78`}}},
 			bound: &Bound{

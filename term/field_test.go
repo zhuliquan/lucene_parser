@@ -23,25 +23,25 @@ func TestField(t *testing.T) {
 
 	var testCases = []testCase{
 		{
-			name:  "TestField01",
+			name:  "test_escape",
 			input: `1\+1`,
 			want:  &Field{Value: []string{`1`, `\+`, `1`}},
 			wantS: `1\+1`,
 		},
 		{
-			name:  "TestField02",
+			name:  "test_word",
 			input: `ls`,
 			want:  &Field{Value: []string{`ls`}},
 			wantS: `ls`,
 		},
 		{
-			name:  "TestField03",
+			name:  "test_word_with_dot",
 			input: `x.y`,
 			want:  &Field{Value: []string{`x`, `.`, `y`}},
 			wantS: `x.y`,
 		},
 		{
-			name:  "TestField04",
+			name:  "test_minus_and_word",
 			input: `x.y-z`,
 			want:  &Field{Value: []string{`x`, `.`, `y`, `-`, `z`}},
 			wantS: `x.y-z`,
