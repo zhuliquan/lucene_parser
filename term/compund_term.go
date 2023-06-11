@@ -118,8 +118,6 @@ func (t *FuzzyTerm) haveWildcard() bool {
 		return false
 	} else if t.SingleTerm != nil {
 		return t.SingleTerm.haveWildcard()
-	} else if t.PhraseTerm != nil {
-		return t.PhraseTerm.haveWildcard()
 	} else {
 		return false
 	}

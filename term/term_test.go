@@ -736,7 +736,7 @@ func TestTermIsWildcard(t *testing.T) {
 		{
 			name:  "TestWildcard06",
 			input: `"dsad?\? 7089*"`,
-			want:  true,
+			want:  false,
 		},
 		{
 			name:  "TestWildcard07",

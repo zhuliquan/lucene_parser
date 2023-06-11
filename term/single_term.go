@@ -64,7 +64,6 @@ func (t *SingleTerm) haveWildcard() bool {
 // phrase term: a series of terms be surrounded with quotation, for instance "foo bar".
 type PhraseTerm struct {
 	Chars    []string `parser:"QUOTE @( REVERSE QUOTE | !QUOTE )* QUOTE" json:"chars"`
-	wildcard int8
 }
 
 func (t *PhraseTerm) GetTermType() TermType {
@@ -72,9 +71,6 @@ func (t *PhraseTerm) GetTermType() TermType {
 		return UNKNOWN_TERM_TYPE
 	}
 	var res = PHRASE_TERM_TYPE
-	if t.haveWildcard() {
-		res |= WILDCARD_TERM_TYPE
-	}
 	return res
 }
 
@@ -92,26 +88,6 @@ func (t *PhraseTerm) String() string {
 	} else {
 		return "\"" + strings.Join(t.Chars, "") + "\""
 	}
-}
-
-func (t *PhraseTerm) haveWildcard() bool {
-	if t == nil {
-		return false
-	} else if t.wildcard == -1 {
-		return false
-	} else if t.wildcard == 1 {
-		return true
-	} else {
-		for _, tk := range t.Chars {
-			if token.GetTokenType(tk) == token.WILDCARD_TOKEN_TYPE {
-				t.wildcard = 1
-				return true
-			}
-		}
-		t.wildcard = -1
-		return false
-	}
-
 }
 
 // a regexp term is surrounded be slash, for instance /\d+\.?\d+/ in here if you want present '/' you should type '\/'

@@ -70,75 +70,65 @@ func TestPhraseTerm(t *testing.T) {
 	)
 
 	type testCase struct {
-		name     string
-		input    string
-		want     *PhraseTerm
-		values   string
-		wildcard bool
+		name   string
+		input  string
+		want   *PhraseTerm
+		values string
 	}
 	var testCases = []testCase{
 		{
-			name:     "TestPhraseTerm01",
-			input:    `"dsada 78"`,
-			want:     &PhraseTerm{Chars: []string{`dsada`, ` `, `78`}},
-			values:   `"dsada 78"`,
-			wildcard: false,
+			name:   "TestPhraseTerm01",
+			input:  `"dsada 78"`,
+			want:   &PhraseTerm{Chars: []string{`dsada`, ` `, `78`}},
+			values: `"dsada 78"`,
 		},
 		{
-			name:     "TestPhraseTerm02",
-			input:    `"*dsada 78"`,
-			want:     &PhraseTerm{Chars: []string{`*`, `dsada`, ` `, `78`}},
-			values:   `"*dsada 78"`,
-			wildcard: true,
+			name:   "TestPhraseTerm02",
+			input:  `"*dsada 78"`,
+			want:   &PhraseTerm{Chars: []string{`*`, `dsada`, ` `, `78`}},
+			values: `"*dsada 78"`,
 		},
 		{
-			name:     "TestPhraseTerm03",
-			input:    `"?dsada 78"`,
-			want:     &PhraseTerm{Chars: []string{`?`, `dsada`, ` `, `78`}},
-			values:   `"?dsada 78"`,
-			wildcard: true,
+			name:   "TestPhraseTerm03",
+			input:  `"?dsada 78"`,
+			want:   &PhraseTerm{Chars: []string{`?`, `dsada`, ` `, `78`}},
+			values: `"?dsada 78"`,
 		},
 		{
-			name:     "TestPhraseTerm04",
-			input:    `"dsada* 78"`,
-			want:     &PhraseTerm{Chars: []string{`dsada`, `*`, ` `, `78`}},
-			values:   `"dsada* 78"`,
-			wildcard: true,
+			name:   "TestPhraseTerm04",
+			input:  `"dsada* 78"`,
+			want:   &PhraseTerm{Chars: []string{`dsada`, `*`, ` `, `78`}},
+			values: `"dsada* 78"`,
 		},
 		{
-			name:     "TestPhraseTerm05",
-			input:    `"dsada? 78"`,
-			want:     &PhraseTerm{Chars: []string{`dsada`, `?`, ` `, `78`}},
-			values:   `"dsada? 78"`,
-			wildcard: true,
+			name:   "TestPhraseTerm05",
+			input:  `"dsada? 78"`,
+			want:   &PhraseTerm{Chars: []string{`dsada`, `?`, ` `, `78`}},
+			values: `"dsada? 78"`,
 		},
 		{
-			name:     "TestPhraseTerm06",
-			input:    `"dsada\* 78"`,
-			want:     &PhraseTerm{Chars: []string{`dsada`, `\*`, ` `, `78`}},
-			values:   `"dsada\* 78"`,
-			wildcard: false,
+			name:   "TestPhraseTerm06",
+			input:  `"dsada\* 78"`,
+			want:   &PhraseTerm{Chars: []string{`dsada`, `\*`, ` `, `78`}},
+			values: `"dsada\* 78"`,
 		},
 		{
-			name:     "TestPhraseTerm07",
-			input:    `"dsada\? 78"`,
-			want:     &PhraseTerm{Chars: []string{`dsada`, `\?`, ` `, `78`}},
-			values:   `"dsada\? 78"`,
-			wildcard: false,
+			name:   "TestPhraseTerm07",
+			input:  `"dsada\? 78"`,
+			want:   &PhraseTerm{Chars: []string{`dsada`, `\?`, ` `, `78`}},
+			values: `"dsada\? 78"`,
 		},
 		{
 			name:     "TestPhraseTerm09",
 			input:    `"\*dsada 78"`,
 			want:     &PhraseTerm{Chars: []string{`\*`, `dsada`, ` `, `78`}},
 			values:   `"\*dsada 78"`,
-			wildcard: false,
 		},
 		{
 			name:     "TestPhraseTerm10",
 			input:    `"\?dsada 78"`,
 			want:     &PhraseTerm{Chars: []string{`\?`, `dsada`, ` `, `78`}},
 			values:   `"\?dsada 78"`,
-			wildcard: false,
 		},
 	}
 
@@ -149,12 +139,10 @@ func TestPhraseTerm(t *testing.T) {
 			assert.Nil(t, err)
 			assert.Equal(t, tt.want, out)
 			assert.Equal(t, tt.values, out.String())
-			assert.Equal(t, tt.wildcard, out.haveWildcard())
 		})
 	}
 	var s *PhraseTerm
 	assert.Empty(t, s.String())
-	assert.False(t, s.haveWildcard())
 	assert.Equal(t, UNKNOWN_TERM_TYPE, s.GetTermType())
 	_, err := s.Value(func(s string) (interface{}, error) { return s, nil })
 	assert.Equal(t, ErrEmptyPhraseTerm, err)
