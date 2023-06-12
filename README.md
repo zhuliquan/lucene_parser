@@ -13,10 +13,11 @@ This package can parse lucene query used by ES (ElasticSearch), this package is 
 - 9、support term group query, for instance `x:(foo OR bar)`, `x:(>1 && <2)`.
 - 10、support not operator be used with just one term (i.g. `not x:y`), this feature is differs from [the definition of `NOT` in standard lucene syntax](https://lucene.apache.org/core/2_9_4/queryparsersyntax.html#NOT).
 - 11、support ignore `AND` operator when it behind with `NOT` operator (i.e. you can write `x:y and not x2:y2` as `x:y not x2:y2`).
+- 12、support prefix operator `("+", "-", "!")` is ahead of field term, for instance `-foo:bar +foo1:bar1 foo2:bar2 !foo3:bar3`.
 
 ## Limitations
 - 1、only support lucene query with **field name**, instead of query without **field name** (i.e. this project can't parse query like `foo OR bar`, `foo AND bar`, but can parse `foo:bar`, `foo:(bar1 AND bar2)`).
-- 2、don't support prefix operator `'+'` / `'-'`, for instance `+fo0 -bar`.
+- 2、prefix and bool operator cannot be supported at the same time. on the other hand, you can't parse query which consist bool operator (`AND`/`OR`/`OR`/`NOT`/`&&`/`||`/`!`) and prefix operator (`+`/`-`) at same time.
 - 3、don't support fuzziness of similarity (float number between 0 and 1), instead of fuzziness of maximum edit distance (i.e. Levenshtein Edit Distance — the number of one character changes that need to be made to one string to make it the same as another string.).
 - 4、don't support space is regard as `OR` operator (i.g. `x1:y1 x2:y2`). (I don't know how to handle expression which includes both `or` token and space token (i.g. `x y or z`) . If you have good idea, please contact me)
 
@@ -28,6 +29,7 @@ This package can parse lucene query used by ES (ElasticSearch), this package is 
 - 3、if you input boost symbol but value, you will get 1.0 by invoking function `Boost` of term. for instance query `foo:bar^`.
 
 ## Usage
+### basic lucene parser
 ```golang
 package main
 
@@ -38,6 +40,24 @@ import (
 
 func main() {
     if lucene, err := lucene_parser.ParseLucene("x:foo AND y:bar"); err != nil {
+        panic(err)
+    } else {
+        fmt.Println(lucene)
+    }
+}
+```
+### prefix operator lucene parser
+You also can parse lucene query with prefix operator by using `prefix` package, as below:
+```golang
+package main
+
+import (
+    "fmt"
+    "github.com/zhuliquan/lucene_parser/prefix"
+)
+
+func main() {
+    if lucene, err := prefix.ParseLucene("x:foo AND y:bar"); err != nil {
         panic(err)
     } else {
         fmt.Println(lucene)
