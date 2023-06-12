@@ -26,29 +26,29 @@ func TestTermGroup(t *testing.T) {
 	var testCases = []testCase{
 		{
 			name:  "term_four_term_group",
-			input: `( +8908  "dsada 78" +"89080  xxx" -"xx yyyy" +\+dsada\ 7897 -\-\-dsada\-7897  [-1 TO 3] +>2021-11-04 +<2021-11-11 +(  -[-1 TO 3] [1 TO 2] +[5 TO 10} -dsadad\ dsad\+789 +"dsad xx") +{8 TO 90])^1.8`,
+			input: `( +8908  "dsada 78" +"89080  xxx" -"xx yyyy" +\+dsada\ 7897 -\-\-dsada\-7897  [-1 TO 3] +>2021-11-04 +<2021-11-11 +(  ![-1 TO 3] [1 TO 2] +[5 TO 10} -dsadad\ dsad\+789 +"dsad xx") +{8 TO 90])^1.8`,
 			want: &TermGroup{
 				PrefixTermGroup: &PrefixTermGroup{
 					PrefixTerms: []*PrefixOperatorTerm{
-						{Symbol: "+", FieldTermGroup: &term.FieldTermGroup{SingleTerm: &term.SingleTerm{Begin: `8908`}}},
-						{Symbol: "", FieldTermGroup: &term.FieldTermGroup{PhraseTerm: &term.PhraseTerm{Chars: []string{`dsada`, ` `, `78`}}}},
-						{Symbol: "+", FieldTermGroup: &term.FieldTermGroup{PhraseTerm: &term.PhraseTerm{Chars: []string{`89080`, `  `, `xxx`}}}},
-						{Symbol: "-", FieldTermGroup: &term.FieldTermGroup{PhraseTerm: &term.PhraseTerm{Chars: []string{`xx`, ` `, `yyyy`}}}},
-						{Symbol: "+", FieldTermGroup: &term.FieldTermGroup{SingleTerm: &term.SingleTerm{Begin: `\+`, Chars: []string{`dsada`, `\ `, `7897`}}}},
-						{Symbol: "-", FieldTermGroup: &term.FieldTermGroup{SingleTerm: &term.SingleTerm{Begin: `\-\-`, Chars: []string{`dsada`, `\-`, `7897`}}}},
-						{Symbol: "", FieldTermGroup: &term.FieldTermGroup{DRangeTerm: &term.DRangeTerm{LBRACKET: "[", LValue: &term.RangeValue{SingleValue: []string{"-", "1"}}, RValue: &term.RangeValue{SingleValue: []string{"3"}}, RBRACKET: "]"}}},
-						{Symbol: "+", FieldTermGroup: &term.FieldTermGroup{SRangeTerm: &term.SRangeTerm{Symbol: ">", Value: &term.RangeValue{SingleValue: []string{`2021`, "-", "11", "-", "04"}}}}},
-						{Symbol: "+", FieldTermGroup: &term.FieldTermGroup{SRangeTerm: &term.SRangeTerm{Symbol: "<", Value: &term.RangeValue{SingleValue: []string{`2021`, "-", "11", "-", "11"}}}}},
-						{Symbol: "+", ParenTermGroup: &PrefixTermGroup{
+						{PrefixOp: "+", FieldTermGroup: &term.FieldTermGroup{SingleTerm: &term.SingleTerm{Begin: `8908`}}},
+						{PrefixOp: "", FieldTermGroup: &term.FieldTermGroup{PhraseTerm: &term.PhraseTerm{Chars: []string{`dsada`, ` `, `78`}}}},
+						{PrefixOp: "+", FieldTermGroup: &term.FieldTermGroup{PhraseTerm: &term.PhraseTerm{Chars: []string{`89080`, `  `, `xxx`}}}},
+						{PrefixOp: "-", FieldTermGroup: &term.FieldTermGroup{PhraseTerm: &term.PhraseTerm{Chars: []string{`xx`, ` `, `yyyy`}}}},
+						{PrefixOp: "+", FieldTermGroup: &term.FieldTermGroup{SingleTerm: &term.SingleTerm{Begin: `\+`, Chars: []string{`dsada`, `\ `, `7897`}}}},
+						{PrefixOp: "-", FieldTermGroup: &term.FieldTermGroup{SingleTerm: &term.SingleTerm{Begin: `\-\-`, Chars: []string{`dsada`, `\-`, `7897`}}}},
+						{PrefixOp: "", FieldTermGroup: &term.FieldTermGroup{DRangeTerm: &term.DRangeTerm{LBRACKET: "[", LValue: &term.RangeValue{SingleValue: []string{"-", "1"}}, RValue: &term.RangeValue{SingleValue: []string{"3"}}, RBRACKET: "]"}}},
+						{PrefixOp: "+", FieldTermGroup: &term.FieldTermGroup{SRangeTerm: &term.SRangeTerm{Symbol: ">", Value: &term.RangeValue{SingleValue: []string{`2021`, "-", "11", "-", "04"}}}}},
+						{PrefixOp: "+", FieldTermGroup: &term.FieldTermGroup{SRangeTerm: &term.SRangeTerm{Symbol: "<", Value: &term.RangeValue{SingleValue: []string{`2021`, "-", "11", "-", "11"}}}}},
+						{PrefixOp: "+", ParenTermGroup: &PrefixTermGroup{
 							PrefixTerms: []*PrefixOperatorTerm{
-								{Symbol: "-", FieldTermGroup: &term.FieldTermGroup{DRangeTerm: &term.DRangeTerm{LBRACKET: "[", LValue: &term.RangeValue{SingleValue: []string{"-", "1"}}, RValue: &term.RangeValue{SingleValue: []string{"3"}}, RBRACKET: "]"}}},
-								{Symbol: "", FieldTermGroup: &term.FieldTermGroup{DRangeTerm: &term.DRangeTerm{LBRACKET: "[", LValue: &term.RangeValue{SingleValue: []string{"1"}}, RValue: &term.RangeValue{SingleValue: []string{"2"}}, RBRACKET: "]"}}},
-								{Symbol: "+", FieldTermGroup: &term.FieldTermGroup{DRangeTerm: &term.DRangeTerm{LBRACKET: "[", LValue: &term.RangeValue{SingleValue: []string{"5"}}, RValue: &term.RangeValue{SingleValue: []string{"10"}}, RBRACKET: "}"}}},
-								{Symbol: "-", FieldTermGroup: &term.FieldTermGroup{SingleTerm: &term.SingleTerm{Begin: "dsadad", Chars: []string{`\ `, `dsad`, `\+`, `789`}}}},
-								{Symbol: "+", FieldTermGroup: &term.FieldTermGroup{PhraseTerm: &term.PhraseTerm{Chars: []string{`dsad`, ` `, `xx`}}}},
+								{PrefixOp: "!", FieldTermGroup: &term.FieldTermGroup{DRangeTerm: &term.DRangeTerm{LBRACKET: "[", LValue: &term.RangeValue{SingleValue: []string{"-", "1"}}, RValue: &term.RangeValue{SingleValue: []string{"3"}}, RBRACKET: "]"}}},
+								{PrefixOp: "", FieldTermGroup: &term.FieldTermGroup{DRangeTerm: &term.DRangeTerm{LBRACKET: "[", LValue: &term.RangeValue{SingleValue: []string{"1"}}, RValue: &term.RangeValue{SingleValue: []string{"2"}}, RBRACKET: "]"}}},
+								{PrefixOp: "+", FieldTermGroup: &term.FieldTermGroup{DRangeTerm: &term.DRangeTerm{LBRACKET: "[", LValue: &term.RangeValue{SingleValue: []string{"5"}}, RValue: &term.RangeValue{SingleValue: []string{"10"}}, RBRACKET: "}"}}},
+								{PrefixOp: "-", FieldTermGroup: &term.FieldTermGroup{SingleTerm: &term.SingleTerm{Begin: "dsadad", Chars: []string{`\ `, `dsad`, `\+`, `789`}}}},
+								{PrefixOp: "+", FieldTermGroup: &term.FieldTermGroup{PhraseTerm: &term.PhraseTerm{Chars: []string{`dsad`, ` `, `xx`}}}},
 							},
 						}},
-						{Symbol: "+", FieldTermGroup: &term.FieldTermGroup{DRangeTerm: &term.DRangeTerm{LBRACKET: "{", LValue: &term.RangeValue{SingleValue: []string{"8"}}, RValue: &term.RangeValue{SingleValue: []string{"90"}}, RBRACKET: "]"}}},
+						{PrefixOp: "+", FieldTermGroup: &term.FieldTermGroup{DRangeTerm: &term.DRangeTerm{LBRACKET: "{", LValue: &term.RangeValue{SingleValue: []string{"8"}}, RValue: &term.RangeValue{SingleValue: []string{"90"}}, RBRACKET: "]"}}},
 					},
 				},
 				BoostSymbol: "^1.8",
@@ -75,10 +75,10 @@ func TestPrefixOperatorTerm(t *testing.T) {
 	tt = &PrefixOperatorTerm{}
 	assert.Equal(t, op.SHOULD_PREFIX_TYPE, tt.GetPrefixType())
 	assert.Equal(t, "", tt.String())
-	tt = &PrefixOperatorTerm{Symbol: "+"}
+	tt = &PrefixOperatorTerm{PrefixOp: "+"}
 	assert.Equal(t, op.MUST_PREFIX_TYPE, tt.GetPrefixType())
 	assert.Equal(t, "", tt.String())
-	tt = &PrefixOperatorTerm{Symbol: "-"}
+	tt = &PrefixOperatorTerm{PrefixOp: "-"}
 	assert.Equal(t, op.MUST_NOT_PREFIX_TYPE, tt.GetPrefixType())
 	assert.Equal(t, "", tt.String())
 }

@@ -8,9 +8,9 @@ import (
 	"github.com/zhuliquan/lucene_parser/term"
 )
 
-// prefix operator term: a term is behind of prefix operator symbol ("+" / "-")
+// prefix operator term: a term is behind of prefix operator symbol ("+" / "-" / '!')
 type PrefixOperatorTerm struct {
-	Symbol         string               `parser:"WHITESPACE* @( PLUS | MINUS)?" json:"symbol"`
+	PrefixOp       string               `parser:"WHITESPACE* @( PLUS | MINUS | '!')?" json:"prefix_op"`
 	FieldTermGroup *term.FieldTermGroup `parser:"( @@" json:"field_term_group"`
 	ParenTermGroup *PrefixTermGroup     `parser:"| LPAREN WHITESPACE* @@ WHITESPACE* RPAREN)" json:"paren_term_group"`
 }
@@ -19,9 +19,9 @@ func (t *PrefixOperatorTerm) String() string {
 	if t == nil {
 		return ""
 	} else if t.FieldTermGroup != nil {
-		return fmt.Sprintf("%s%s", t.Symbol, t.FieldTermGroup)
+		return fmt.Sprintf("%s%s", t.PrefixOp, t.FieldTermGroup)
 	} else if t.ParenTermGroup != nil {
-		return fmt.Sprintf("%s( %s )", t.Symbol, t.ParenTermGroup)
+		return fmt.Sprintf("%s( %s )", t.PrefixOp, t.ParenTermGroup)
 	}
 	return ""
 }
@@ -29,9 +29,9 @@ func (t *PrefixOperatorTerm) String() string {
 func (t *PrefixOperatorTerm) GetPrefixType() op.PrefixOPType {
 	if t == nil {
 		return op.UNKNOWN_PREFIX_TYPE
-	} else if t.Symbol == "+" {
+	} else if t.PrefixOp == "+" {
 		return op.MUST_PREFIX_TYPE
-	} else if t.Symbol == "-" {
+	} else if t.PrefixOp == "-" {
 		return op.MUST_NOT_PREFIX_TYPE
 	} else {
 		return op.SHOULD_PREFIX_TYPE

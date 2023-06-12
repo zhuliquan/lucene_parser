@@ -167,7 +167,7 @@ func TestTerm(t *testing.T) {
 					PrefixTermGroup: &PrefixTermGroup{
 						PrefixTerms: []*PrefixOperatorTerm{
 							{
-								Symbol: "+",
+								PrefixOp: "+",
 								FieldTermGroup: &term.FieldTermGroup{
 									SingleTerm: &term.SingleTerm{Begin: "x"},
 								},
@@ -191,13 +191,13 @@ func TestTerm(t *testing.T) {
 					PrefixTermGroup: &PrefixTermGroup{
 						PrefixTerms: []*PrefixOperatorTerm{
 							{
-								Symbol: "+",
+								PrefixOp: "+",
 								FieldTermGroup: &term.FieldTermGroup{
 									SingleTerm: &term.SingleTerm{Begin: "x"},
 								},
 							},
 							{
-								Symbol: "-",
+								PrefixOp: "-",
 								FieldTermGroup: &term.FieldTermGroup{
 									SingleTerm: &term.SingleTerm{Begin: "y"},
 								},
