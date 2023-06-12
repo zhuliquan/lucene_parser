@@ -420,9 +420,19 @@ func TestType(t *testing.T) {
 			qType: AND_QUERY,
 		},
 		{
+			name:  "test_and_not_query_type",
+			input: &AndQuery{NotSymbol: &operator.NotSymbol{Symbol: "NOT"}},
+			qType: NOT_QUERY,
+		},
+		{
 			name:  "test_ans_query_type",
-			input: &AnSQuery{},
+			input: &AnSQuery{AndSymbol: &operator.AndSymbol{Symbol: "AND"}},
 			qType: ANS_QUERY,
+		},
+		{
+			name:  "test_not_query_type",
+			input: &AnSQuery{NotSymbol: &operator.NotSymbol{Symbol: "NOT"}},
+			qType: NOT_QUERY,
 		},
 		{
 			name:  "test_paren_query_type",

@@ -115,6 +115,9 @@ type AndQuery struct {
 }
 
 func (q *AndQuery) GetQueryType() QueryType {
+	if q.NotSymbol != nil {
+		return NOT_QUERY
+	}
 	return AND_QUERY
 }
 
@@ -138,7 +141,10 @@ type AnSQuery struct {
 }
 
 func (q *AnSQuery) GetQueryType() QueryType {
-	return ANS_QUERY
+	if q.AndSymbol != nil {
+		return ANS_QUERY
+	}
+	return NOT_QUERY
 }
 
 func (q *AnSQuery) String() string {
