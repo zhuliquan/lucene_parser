@@ -12,7 +12,7 @@ var rules = []stateful.Rule{
 	},
 	{
 		Name:    "WHITESPACE",
-		Pattern: `[\t\r\f ]+`,
+		Pattern: `[\t\r\f 0x3000]+`,
 	},
 	{
 		Name:    "IDENT",
