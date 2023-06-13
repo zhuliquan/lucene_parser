@@ -1,6 +1,6 @@
 # lucene_parser
 ## Introduction:
-This package can parse lucene query used by ES (ElasticSearch), this package is pure go package, lex and yacc in this package doesn't follow standard lucene parser, and this package is aimed to other packages that convert lucene to other special DSL(domain special language), such as LuceneToSQL / LuceneToEQL (Used in ES). If you want to parse standard lucene query, you can use this [package](https://github.com/zhuliquan/standard_lucene_parser) 
+This package can parse lucene query used by ES (ElasticSearch), this package is pure go package, lex and yacc in this package doesn't follow standard lucene parser, and this package is used to convert lucene to other special DSL(domain special language) mainly, such as LuceneToSQL / LuceneToEQL (Used in ES). If you want to parse standard lucene query, you can use sub package **stadnard**
 ## Features
 - 1、support phrase term query, for instance `x:"foo bar"`.
 - 2、support regexp term query, for instance `x:/\d+\\.?\d+/`.
