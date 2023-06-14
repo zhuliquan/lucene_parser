@@ -65,6 +65,25 @@ func main() {
 }
 ```
 
+### standard syntax lucene parser
+You also can parse lucene which follows standard syntax by using **standard** package, as below:
+```golang
+package main
+
+import (
+    "fmt"
+    "github.com/zhuliquan/lucene_parser/standard"
+)
+
+func main() {
+    if lucene, err := standard.ParseLucene("foo^10 bar AND yacc"); err != nil {
+        panic(err)
+    } else {
+        fmt.Println(lucene)
+    }
+}
+```
+
 ## EBNF of Lucene
 lucene parser will convert string of lucene query to ast, according to EBNF of lucene. EBNF of lucene is below.
 
