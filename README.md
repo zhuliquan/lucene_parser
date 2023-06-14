@@ -69,18 +69,6 @@ func main() {
 lucene parser will convert string of lucene query to ast, according to EBNF of lucene. EBNF of lucene is below.
 
 ```ebnf
-(* lucene expression with prefix operator *)
-lucene = { prefix_operator_clause } ;
-prefix_operator_clause = { WHITESPACE }, ['+' | '-' | '!'], ( (field, term) | '(', [WHITESPACE], lucene, [WHITESPACE], ')' )
-term = ramge_term | fuzzy_term | regexp | term_group
-
-( * term group with prefix operator *)
-term_group = '(', prefix_term_group, ')', [ boost_modifier ] ;
-prefix_term_group = prefix_operator_term, { prefix_operator_term } ;
-prefix_operator_term = [ WHITESPACE ], ['+' | '-' | '!'], ( simple_term | phrase_term | single_range_term | double_range_term | '(', [WHITESPACE], prefix_operator_term, [WHITESPACE], ')' )
-
-(* ===================== split line ================== *)
-
 (* lucene expression *)
 lucene = or_query, { or_sym_query } ;
 or_sym_query  = or_symbol, or_query ;

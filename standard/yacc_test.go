@@ -6,7 +6,6 @@ import (
 )
 
 func TestYesYacc(t *testing.T) {
-	ShowToken()
 	ShowGrammar()
 	type cases struct {
 		name string

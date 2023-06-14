@@ -1,9 +1,6 @@
 package standard
 
 import (
-	"encoding/json"
-	"fmt"
-
 	"github.com/alecthomas/participle/lexer/stateful"
 )
 
@@ -111,11 +108,6 @@ var rules = []stateful.Rule{
 }
 
 var Lexer *stateful.Definition
-
-func ShowToken() {
-	b, _ := json.Marshal(Lexer)
-	fmt.Println(string(b))
-}
 
 func init() {
 	var err error
