@@ -2,7 +2,8 @@
 
 This package gives standard lucene parser. syntax is refer [standard lucene syntax](https://lucene.apache.org/core/2_9_4/queryparsersyntax.html). and EBNF is refer to [StandardSyntaxParser](https://github.com/apache/lucene/blob/main/lucene/queryparser/src/java/org/apache/lucene/queryparser/flexible/standard/parser/StandardSyntaxParser.jj) and [anltr-v4-lucene](https://github.com/antlr/grammars-v4/tree/master/lucene)
 
-# EBNF
+## EBNF
+
 ```ebnf
 Lucene = Query ;
 Query = DisjQuery, { WHITESPACE DisjQuery } ;
@@ -32,5 +33,4 @@ IDENT_CHAR = ( -( ESCAPE | NUMBER_CHAR | '.' | WHITESPACE | '"' ) | '\\' , (ESCA
 NUMBER_CHAR      = '0' ... '9' ;
 WHITESPACE = WHITESPACE_CHAR , { WHITESPACE_CHAR };
 WHITESPACE_CHAR = '\t' | '\r' | '\f' | ' ' | '0x3000'; （* 0x3000 is Full width whitespace *）
-
 ```

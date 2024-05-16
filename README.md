@@ -1,7 +1,11 @@
 # lucene_parser
-## Introduction:
+
+## Introduction
+
 This package can parse lucene query used by ES (ElasticSearch), this package is pure go package, lex and yacc in this package doesn't follow standard lucene parser, and this package is used to convert lucene to other special DSL(domain special language) mainly, such as LuceneToSQL / LuceneToEQL (Used in ES). If you want to parse standard lucene query, you can use sub package **standard** in this repository
+
 ## Features
+
 - 1、support phrase term query, for instance `x:"foo bar"`.
 - 2、support regexp term query, for instance `x:/\d+\\.?\d+/`.
 - 3、support bool operator （i.e. `AND`, `OR`, `NOT`, `&&`, `||`, `!`） join sub query, for instance `x:1 AND y:2`, `x:1 || y:2`, we also support lower case bool operator (i.e. `and`, `or`, `not`).
@@ -16,12 +20,14 @@ This package can parse lucene query used by ES (ElasticSearch), this package is 
 - 12、support prefix operator `("+", "-", "!")` is ahead of field term, for instance `-foo:bar +foo1:bar1 foo2:bar2 !foo3:bar3`.
 
 ## Limitations
+
 - 1、only support lucene query with **field name**, instead of query without **field name** (i.e. this project can't parse query like `foo OR bar`, `foo AND bar`, but can parse `foo:bar`, `foo:(bar1 AND bar2)`).
 - 2、prefix and bool operator cannot be supported at the same time. on the other hand, you can't parse query which consist bool operator (`AND`/`OR`/`OR`/`NOT`/`&&`/`||`/`!`) and prefix operator (`+`/`-`) at same time.
 - 3、don't support fuzziness of similarity (float number between 0 and 1), instead of fuzziness of maximum edit distance (i.e. Levenshtein Edit Distance — the number of one character changes that need to be made to one string to make it the same as another string.).
 - 4、don't support space is regard as `OR` operator (i.g. `x1:y1 x2:y2`). (I don't know how to handle expression which includes both `or` token and space token (i.g. `x y or z`) . If you have good idea, please contact me)
 
 ## Note
+
 - 1、If similarity is not specified in the fuzzy query, and you will get `-1` by invoking function `Fuzziness` of term, which is allow the user to customize the default fuzziness or parameter of [AUTO fuzziness](https://www.elastic.co/guide/en/elasticsearch/reference/8.4/common-options.html#fuzziness). For example, when -1 is returned, you can specify the maximum and minimum term length of the AUTO parameter according to the fuzziness definition.
 
 - 2、according to definition of fuzziness, specific fuzziness must to be integer. if you input float fuzziness, we will round this number. For example: input query `x:foo~1.2`, you will get fuzziness `1`; input query `x:foo~1.6` you will get fuzziness `2`.
@@ -29,7 +35,9 @@ This package can parse lucene query used by ES (ElasticSearch), this package is 
 - 3、if you input boost symbol but value, you will get 1.0 by invoking function `Boost` of term. for instance query `foo:bar^`.
 
 ## Usage
+
 ### basic lucene parser
+
 ```golang
 package main
 
@@ -46,8 +54,11 @@ func main() {
     }
 }
 ```
+
 ### prefix operator lucene parser
+
 You also can parse lucene query with prefix operator by using `prefix` package, as below:
+
 ```golang
 package main
 
@@ -66,7 +77,9 @@ func main() {
 ```
 
 ### standard syntax lucene parser
+
 You also can parse lucene which follows standard syntax by using **standard** package, as below:
+
 ```golang
 package main
 
@@ -85,6 +98,7 @@ func main() {
 ```
 
 ## EBNF of Lucene
+
 lucene parser will convert string of lucene query to ast, according to EBNF of lucene. EBNF of lucene is below.
 
 ```ebnf
