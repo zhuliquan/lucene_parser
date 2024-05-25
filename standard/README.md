@@ -12,7 +12,7 @@ ConjQuery = ModClause, { WHITESPACE （"AND" | "and" | "&&"） WHITESPACE ModCla
 ModClause = ('+' | '-' | '!')? Clause ;
 Clause = FieldName? ( TermExpr | PhraseExpr | GroupExpr | Regexp | Range ) Boost? ;
 FieldName = TERM, ':' ;
-TEMR_CHAR = IDENT | NUMBER | ESCAPE | '.' | '-' | '+' | '?' | '*'; 
+TEMR_CHAR = IDENT | NUMBER | ESCAPE | '.' | '-' | '+' | '?' | '*';
 TERM = TERM_CHAR, { TERM_CHAR };
 TermExpr = TERM Fuzzy? ;
 Fuzzy = '~', NUMBER? ;
@@ -24,7 +24,7 @@ Regexp = '/' ( '\\' '/' | !'/' ), { ( '\\' '/' | !'/' ) } '/' ;
 Range = SingleRange | DoubleRange ;
 SingleRange = COMPARE RangeValue ;
 RangeValue = TERM | Phrase | Number ;
-DoubleRange = ( '{' | '[' ), WHITESPACE? RangeNode WHITESPACE "TO" WHITESPACE RangeNode WHITESPACE? ( '}' | ']' ) ;     
+DoubleRange = ( '{' | '[' ), WHITESPACE? RangeNode WHITESPACE "TO" WHITESPACE RangeNode WHITESPACE? ( '}' | ']' ) ;
 RangeNode = RangeValue | '*' ;
 IDENT = IDENT_CHAR , { IDENT_CHAR } ;
 ESCAPE     = '-' | '+' | '!' | '&' | '|' | '?' | '*' | '\\' | '(' | ')' | '[' | ']' | '{' | '}' | '/' | '<' | '>' | '=' | '~' | '^'  | ':' ;

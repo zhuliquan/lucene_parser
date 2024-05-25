@@ -9,7 +9,7 @@ This package can parse lucene query used by ES (ElasticSearch), this package is 
 - 1、support phrase term query, for instance `x:"foo bar"`.
 - 2、support regexp term query, for instance `x:/\d+\\.?\d+/`.
 - 3、support bool operator （i.e. `AND`, `OR`, `NOT`, `&&`, `||`, `!`） join sub query, for instance `x:1 AND y:2`, `x:1 || y:2`, we also support lower case bool operator (i.e. `and`, `or`, `not`).
-- 4、support bound range query,  for instance `x:[1 TO 2]`, `x:[1 TO 2}`.
+- 4、support bound range query, for instance `x:[1 TO 2]`, `x:[1 TO 2}`.
 - 5、support side range query, for instance `x:>1` , `x:>=1` , `x:<1` , `x:<=1`.
 - 6、support boost modifier, for instance `x:1^2` , `x:"dsada 8908"^3`.
 - 7、support [fuzzy query](https://www.elastic.co/guide/en/elasticsearch/guide/current/fuzzy-query.html) with default [fuzziness](https://www.elastic.co/guide/en/elasticsearch/guide/current/fuzziness.html) or specific fuzziness, for instance `x:for~1.0`, `x;foo~`.
